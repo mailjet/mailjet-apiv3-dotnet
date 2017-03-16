@@ -9,16 +9,8 @@ namespace Mailjet.Client
 {
     public class MailjetRequest
     {
-        
-        // REST/DATA/send API. By default, the constructor will initialize it with REST
-        // as most of the resources will use it 
-        private string _path;
-
         // Mailjet resource string
-        private string _resource;
-
-        // Mailjet resource action, if any
-        private string _action;
+        private ResourceInfo _resourceInfo;
 
         // Resource ID
         private string _id;
@@ -34,8 +26,6 @@ namespace Mailjet.Client
 
         // The request body is a JObject that will be cast into a String before the call
         JObject _body = new JObject();
-
-
 
         /// <summary>
         /// Make a Mailjet request with a single resource.
@@ -79,9 +69,7 @@ namespace Mailjet.Client
 
         private void InitRequest(ResourceInfo resourceInfo, string id = null, string actionid = null)
         {
-            _path = "/REST";
-            _resource = resourceInfo.Resource;
-            _action = resourceInfo.Action;
+            _resourceInfo = resourceInfo;
             _id = id;
             _actionId = actionid;
         }
@@ -92,10 +80,15 @@ namespace Mailjet.Client
             return this;
         }
 
+        public string BuildUrl()
+        {
+            return _resourceInfo.BuildUrl(_id, _actionId);
+        }
+
         public override string ToString()
         {
             dynamic jObject = new JObject();
-            jObject.Resource = _resource;
+            jObject.Resource = _resourceInfo;
             jObject.ID = _id;
             jObject.ActionID = _actionId;
             jObject.Body = _body;

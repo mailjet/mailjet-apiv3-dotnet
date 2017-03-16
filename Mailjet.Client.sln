@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mailjet.Client", "Mailjet.Client\Mailjet.Client.csproj", "{A4163702-2ACB-4031-A0A0-DF13387C0108}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mailjet.ConsoleApplication", "Mailjet.ConsoleApplication\Mailjet.ConsoleApplication.csproj", "{328F798D-ED4B-44A7-8985-4A8A774DB89C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{A4163702-2ACB-4031-A0A0-DF13387C0108}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A4163702-2ACB-4031-A0A0-DF13387C0108}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A4163702-2ACB-4031-A0A0-DF13387C0108}.Release|Any CPU.Build.0 = Release|Any CPU
+		{328F798D-ED4B-44A7-8985-4A8A774DB89C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{328F798D-ED4B-44A7-8985-4A8A774DB89C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{328F798D-ED4B-44A7-8985-4A8A774DB89C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{328F798D-ED4B-44A7-8985-4A8A774DB89C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

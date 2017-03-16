@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Mailjet.Client
 {
@@ -37,8 +39,21 @@ namespace Mailjet.Client
             // Set basic authentification
             var byteArray = Encoding.UTF8.GetBytes(string.Format("{0}:{1}", apiKey, apiSecret));
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+        }
 
+        public async Task<MailjetResponse> GetAsync(MailjetRequest request)
+        {
+            string url = _baseUrl + request.BuildUrl();
 
+            MailjetResponse mailjetResponse = new MailjetResponse();
+
+            var responseMessage = await _httpClient.GetAsync(url);
+            if (responseMessage.IsSuccessStatusCode)
+            {
+                mailjetResponse.Content = await responseMessage.Content.ReadAsAsync<JObject>();
+            }
+
+            return mailjetResponse;
         }
     }
 }
