@@ -33,6 +33,9 @@ namespace Mailjet.ConsoleApplication
             Console.WriteLine("Response Data:");
             Console.WriteLine(response.GetData());
 
+            Console.WriteLine("Response Count:");
+            Console.WriteLine(response.GetCount());
+
             Console.ReadLine();
         }
     }

@@ -13,12 +13,10 @@ namespace Mailjet.Client
 
         public int GetTotal()
         {
-            int total = 0;
-
-            JToken tocken;
-            if (Content.TryGetValue("Total", StringComparison.OrdinalIgnoreCase, out tocken))
+            int total;
+            if (!TryGetValue("Total", out total))
             {
-                total = tocken.Value<int>();
+                total = 0;
             }
 
             return total;
@@ -43,6 +41,30 @@ namespace Mailjet.Client
             }
 
             return result;
+        }
+
+        public int GetCount()
+        {
+            int count;
+            if (!TryGetValue("Count", out count))
+            {
+                count = 0;
+            }
+
+            return count;
+        }
+
+        private bool TryGetValue<T>(string key, out T value)
+        {
+            JToken tocken;
+            if (Content.TryGetValue(key, StringComparison.OrdinalIgnoreCase, out tocken))
+            {
+                value = tocken.Value<T>();
+                return true;
+            }
+
+            value = default(T);
+            return false;
         }
     }
 }
