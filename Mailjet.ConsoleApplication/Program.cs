@@ -16,7 +16,7 @@ namespace Mailjet.ConsoleApplication
 
         static async Task RunAsync()
         {
-            MailjetClient client = new MailjetClient("7fb6f35819d7a70bae207bd4cff03e2f", "8a921630523dbaf3c29cbeb66bc5e348");
+            MailjetClient client = new MailjetClient("", "");
             MailjetRequest request = new MailjetRequest(new ResourceInfo("apikey"));
 
             Console.WriteLine("GetAsync");
