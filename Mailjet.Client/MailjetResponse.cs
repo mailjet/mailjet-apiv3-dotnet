@@ -9,7 +9,17 @@ namespace Mailjet.Client
 {
     public class MailjetResponse
     {
-        public JObject Content { get; set; }
+        private JObject _content;
+
+        public bool IsSuccessStatusCode { get; private set; }
+        public int StatusCode { get; private set; }
+
+        public MailjetResponse(bool isSuccessStatusCode, int statusCode, JObject content)
+        {
+            IsSuccessStatusCode = isSuccessStatusCode;
+            StatusCode = statusCode;
+            _content = content;
+        }
 
         public int GetTotal()
         {
@@ -25,21 +35,18 @@ namespace Mailjet.Client
         public JArray GetData()
         {
             JArray result;
-
-            JToken tocken;
-            if (Content.TryGetValue("Data", StringComparison.OrdinalIgnoreCase, out tocken))
+            if (TryGetValue("Data", out result))
             {
-                result = tocken.Value<JArray>();
-            }
-            else if (Content.TryGetValue("Sent", StringComparison.OrdinalIgnoreCase, out tocken))
-            {
-                result = tocken.Value<JArray>();
-            }
-            else
-            {
-                result = new JArray();
+                return result;
             }
 
+
+            if (TryGetValue("Sent", out result))
+            {
+                return result;
+            }
+
+            result = new JArray();
             return result;
         }
 
@@ -54,17 +61,28 @@ namespace Mailjet.Client
             return count;
         }
 
-        private bool TryGetValue<T>(string key, out T value)
+        public bool TryGetValue<T>(string key, out T value)
         {
-            JToken tocken;
-            if (Content.TryGetValue(key, StringComparison.OrdinalIgnoreCase, out tocken))
+            JToken token;
+            if (!_content.TryGetValue(key, StringComparison.OrdinalIgnoreCase, out token))
             {
-                value = tocken.Value<T>();
-                return true;
+                value = default(T);
+                return false;
             }
 
-            value = default(T);
-            return false;
+            value = token.Value<T>();
+            return true;
+        }
+
+        public T GetValue<T>(string key)
+        {
+            T result;
+            if (!TryGetValue(key, out result))
+            {
+                throw new Exception(string.Format("No entry found for key: {0}", key));
+            }
+
+            return result;
         }
     }
 }

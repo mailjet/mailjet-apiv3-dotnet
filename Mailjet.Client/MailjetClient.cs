@@ -16,7 +16,7 @@ namespace Mailjet.Client
     {
         private const string _baseAdress = "https://api.mailjet.com";
         private const string _userAgent = "mailjet-api-v3-net/1.0";
-        private const string _mediaType = "application/json";
+        private const string _jsonMediaType = "application/json";
         private const string _apiVersion = "v3";
 
         private readonly HttpClient _httpClient;
@@ -33,7 +33,7 @@ namespace Mailjet.Client
 
             // Set accepted media type
             _httpClient.DefaultRequestHeaders.Accept.Clear();
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(_mediaType));
+            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(_jsonMediaType));
 
             // Set user-agent
             _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(_userAgent);
@@ -45,16 +45,29 @@ namespace Mailjet.Client
 
         public async Task<MailjetResponse> GetAsync(MailjetRequest request)
         {
+            JObject content;
+
             string url = string.Format("{0}/{1}", _apiVersion, request.BuildUrl());
-
-            MailjetResponse mailjetResponse = new MailjetResponse();
-
             var responseMessage = await _httpClient.GetAsync(url);
-            if (responseMessage.IsSuccessStatusCode)
+
+            int statusCode = (int)responseMessage.StatusCode;
+
+            if (responseMessage.Content != null && responseMessage.Content.Headers.ContentType.MediaType == _jsonMediaType)
             {
-                mailjetResponse.Content = await responseMessage.Content.ReadAsAsync<JObject>();
+                content = await responseMessage.Content.ReadAsAsync<JObject>();
+            }
+            else
+            {
+                content = new JObject();
+                content.Add("StatusCode", new JValue(statusCode));
+
+                if (!responseMessage.IsSuccessStatusCode)
+                {
+                    content.Add("ErrorInfo", new JValue(responseMessage.ReasonPhrase));
+                }
             }
 
+            MailjetResponse mailjetResponse = new MailjetResponse(responseMessage.IsSuccessStatusCode, statusCode, content);
             return mailjetResponse;
         }
     }
