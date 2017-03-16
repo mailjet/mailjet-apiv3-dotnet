@@ -27,6 +27,9 @@ namespace Mailjet.ConsoleApplication
             Console.WriteLine("Response:");
             Console.WriteLine(response.Content);
 
+            Console.WriteLine("Response Total:");
+            Console.WriteLine(response.GetTotal());
+
             Console.WriteLine("Response Data:");
             Console.WriteLine(response.GetData());
 

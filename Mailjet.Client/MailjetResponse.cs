@@ -11,6 +11,19 @@ namespace Mailjet.Client
     {
         public JObject Content { get; set; }
 
+        public int GetTotal()
+        {
+            int total = 0;
+
+            JToken tocken;
+            if (Content.TryGetValue("Total", StringComparison.OrdinalIgnoreCase, out tocken))
+            {
+                total = tocken.Value<int>();
+            }
+
+            return total;
+        }
+
         public JArray GetData()
         {
             JArray result;
