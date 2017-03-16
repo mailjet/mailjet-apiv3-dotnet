@@ -14,20 +14,28 @@ namespace Mailjet.Client
     /// </summary>
     public class MailjetClient
     {
-        private const string _baseUrl = "https://api.mailjet.com/v3";
+        private const string _baseAdress = "api.mailjet.com";
         private const string _userAgent = "mailjet-api-v3-net/1.0";
         private const string _mediaType = "application/json";
+        private const string _apiVersion = "v3";
 
         private readonly HttpClient _httpClient;
         private readonly HttpClientHandler _httpClientHandler;
 
-        public MailjetClient(string apiKey, string apiSecret, string baseUrl = _baseUrl)
+        public MailjetClient(string apiKey, string apiSecret, bool useSsl = true, string baseAdress = _baseAdress)
         {
+            // Create HttpClient
             _httpClientHandler = new HttpClientHandler();
             _httpClient = new HttpClient(_httpClientHandler);
 
-            // Set base URL
-            _httpClient.BaseAddress = new Uri(baseUrl);
+            // Create base URI
+            UriBuilder uriBuilder = new UriBuilder(baseAdress);
+            var hadDefaultPort = uriBuilder.Uri.IsDefaultPort;
+            uriBuilder.Scheme = useSsl ? "https" : "http";
+            uriBuilder.Port = hadDefaultPort ? -1 : uriBuilder.Port;
+
+            // Set base URI
+            _httpClient.BaseAddress = uriBuilder.Uri;
 
             // Set accepted media type
             _httpClient.DefaultRequestHeaders.Accept.Clear();
@@ -43,7 +51,7 @@ namespace Mailjet.Client
 
         public async Task<MailjetResponse> GetAsync(MailjetRequest request)
         {
-            string url = _baseUrl + request.BuildUrl();
+            string url = string.Format("{0}/{1}", _apiVersion, request.BuildUrl());
 
             MailjetResponse mailjetResponse = new MailjetResponse();
 

@@ -10,7 +10,7 @@ namespace Mailjet.Client
     public class ResourceInfo
     {
         // REST/DATA/send API. By defaul initialized to REST as most of the resources will use it 
-        protected const string _path = "/REST";
+        protected const string _path = "REST";
 
         public string Resource { get; private set; }
 
