@@ -14,7 +14,7 @@ namespace Mailjet.Client
     /// </summary>
     public class MailjetClient
     {
-        private const string _baseAdress = "api.mailjet.com";
+        private const string _baseAdress = "https://api.mailjet.com";
         private const string _userAgent = "mailjet-api-v3-net/1.0";
         private const string _mediaType = "application/json";
         private const string _apiVersion = "v3";
@@ -22,20 +22,14 @@ namespace Mailjet.Client
         private readonly HttpClient _httpClient;
         private readonly HttpClientHandler _httpClientHandler;
 
-        public MailjetClient(string apiKey, string apiSecret, bool useSsl = true, string baseAdress = _baseAdress)
+        public MailjetClient(string apiKey, string apiSecret, string baseAdress = _baseAdress)
         {
             // Create HttpClient
             _httpClientHandler = new HttpClientHandler();
             _httpClient = new HttpClient(_httpClientHandler);
 
-            // Create base URI
-            UriBuilder uriBuilder = new UriBuilder(baseAdress);
-            var hadDefaultPort = uriBuilder.Uri.IsDefaultPort;
-            uriBuilder.Scheme = useSsl ? "https" : "http";
-            uriBuilder.Port = hadDefaultPort ? -1 : uriBuilder.Port;
-
             // Set base URI
-            _httpClient.BaseAddress = uriBuilder.Uri;
+            _httpClient.BaseAddress = new Uri(baseAdress);
 
             // Set accepted media type
             _httpClient.DefaultRequestHeaders.Accept.Clear();
