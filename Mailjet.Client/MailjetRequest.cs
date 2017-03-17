@@ -19,7 +19,7 @@ namespace Mailjet.Client
         public long? ActionId { get; set; }
 
         // Every filter should be string values. So Integer will be cast into Strings
-        public Dictionary<string, string> Filters { get; set; } = new Dictionary<string, string>();
+        public IDictionary<string, string> Filters { get; set; } = new Dictionary<string, string>();
 
         // The request body is a JObject that will be cast into a String before the call
         public JObject Body { get; set; } = new JObject();
@@ -53,8 +53,9 @@ namespace Mailjet.Client
         {
             dynamic jObject = new JObject();
             jObject.Resource = Resource;
-            jObject.ResourceId = ResourceId != null ? ResourceId.Id : string.Empty;
-            jObject.ActionID = ActionId.ToString();
+            jObject.ResourceId = ResourceId != null ? ResourceId.Id : null;
+            jObject.ActionID = ActionId.HasValue ? ActionId.Value.ToString() : null;
+            jObject.Filters = Filters;
             jObject.Body = Body;
 
             return jObject.ToString();
