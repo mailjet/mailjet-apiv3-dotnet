@@ -14,15 +14,15 @@ namespace Mailjet.Client
     /// </summary>
     public class MailjetClient
     {
-        private const string _baseAdress = "https://api.mailjet.com";
-        private const string _userAgent = "mailjet-api-v3-net/1.0";
-        private const string _jsonMediaType = "application/json";
-        private const string _apiVersion = "v3";
+        private const string BaseAdress = "https://api.mailjet.com";
+        private const string UserAgent = "mailjet-api-v3-net/1.0";
+        private const string JsonMediaType = "application/json";
+        private const string ApiVersion = "v3";
 
         private readonly HttpClient _httpClient;
         private readonly HttpClientHandler _httpClientHandler;
 
-        public MailjetClient(string apiKey, string apiSecret, string baseAdress = _baseAdress)
+        public MailjetClient(string apiKey, string apiSecret, string baseAdress = BaseAdress)
         {
             // Create HttpClient
             _httpClientHandler = new HttpClientHandler();
@@ -33,10 +33,10 @@ namespace Mailjet.Client
 
             // Set accepted media type
             _httpClient.DefaultRequestHeaders.Accept.Clear();
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(_jsonMediaType));
+            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(JsonMediaType));
 
             // Set user-agent
-            _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(_userAgent);
+            _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
 
             // Set basic authentification
             var byteArray = Encoding.UTF8.GetBytes(string.Format("{0}:{1}", apiKey, apiSecret));
@@ -45,8 +45,9 @@ namespace Mailjet.Client
 
         public async Task<MailjetResponse> GetAsync(MailjetRequest request)
         {
+            string url = UrlHelper.CombineUrl(ApiVersion, request.BuildUrl());
+            url = UrlHelper.AddQuerryString(url, request.Filters);
 
-            string url = UrlHelper.CombineUrl(_apiVersion, request.BuildUrl());
             var responseMessage = await _httpClient.GetAsync(url);
 
             JObject content = await GetContent(responseMessage);
@@ -56,7 +57,7 @@ namespace Mailjet.Client
 
         public async Task<MailjetResponse> PostAsync(MailjetRequest request)
         {
-            string url = UrlHelper.CombineUrl(_apiVersion, request.BuildUrl());
+            string url = UrlHelper.CombineUrl(ApiVersion, request.BuildUrl());
 
             var responseMessage = await _httpClient.PostAsJsonAsync(url, request.Body);
 
@@ -69,7 +70,7 @@ namespace Mailjet.Client
         {
             JObject content;
 
-            if (responseMessage.Content != null && responseMessage.Content.Headers.ContentType.MediaType == _jsonMediaType)
+            if (responseMessage.Content != null && responseMessage.Content.Headers.ContentType.MediaType == JsonMediaType)
             {
                 content = await responseMessage.Content.ReadAsAsync<JObject>();
             }

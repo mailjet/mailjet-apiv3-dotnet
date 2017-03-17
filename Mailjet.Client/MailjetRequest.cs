@@ -18,12 +18,22 @@ namespace Mailjet.Client
         // Resource action ID
         public long? ActionId { get; set; }
 
-        // Filters HashMap.
         // Every filter should be string values. So Integer will be cast into Strings
-        Dictionary<string, string> _filters = new Dictionary<string, string>();
+        public Dictionary<string, string> Filters { get; set; } = new Dictionary<string, string>();
 
         // The request body is a JObject that will be cast into a String before the call
         public JObject Body { get; set; } = new JObject();
+
+        public MailjetRequest Filter(string key, string value)
+        {
+            Filters.Add(key, value);
+            return this;
+        }
+
+        public MailjetRequest Filter(string key, int value)
+        {
+            return Filter(key, value.ToString());
+        }
 
         public MailjetRequest Property(string key, Object value)
         {
