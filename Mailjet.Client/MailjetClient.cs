@@ -51,8 +51,7 @@ namespace Mailjet.Client
             var responseMessage = await _httpClient.GetAsync(url);
 
             JObject content = await GetContent(responseMessage);
-            MailjetResponse mailjetResponse = new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
-            return mailjetResponse;
+            return new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
         }
 
         public async Task<MailjetResponse> PostAsync(MailjetRequest request)
@@ -62,8 +61,29 @@ namespace Mailjet.Client
             var responseMessage = await _httpClient.PostAsJsonAsync(url, request.Body);
 
             JObject content = await GetContent(responseMessage);
+            return new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
+        }
+
+        public async Task<MailjetResponse> PutAsync(MailjetRequest request)
+        {
+            string url = UrlHelper.CombineUrl(ApiVersion, request.BuildUrl());
+
+            var responseMessage = await _httpClient.PutAsJsonAsync(url, request.Body);
+
+            JObject content = await GetContent(responseMessage);
             MailjetResponse mailjetResponse = new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
             return mailjetResponse;
+        }
+
+        public async Task<MailjetResponse> DeleteAsync(MailjetRequest request)
+        {
+            string url = UrlHelper.CombineUrl(ApiVersion, request.BuildUrl());
+            url = UrlHelper.AddQuerryString(url, request.Filters);
+
+            var responseMessage = await _httpClient.DeleteAsync(url);
+
+            JObject content = await GetContent(responseMessage);
+            return new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
         }
 
         private async Task<JObject> GetContent(HttpResponseMessage responseMessage)
