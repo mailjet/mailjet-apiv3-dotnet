@@ -12,7 +12,7 @@ namespace Mailjet.Client
         NotSpecified,
         Rest,
         Data,
-        Sent,
+        Send,
     }
 
     public class ResourceInfo
@@ -59,7 +59,7 @@ namespace Mailjet.Client
             {
                 case ResourceType.Rest: return "REST";
                 case ResourceType.Data: return "DATA";
-                case ResourceType.Sent: return string.Empty;
+                case ResourceType.Send: return string.Empty;
                 default: return Resource != "send" ? "REST" : string.Empty;
             }
         }
