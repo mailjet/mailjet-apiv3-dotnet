@@ -61,7 +61,29 @@ namespace Mailjet.Client
             return count;
         }
 
-        public bool TryGetValue<T>(string key, out T value)
+        public string GetErrorInfo()
+        {
+            string errorInfo;
+            if (!TryGetValue("ErrorInfo", out errorInfo))
+            {
+                errorInfo = string.Empty;
+            }
+
+            return errorInfo;
+        }
+
+        public string GetErrorMessage()
+        {
+            string errorMessage;
+            if (!TryGetValue("ErrorMessage", out errorMessage))
+            {
+                errorMessage = string.Empty;
+            }
+
+            return errorMessage;
+        }
+
+    public bool TryGetValue<T>(string key, out T value)
         {
             JToken token;
             if (!_content.TryGetValue(key, StringComparison.OrdinalIgnoreCase, out token))

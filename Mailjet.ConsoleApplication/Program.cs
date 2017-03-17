@@ -15,7 +15,6 @@ namespace Mailjet.ConsoleApplication
 
         static async Task RunAsync()
         {
-            
             MailjetClient client = new MailjetClient(ConfigurationManager.AppSettings["apiKey"], ConfigurationManager.AppSettings["apiSecret"]);
 
             MailjetRequest request = new MailjetRequest()
@@ -34,17 +33,8 @@ namespace Mailjet.ConsoleApplication
             }
             else
             {
-                string errorInfo;
-                if (response.TryGetValue("ErrorInfo", out errorInfo))
-                {
-                    Console.WriteLine(string.Format("ErrorInfo: {0}\n", errorInfo));
-                }
-
-                string errorMessage;
-                if (response.TryGetValue("ErrorMessage", out errorMessage))
-                {
-                    Console.WriteLine(string.Format("ErrorMessage: {0}\n", errorMessage));
-                }
+                Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
+                Console.WriteLine(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
             }
 
             Console.ReadLine();
