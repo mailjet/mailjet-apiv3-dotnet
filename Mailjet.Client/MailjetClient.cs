@@ -45,12 +45,28 @@ namespace Mailjet.Client
 
         public async Task<MailjetResponse> GetAsync(MailjetRequest request)
         {
-            JObject content;
-
             string url = string.Format("{0}/{1}", _apiVersion, request.BuildUrl());
             var responseMessage = await _httpClient.GetAsync(url);
 
-            int statusCode = (int)responseMessage.StatusCode;
+            JObject content = await GetContent(responseMessage);
+            MailjetResponse mailjetResponse = new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
+            return mailjetResponse;
+        }
+
+        public async Task<MailjetResponse> PostAsync(MailjetRequest request)
+        {
+            string url = string.Format("{0}/{1}", _apiVersion, request.BuildUrl());
+
+            var responseMessage = await _httpClient.PostAsJsonAsync(url, request.Body);
+
+            JObject content = await GetContent(responseMessage);
+            MailjetResponse mailjetResponse = new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
+            return mailjetResponse;
+        }
+
+        private async Task<JObject> GetContent(HttpResponseMessage responseMessage)
+        {
+            JObject content;
 
             if (responseMessage.Content != null && responseMessage.Content.Headers.ContentType.MediaType == _jsonMediaType)
             {
@@ -59,7 +75,7 @@ namespace Mailjet.Client
             else
             {
                 content = new JObject();
-                content.Add("StatusCode", new JValue(statusCode));
+                content.Add("StatusCode", new JValue((int)responseMessage.StatusCode));
 
                 if (!responseMessage.IsSuccessStatusCode)
                 {
@@ -67,8 +83,7 @@ namespace Mailjet.Client
                 }
             }
 
-            MailjetResponse mailjetResponse = new MailjetResponse(responseMessage.IsSuccessStatusCode, statusCode, content);
-            return mailjetResponse;
+            return content;
         }
     }
 }

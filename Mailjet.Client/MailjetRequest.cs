@@ -18,14 +18,12 @@ namespace Mailjet.Client
         // Resource action ID
         private string _actionId;
 
-        private string _data;
-
         // Filters HashMap.
         // Every filter should be string values. So Integer will be cast into Strings
         Dictionary<string, string> _filters = new Dictionary<string, string>();
 
         // The request body is a JObject that will be cast into a String before the call
-        JObject _body = new JObject();
+        public JObject Body { get; set; }
 
         /// <summary>
         /// Make a Mailjet request with a single resource.
@@ -72,11 +70,12 @@ namespace Mailjet.Client
             _resourceInfo = resourceInfo;
             _id = id;
             _actionId = actionid;
+            Body = new JObject();
         }
 
         public MailjetRequest Property(string key, Object value)
         {
-            _body.Add(key, new JValue(value));
+            Body.Add(key, new JValue(value));
             return this;
         }
 
@@ -91,7 +90,7 @@ namespace Mailjet.Client
             jObject.Resource = _resourceInfo;
             jObject.ID = _id;
             jObject.ActionID = _actionId;
-            jObject.Body = _body;
+            jObject.Body = Body;
 
             return jObject.ToString();
         }
