@@ -45,7 +45,8 @@ namespace Mailjet.Client
 
         public async Task<MailjetResponse> GetAsync(MailjetRequest request)
         {
-            string url = string.Format("{0}/{1}", _apiVersion, request.BuildUrl());
+
+            string url = UrlHelper.CombineUrl(_apiVersion, request.BuildUrl());
             var responseMessage = await _httpClient.GetAsync(url);
 
             JObject content = await GetContent(responseMessage);
@@ -55,7 +56,7 @@ namespace Mailjet.Client
 
         public async Task<MailjetResponse> PostAsync(MailjetRequest request)
         {
-            string url = string.Format("{0}/{1}", _apiVersion, request.BuildUrl());
+            string url = UrlHelper.CombineUrl(_apiVersion, request.BuildUrl());
 
             var responseMessage = await _httpClient.PostAsJsonAsync(url, request.Body);
 

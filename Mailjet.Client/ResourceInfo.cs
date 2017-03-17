@@ -7,49 +7,61 @@ using System.Threading.Tasks;
 
 namespace Mailjet.Client
 {
+    public enum ResourceType
+    {
+        NotSpecified,
+        Rest,
+        Data,
+        Sent,
+    }
+
     public class ResourceInfo
     {
-        // REST/DATA/send API. By defaul initialized to REST as most of the resources will use it 
-        protected const string _path = "REST";
+        public ResourceType Type { get; private set; }
 
         public string Resource { get; private set; }
 
         // Mailjet resource action, if any
         public string Action { get; private set; }
 
-        public ResourceInfo(string resource, string action = null)
+        public ResourceInfo(string resource, string action = null, ResourceType type = ResourceType.Rest)
         {
             Resource = resource;
-            Action = action ?? string.Empty;
+            Action = action;
+            Type = type;
         }
 
         public virtual string BuildUrl(string resourceId, string actionId)
         {
-            string url = CombineUri(_path, Resource);
+            string url = UrlHelper.CombineUrl(GetPath(), Resource);
 
             if (!string.IsNullOrEmpty(resourceId))
             {
-                url = CombineUri(url, resourceId);
+                url = UrlHelper.CombineUrl(url, resourceId);
             }
 
             if (!string.IsNullOrEmpty(Action))
             {
-                url = CombineUri(url, Action);
+                url = UrlHelper.CombineUrl(url, Action);
             }
 
             if (!string.IsNullOrEmpty(actionId))
             {
-                url = CombineUri(url, actionId);
+                url = UrlHelper.CombineUrl(url, actionId);
             }
 
             return url;
         }
 
-        protected string CombineUri(string uri1, string uri2)
+        private string GetPath()
         {
-            uri1 = uri1.TrimEnd('/');
-            uri2 = uri2.TrimStart('/');
-            return string.Format("{0}/{1}", uri1, uri2);
+            switch (Type)
+            {
+                case ResourceType.Rest: return "REST";
+                case ResourceType.Data: return "DATA";
+                case ResourceType.Sent: return string.Empty;
+                default: return Resource != "send" ? "REST" : string.Empty;
+            }
         }
     }
 }

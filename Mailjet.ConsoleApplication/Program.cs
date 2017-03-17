@@ -1,4 +1,5 @@
 ﻿using Mailjet.Client;
+using Mailjet.Client.Resources;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -19,7 +20,11 @@ namespace Mailjet.ConsoleApplication
         {
             
             MailjetClient client = new MailjetClient(ConfigurationManager.AppSettings["apiKey"], ConfigurationManager.AppSettings["apiSecret"]);
-            MailjetRequest request = new MailjetRequest(new ResourceInfo("apikey"));
+
+            MailjetRequest request = new MailjetRequest()
+            {
+                Resource = Apikey.Resource
+            };
 
             Console.WriteLine("Call GetAsync");
             Console.WriteLine();
@@ -43,16 +48,17 @@ namespace Mailjet.ConsoleApplication
             }
             else
             {
-                string message;
-                if (response.TryGetValue("ErrorInfo", out message))
+                string errorInfo;
+                if (response.TryGetValue("ErrorInfo", out errorInfo))
                 {
-                    Console.WriteLine(string.Format("ErrorInfo: {0}", message));
+                    Console.WriteLine(string.Format("ErrorInfo: {0}", errorInfo));
                     Console.WriteLine();
                 }
 
-                if (response.TryGetValue("ErrorMessage", out message))
+                string errorMessage;
+                if (response.TryGetValue("ErrorMessage", out errorMessage))
                 {
-                    Console.WriteLine(string.Format("ErrorMessage: {0}", message));
+                    Console.WriteLine(string.Format("ErrorMessage: {0}", errorMessage));
                     Console.WriteLine();
                 }
             }
