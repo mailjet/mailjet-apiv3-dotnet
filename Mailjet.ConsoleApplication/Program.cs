@@ -15,11 +15,16 @@ namespace Mailjet.ConsoleApplication
 
         static async Task RunAsync()
         {
-            MailjetClient client = new MailjetClient(ConfigurationManager.AppSettings["apiKey"], ConfigurationManager.AppSettings["apiSecret"]);
-
-            MailjetRequest request = new MailjetRequest()
+            MailjetClient client = new MailjetClient(ConfigurationManager.AppSettings["ApiKey"], ConfigurationManager.AppSettings["ApiSecret"])
             {
-                Resource = Apikey.Resource
+                //BaseAdress = "https://api.mailjet.com",
+                //Version = ApiVersion.V3,
+                //Proxy = new DefaultProxy("http://127.0.0.1:8888"),
+            };
+
+            MailjetRequest request = new MailjetRequest
+            {
+                Resource = Apikey.Resource,
             };
 
             MailjetResponse response = await client.GetAsync(request);
