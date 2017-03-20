@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -57,6 +58,16 @@ namespace Mailjet.Client
         {
             get { return _httpClient.BaseAddress != null ? _httpClient.BaseAddress.ToString() : null; }
             set { _httpClient.BaseAddress = !string.IsNullOrEmpty(value) ? new Uri(value) : null; }
+        }
+
+        public IWebProxy Proxy
+        {
+            get { return _httpClientHandler.Proxy; }
+            set
+            {
+                _httpClientHandler.Proxy = value;
+                _httpClientHandler.UseProxy = (_httpClientHandler.Proxy != null);
+            }
         }
 
         public async Task<MailjetResponse> GetAsync(MailjetRequest request)

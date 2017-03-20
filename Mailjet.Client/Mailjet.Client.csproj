@@ -38,6 +38,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DefaultProxy.cs" />
     <Compile Include="MailjetClient.cs" />
     <Compile Include="MailjetRequest.cs" />
     <Compile Include="MailjetResponse.cs" />
