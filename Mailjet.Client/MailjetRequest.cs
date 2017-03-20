@@ -41,21 +41,27 @@ namespace Mailjet.Client
             return this;
         }
 
+        public MailjetRequest Property(string key, JToken value)
+        {
+            Body.Add(key, value);
+            return this;
+        }
+
         public string BuildUrl()
         {
             string resourceId = ResourceId != null ? ResourceId.Id : null;
             string actionId = ActionId.HasValue ? ActionId.Value.ToString() : null;
-
-            return Resource.BuildUrl(resourceId, actionId);
+            string url = Resource.BuildUrl(resourceId, actionId);
+            return UrlHelper.AddQuerryString(url, Filters);
         }
 
         public override string ToString()
         {
             dynamic jObject = new JObject();
-            jObject.Resource = Resource;
+            jObject.Resource = JObject.FromObject(Resource);
             jObject.ResourceId = ResourceId != null ? ResourceId.Id : null;
             jObject.ActionID = ActionId.HasValue ? ActionId.Value.ToString() : null;
-            jObject.Filters = Filters;
+            jObject.Filters = JObject.FromObject(Filters);
             jObject.Body = Body;
 
             return jObject.ToString();

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +47,6 @@ namespace Mailjet.Client
         public async Task<MailjetResponse> GetAsync(MailjetRequest request)
         {
             string url = UrlHelper.CombineUrl(ApiVersion, request.BuildUrl());
-            url = UrlHelper.AddQuerryString(url, request.Filters);
 
             var responseMessage = await _httpClient.GetAsync(url);
 
@@ -58,7 +58,9 @@ namespace Mailjet.Client
         {
             string url = UrlHelper.CombineUrl(ApiVersion, request.BuildUrl());
 
-            var responseMessage = await _httpClient.PostAsJsonAsync(url, request.Body);
+            var output = request.Body.ToString(Formatting.None);
+            HttpContent contentPost = new StringContent(output, System.Text.Encoding.UTF8, "application/json");
+            var responseMessage = await _httpClient.PostAsync(url, contentPost);
 
             JObject content = await GetContent(responseMessage);
             return new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
@@ -68,7 +70,9 @@ namespace Mailjet.Client
         {
             string url = UrlHelper.CombineUrl(ApiVersion, request.BuildUrl());
 
-            var responseMessage = await _httpClient.PutAsJsonAsync(url, request.Body);
+            var output = request.Body.ToString(Formatting.None);
+            HttpContent contentPut = new StringContent(output, System.Text.Encoding.UTF8, "application/json");
+            var responseMessage = await _httpClient.PutAsync(url, contentPut);
 
             JObject content = await GetContent(responseMessage);
             MailjetResponse mailjetResponse = new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
@@ -78,7 +82,6 @@ namespace Mailjet.Client
         public async Task<MailjetResponse> DeleteAsync(MailjetRequest request)
         {
             string url = UrlHelper.CombineUrl(ApiVersion, request.BuildUrl());
-            url = UrlHelper.AddQuerryString(url, request.Filters);
 
             var responseMessage = await _httpClient.DeleteAsync(url);
 
@@ -88,11 +91,17 @@ namespace Mailjet.Client
 
         private async Task<JObject> GetContent(HttpResponseMessage responseMessage)
         {
-            JObject content;
+            string cnt = null;
 
-            if (responseMessage.Content != null && responseMessage.Content.Headers.ContentType.MediaType == JsonMediaType)
+            if (responseMessage.Content != null)
             {
-                content = await responseMessage.Content.ReadAsAsync<JObject>();
+                cnt = await responseMessage.Content.ReadAsStringAsync(); // ReadAsAsync<JObject>();
+            }
+
+            JObject content;
+            if (!string.IsNullOrEmpty(cnt) && responseMessage.Content.Headers.ContentType.MediaType == JsonMediaType)
+            {
+                content = JObject.Parse(cnt);
             }
             else
             {

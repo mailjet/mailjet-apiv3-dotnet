@@ -24,8 +24,6 @@ namespace Mailjet.ConsoleApplication
 
             MailjetResponse response = await client.GetAsync(request);
 
-            Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
-
             if (response.IsSuccessStatusCode)
             {
                 Console.WriteLine(string.Format("Total: {0}, Count: {1}\n", response.GetTotal(), response.GetCount()));
@@ -33,6 +31,7 @@ namespace Mailjet.ConsoleApplication
             }
             else
             {
+                Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
                 Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
                 Console.WriteLine(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
             }
