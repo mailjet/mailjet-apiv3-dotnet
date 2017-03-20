@@ -43,9 +43,60 @@ It's ready to use !
 
 ### Create a resource
 
+```C#
+
+using Mailjet.Client;
+using Mailjet.Client.Resources;
+using System;
+using System.Configuration;
+using System.Threading.Tasks;
+
+namespace Mailjet.ConsoleApplication
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            RunAsync().Wait();
+        }
+
+        static async Task RunAsync()
+        {
+            MailjetClient client = new MailjetClient(ConfigurationManager.AppSettings["apiKey"], ConfigurationManager.AppSettings["apiSecret"]);
+
+            MailjetRequest request = new MailjetRequest()
+            {
+                Resource = Contact.Resource,
+            }
+            .Property(Contact.Email, "Mister@mailjet.com");
+
+            MailjetResponse response = await client.PostAsync(request);
+
+            Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine(string.Format("Total: {0}, Count: {1}\n", response.GetTotal(), response.GetCount()));
+                Console.WriteLine(response.GetData());
+            }
+            else
+            {
+                Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
+                Console.WriteLine(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
+            }
+
+            Console.ReadLine();
+        }
+    }
+}
+
+```
+
 ### Update a resource
 
 ### View a resource
+
+Using the resource ID (ResourceId.Numeric):
 
 ```C#
 using Mailjet.Client;
@@ -94,6 +145,8 @@ namespace Mailjet.ConsoleApplication
 }
 ```
 
+Using the resource alternate ID (ResourceId.Alphanumeric):
+
 ```C#
 using Mailjet.Client;
 using Mailjet.Client.Resources;
@@ -117,7 +170,7 @@ namespace Mailjet.ConsoleApplication
             MailjetRequest request = new MailjetRequest()
             {
                 Resource = Contact.Resource,
-                ResourceId = ResourceId.Alphanumeric("eboisgontier@mailjet.com"),
+                ResourceId = ResourceId.Alphanumeric("mister@mailjet.com"),
             };
 
             MailjetResponse response = await client.GetAsync(request);
