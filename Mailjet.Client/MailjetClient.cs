@@ -10,27 +10,34 @@ using System.Threading.Tasks;
 
 namespace Mailjet.Client
 {
+    public enum ApiVersion
+    {
+        V3,
+        V3_1,
+    }
+
     /// <summary>
     /// Mailjet API wrapper
     /// </summary>
     public class MailjetClient
     {
-        private const string BaseAdress = "https://api.mailjet.com";
+        private const string DefaultBaseAdress = "https://api.mailjet.com";
         private const string UserAgent = "mailjet-api-v3-net/1.0";
         private const string JsonMediaType = "application/json";
-        private const string ApiVersion = "v3";
+        private const string ApiVersionPathV3 = "v3";
+        private const string ApiVersionPathV3_1 = "v3.1";
 
         private readonly HttpClient _httpClient;
         private readonly HttpClientHandler _httpClientHandler;
 
-        public MailjetClient(string apiKey, string apiSecret, string baseAdress = BaseAdress)
+        public MailjetClient(string apiKey, string apiSecret)
         {
             // Create HttpClient
             _httpClientHandler = new HttpClientHandler();
             _httpClient = new HttpClient(_httpClientHandler);
 
             // Set base URI
-            _httpClient.BaseAddress = new Uri(baseAdress);
+            _httpClient.BaseAddress = new Uri(DefaultBaseAdress);
 
             // Set accepted media type
             _httpClient.DefaultRequestHeaders.Accept.Clear();
@@ -44,9 +51,17 @@ namespace Mailjet.Client
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
         }
 
+        public ApiVersion Version { get; set; } = ApiVersion.V3;
+
+        public string BaseAdress
+        {
+            get { return _httpClient.BaseAddress != null ? _httpClient.BaseAddress.ToString() : null; }
+            set { _httpClient.BaseAddress = !string.IsNullOrEmpty(value) ? new Uri(value) : null; }
+        }
+
         public async Task<MailjetResponse> GetAsync(MailjetRequest request)
         {
-            string url = UrlHelper.CombineUrl(ApiVersion, request.BuildUrl());
+            string url = BuildUrl(request);
 
             var responseMessage = await _httpClient.GetAsync(url);
 
@@ -56,10 +71,10 @@ namespace Mailjet.Client
 
         public async Task<MailjetResponse> PostAsync(MailjetRequest request)
         {
-            string url = UrlHelper.CombineUrl(ApiVersion, request.BuildUrl());
+            string url = BuildUrl(request);
 
             var output = request.Body.ToString(Formatting.None);
-            HttpContent contentPost = new StringContent(output, System.Text.Encoding.UTF8, "application/json");
+            HttpContent contentPost = new StringContent(output, Encoding.UTF8, JsonMediaType);
             var responseMessage = await _httpClient.PostAsync(url, contentPost);
 
             JObject content = await GetContent(responseMessage);
@@ -68,10 +83,10 @@ namespace Mailjet.Client
 
         public async Task<MailjetResponse> PutAsync(MailjetRequest request)
         {
-            string url = UrlHelper.CombineUrl(ApiVersion, request.BuildUrl());
+            string url = BuildUrl(request);
 
             var output = request.Body.ToString(Formatting.None);
-            HttpContent contentPut = new StringContent(output, System.Text.Encoding.UTF8, "application/json");
+            HttpContent contentPut = new StringContent(output, Encoding.UTF8, JsonMediaType);
             var responseMessage = await _httpClient.PutAsync(url, contentPut);
 
             JObject content = await GetContent(responseMessage);
@@ -81,7 +96,7 @@ namespace Mailjet.Client
 
         public async Task<MailjetResponse> DeleteAsync(MailjetRequest request)
         {
-            string url = UrlHelper.CombineUrl(ApiVersion, request.BuildUrl());
+            string url = BuildUrl(request);
 
             var responseMessage = await _httpClient.DeleteAsync(url);
 
@@ -95,7 +110,7 @@ namespace Mailjet.Client
 
             if (responseMessage.Content != null)
             {
-                cnt = await responseMessage.Content.ReadAsStringAsync(); // ReadAsAsync<JObject>();
+                cnt = await responseMessage.Content.ReadAsStringAsync();
             }
 
             JObject content;
@@ -115,6 +130,20 @@ namespace Mailjet.Client
             }
 
             return content;
+        }
+
+        private string BuildUrl(MailjetRequest request)
+        {
+            return UrlHelper.CombineUrl(GetApiVersionPath(), request.BuildUrl());
+        }
+
+        private string GetApiVersionPath()
+        {
+            switch (Version)
+            {
+                case ApiVersion.V3_1: return ApiVersionPathV3;
+                default: return ApiVersionPathV3;
+            }
         }
     }
 }
