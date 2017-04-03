@@ -1,7 +1,6 @@
 ﻿using Mailjet.Client;
 using Mailjet.Client.Resources;
 using System;
-using System.Configuration;
 using System.Threading.Tasks;
 
 namespace Mailjet.ConsoleApplication
@@ -15,7 +14,7 @@ namespace Mailjet.ConsoleApplication
 
         static async Task RunAsync()
         {
-            MailjetClient client = new MailjetClient(ConfigurationManager.AppSettings["ApiKey"], ConfigurationManager.AppSettings["ApiSecret"])
+            MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"))
             {
                 //BaseAdress = "https://api.mailjet.com",
                 //Version = ApiVersion.V3,
