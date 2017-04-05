@@ -14,12 +14,19 @@ namespace Mailjet.ConsoleApplication
 
         static async Task RunAsync()
         {
-            MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"))
-            {
-                //BaseAdress = "https://api.mailjet.com",
-                //Version = ApiVersion.V3,
-                //Proxy = new DefaultProxy("http://127.0.0.1:8888"),
-            };
+            //MailjetClientHandler clientHandler = new MailjetClientHandler()
+            //{
+            //    Proxy = new DefaultProxy("http://127.0.0.1:8888"),
+            //    UseProxy = true,
+            //};
+
+            //MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"), clientHandler)
+            //{
+            //    BaseAdress = "https://api.mailjet.com",
+            //    Version = ApiVersion.V3,
+            //};
+
+            MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"));
 
             MailjetRequest request = new MailjetRequest
             {

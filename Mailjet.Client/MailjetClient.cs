@@ -29,13 +29,11 @@ namespace Mailjet.Client
         private const string ApiVersionPathV3_1 = "v3.1";
 
         private readonly HttpClient _httpClient;
-        private readonly HttpClientHandler _httpClientHandler;
 
-        public MailjetClient(string apiKey, string apiSecret)
+        public MailjetClient(string apiKey, string apiSecret, HttpMessageHandler httpMessageHandler = null)
         {
             // Create HttpClient
-            _httpClientHandler = new HttpClientHandler();
-            _httpClient = new HttpClient(_httpClientHandler);
+            _httpClient = (httpMessageHandler != null) ? new HttpClient(httpMessageHandler) : new HttpClient();
 
             // Set base URI
             _httpClient.BaseAddress = new Uri(DefaultBaseAdress);
@@ -58,16 +56,6 @@ namespace Mailjet.Client
         {
             get { return _httpClient.BaseAddress != null ? _httpClient.BaseAddress.ToString() : null; }
             set { _httpClient.BaseAddress = !string.IsNullOrEmpty(value) ? new Uri(value) : null; }
-        }
-
-        public IWebProxy Proxy
-        {
-            get { return _httpClientHandler.Proxy; }
-            set
-            {
-                _httpClientHandler.Proxy = value;
-                _httpClientHandler.UseProxy = (_httpClientHandler.Proxy != null);
-            }
         }
 
         public async Task<MailjetResponse> GetAsync(MailjetRequest request)
