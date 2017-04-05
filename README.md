@@ -41,6 +41,61 @@ It's ready to use !
 
 ### List resources
 
+```C#
+using Mailjet.Client;
+using Mailjet.Client.Resources;
+using System;
+using System.Configuration;
+using System.Threading.Tasks;
+
+namespace Mailjet.ConsoleApplication
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            RunAsync().Wait();
+        }
+
+        static async Task RunAsync()
+        {
+            MailjetClient client = new MailjetClient(ConfigurationManager.AppSettings["apiKey"], ConfigurationManager.AppSettings["apiSecret"]);
+
+            MailjetRequest request = new MailjetRequest
+            {
+                Resource = Contact.Resource,
+            };
+
+            MailjetResponse response = await client.GetAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine(string.Format("Total: {0}, Count: {1}\n", response.GetTotal(), response.GetCount()));
+                Console.WriteLine(response.GetData());
+            }
+            else
+            {
+                Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
+                Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
+                Console.WriteLine(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
+            }
+
+            Console.ReadLine();
+        }
+    }
+}
+```
+
+To use filter use the following code: 
+
+```C#
+	MailjetRequest request = new MailjetRequest
+	{
+	Resource = Contact.Resource,
+	}
+	.Filter("limit", 178);
+```
+
 ### Create a resource
 
 ```C#
@@ -93,6 +148,51 @@ namespace Mailjet.ConsoleApplication
 ```
 
 ### Update a resource
+
+```C#
+using Mailjet.Client;
+using Mailjet.Client.Resources;
+using System;
+using Newtonsoft.Json.Linq;
+
+namespace Mailjet.ConsoleApplication
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            MailjetClient client = new MailjetClient(ConfigurationManager.AppSettings["apiKey"], ConfigurationManager.AppSettings["apiSecret"]);
+
+            MailjetRequest request = new MailjetRequest
+            {
+                Resource = Contact.Resource,
+                ResourceId = ResourceId.Alphanumeric("mister@mailjet.com"),
+                Body = new JObject 
+                {
+                    { Contact.Name, "Mister Mailjet" },
+                },
+            };
+
+            MailjetResponse response = client.PutAsync(request).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine(string.Format("Total: {0}, Count: {1}\n", response.GetTotal(), response.GetCount()));
+                Console.WriteLine(response.GetData());
+            }
+            else
+            {
+                Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
+                Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
+                Console.WriteLine(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
+            }
+
+            Console.ReadLine();
+        }
+    }
+}
+
+```
 
 ### View a resource
 
@@ -196,7 +296,104 @@ namespace Mailjet.ConsoleApplication
 
 ### Delete a resource
 
+```C#
+using Mailjet.Client;
+using Mailjet.Client.Resources;
+using System;
+
+namespace Mailjet.ConsoleApplication
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            MailjetClient client = new MailjetClient(ConfigurationManager.AppSettings["apiKey"], ConfigurationManager.AppSettings["apiSecret"]);
+
+            MailjetRequest request = new MailjetRequest
+            {
+                Resource = Listrecipient.Resource,
+                ResourceId = ResourceId.Numeric(956611829),
+            };
+
+            MailjetResponse response = client.DeleteAsync(request).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine(string.Format("Total: {0}, Count: {1}\n", response.GetTotal(), response.GetCount()));
+                Console.WriteLine(response.GetData());
+            }
+            else
+            {
+                Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
+                Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
+                Console.WriteLine(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
+            }
+
+            Console.ReadLine();
+        }
+    }
+}
+```
+
 ### Send a mail
+
+Don't forget to set and validate your sender before trying the following code.
+
+```C#
+using Mailjet.Client;
+using Mailjet.Client.Resources;
+using System;
+using Newtonsoft.Json.Linq;
+
+namespace Mailjet.ConsoleApplication
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            MailjetClient client = new MailjetClient(ConfigurationManager.AppSettings["apiKey"], ConfigurationManager.AppSettings["apiSecret"]);;
+
+            MailjetRequest request = new MailjetRequest
+            {
+                Resource = Send.Resource,
+                Body = new JObject 
+                {
+                    { Send.FromEmail, "pilot@mailjet.com" },
+                    { Send.FromName, "Mailjet Pilot" },
+                    { Send.Subject, "Your email flight plan!" },
+                    { Send.TextPart, "Dear passenger, welcome to Mailjet! May the delivery force be with you!" },
+                    { Send.HtmlPart, "<h3>Dear passenger, welcome to Mailjet!</h3><br />May the delivery force be with you!" },
+                    { 
+                        Send.Recipients, new JArray 
+                        {
+                            new JObject
+                            { 
+                                { "Email", "passenger@mailjet.com" },
+                            }, 
+                        }
+                    }
+                },
+            };
+
+            MailjetResponse response = client.PostAsync(request).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine(string.Format("Total: {0}, Count: {1}\n", response.GetTotal(), response.GetCount()));
+                Console.WriteLine(response.GetData());
+            }
+            else
+            {
+                Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
+                Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
+                Console.WriteLine(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
+            }
+
+            Console.ReadLine();
+        }
+    }
+}
+```
 
 ## Contribute
 
