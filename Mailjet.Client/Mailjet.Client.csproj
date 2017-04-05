@@ -11,7 +11,6 @@
     <PackageId>Mailjet.Api</PackageId>
     <Company>Mailjet</Company>
     <PackageIconUrl>https://www.mailjet.com/wp-content/uploads/2017/04/Mailjet.png</PackageIconUrl>
-    <Summary>Official C# client library For Mailjet API version 3 to send transactional and marketing email messages and access all Mailjet API v3 resources</Summary>
     <Description>
 Official C# client library For Mailjet API version 3. 
 
