@@ -2,8 +2,9 @@
 [doc]: http://dev.mailjet.com/
 [api_credential]: https://app.mailjet.com/account/api_keys
 [issues]: https://github.com/mailjet/mailjet-apiv3-dotnet/issues
-[go_documentation]:http://dev.mailjet.com/guides/?csharp
+[csharp_documentation]:http://dev.mailjet.com/guides/?csharp
 [api_doc_repo]:https://github.com/mailjet/api-documentation
+[nuget]:https://www.nuget.org/packages/Mailjet.Api/
 
 ![alt text](http://cdn.appstorm.net/web.appstorm.net/files/2012/02/mailjet_logo_200x200.png "Mailjet")
 
@@ -14,7 +15,7 @@ This .NET library is a client for version 3 of the [Mailjet API][doc].
 
 ## Getting Started
 
-Every code examples can be find on the [Mailjet Documentation][go_documentation]
+Every code examples can be found on the [Mailjet Documentation][csharp_documentation]
 
 (Please refer to the [Mailjet Documentation Repository][api_doc_repo] to contribute to the documentation examples)
 
@@ -28,12 +29,15 @@ Make sure you have the following requirements:
 Both API key and an API secret can be found [here][api_credential].
 
 
-
 ### Installation
 
-Get package:
+You can either clone the present Github repository or use NuGet package manager whit the following command
 
-It's ready to use !
+```
+PM> Install-Package Mailjet.Api -Pre
+```
+
+For more information about our Nuget package, follow this [link][nuget] 
 
 ## Examples
 
