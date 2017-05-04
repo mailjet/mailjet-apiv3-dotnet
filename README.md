@@ -13,6 +13,8 @@
 
 This .NET library is a client for version 3 of the [Mailjet API][doc].
 
+[![Build Status](https://travis-ci.org/mailjet/mailjet-apiv3-dotnet.svg?branch=master)](https://travis-ci.org/mailjet/mailjet-apiv3-dotnet)
+
 ## Getting Started
 
 Every code examples can be found on the [Mailjet Documentation][csharp_documentation]
@@ -22,12 +24,18 @@ Every code examples can be found on the [Mailjet Documentation][csharp_documenta
 ### Prerequisites
 
 Make sure you have the following requirements:
-* A Mailjet API Key
-* A Mailjet API Secret Key
-* 
+* .NET version xxxx and higher
+* .NET Core xxxx and higher
+* .NET Standard xxx support
+* A Mailjet API Key and Secret Key
 
-Both API key and an API secret can be found [here][api_credential].
+Both API key and API secret can be found [here][api_credential] after opening a Mailjet account.
 
+### Dependencies 
+
+ - .NETStandard 1.1
+ - NETStandard.Library (>= 1.6.1)
+ - Newtonsoft.Json (>= 9.0.1)
 
 ### Installation
 
