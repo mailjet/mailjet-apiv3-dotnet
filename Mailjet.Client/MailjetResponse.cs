@@ -40,8 +40,13 @@ namespace Mailjet.Client
                 return result;
             }
 
-
             if (TryGetValue("Sent", out result))
+            {
+                return result;
+            }
+
+            //for Send API v3.1
+            if (TryGetValue("Messages", out result))
             {
                 return result;
             }
@@ -83,7 +88,7 @@ namespace Mailjet.Client
             return errorMessage;
         }
 
-    public bool TryGetValue<T>(string key, out T value)
+        public bool TryGetValue<T>(string key, out T value)
         {
             JToken token;
             if (!_content.TryGetValue(key, StringComparison.OrdinalIgnoreCase, out token))
