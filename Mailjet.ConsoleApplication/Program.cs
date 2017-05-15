@@ -26,7 +26,7 @@ namespace Mailjet.ConsoleApplication
             //    Version = ApiVersion.V3,
             //};
 
-            MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"));
+            IMailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"));
 
             MailjetRequest request = new MailjetRequest
             {

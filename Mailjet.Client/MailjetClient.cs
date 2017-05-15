@@ -20,7 +20,7 @@ namespace Mailjet.Client
     /// <summary>
     /// Mailjet API wrapper
     /// </summary>
-    public class MailjetClient
+    public class MailjetClient : IMailjetClient
     {
         private const string DefaultBaseAdress = "https://api.mailjet.com";
         private const string UserAgent = "mailjet-api-v3-net/1.0";

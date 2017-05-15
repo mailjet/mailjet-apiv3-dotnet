@@ -40,7 +40,7 @@ namespace Mailjet.Tests
                     .Respond(JsonMediaType, jsonResponse); // Respond with JSON
 
             // Inject the handler into your application code
-            MailjetClient client = new MailjetClient(ApiKeyTest, ApiSecretTest, mockHttp);
+            IMailjetClient client = new MailjetClient(ApiKeyTest, ApiSecretTest, mockHttp);
 
             MailjetRequest request = new MailjetRequest
             {
