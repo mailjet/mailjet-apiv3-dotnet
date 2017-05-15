@@ -23,17 +23,22 @@ Every code examples can be found on the [Mailjet Documentation][csharp_documenta
 
 ### Prerequisites
 
-Make sure you have the following requirements:
-* .NET version xxxx and higher
-* .NET Core xxxx and higher
-* .NET Standard xxx support
-* A Mailjet API Key and Secret Key
+This .NET library is supported by : 
 
-Both API key and API secret can be found [here][api_credential] after opening a Mailjet account.
+ - .NET Core 1.0
+ - .NET Framework 4.5
+ - Mono 4.6
+ - Xamarin.iOS 10.0
+ - Xamarin.Android 7.0
+ - Universal Windows Platform 10
+ - Windows 8.0
+ - Windows Phone 8.1
 
-### Dependencies 
 
- - .NETStandard 1.1
+Make sure you have a Mailjet API Key and Secret Key. Both API key and API secret can be found [here][api_credential] after opening a Mailjet account.
+
+### Dependencies .NETStandard 1.1
+
  - NETStandard.Library (>= 1.6.1)
  - Newtonsoft.Json (>= 9.0.1)
 
@@ -354,54 +359,48 @@ using Mailjet.Client;
 using Mailjet.Client.Resources;
 using System;
 using Newtonsoft.Json.Linq;
-
 namespace Mailjet.ConsoleApplication
 {
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            MailjetClient client = new MailjetClient(ConfigurationManager.AppSettings["apiKey"], ConfigurationManager.AppSettings["apiSecret"]);;
-
-            MailjetRequest request = new MailjetRequest
-            {
-                Resource = Send.Resource,
-                Body = new JObject 
-                {
-                    { Send.FromEmail, "pilot@mailjet.com" },
-                    { Send.FromName, "Mailjet Pilot" },
-                    { Send.Subject, "Your email flight plan!" },
-                    { Send.TextPart, "Dear passenger, welcome to Mailjet! May the delivery force be with you!" },
-                    { Send.HtmlPart, "<h3>Dear passenger, welcome to Mailjet!</h3><br />May the delivery force be with you!" },
-                    { 
-                        Send.Recipients, new JArray 
-                        {
-                            new JObject
-                            { 
-                                { "Email", "passenger@mailjet.com" },
-                            }, 
-                        }
-                    }
-                },
-            };
-
-            MailjetResponse response = client.PostAsync(request).Result;
-
-            if (response.IsSuccessStatusCode)
-            {
-                Console.WriteLine(string.Format("Total: {0}, Count: {1}\n", response.GetTotal(), response.GetCount()));
-                Console.WriteLine(response.GetData());
-            }
-            else
-            {
-                Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
-                Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
-                Console.WriteLine(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
-            }
-
-            Console.ReadLine();
-        }
-    }
+   class Program
+   {
+      /// <summary>
+      /// This calls sends an email to one recipient.
+      /// </summary>
+      static void Main(string[] args)
+      {
+         RunAsync().Wait();
+      }
+      static async Task RunAsync()
+      {
+         MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"));
+         MailjetRequest request = new MailjetRequest
+         {
+            Resource = Send.Resource,
+         }
+            .Property(Send.FromEmail, "pilot@mailjet.com")
+            .Property(Send.FromName, "Mailjet Pilot")
+            .Property(Send.Subject, "Your email flight plan!")
+            .Property(Send.TextPart, "Dear passenger, welcome to Mailjet! May the delivery force be with you!")
+            .Property(Send.HtmlPart, "<h3>Dear passenger, welcome to Mailjet!</h3><br />May the delivery force be with you!")
+            .Property(Send.Recipients, new JArray {
+                new JObject {
+                 {"Email", "passenger@mailjet.com"}
+                 }
+                });
+         MailjetResponse response = await client.PostAsync(request);
+         if (response.IsSuccessStatusCode)
+         {
+            Console.WriteLine(string.Format("Total: {0}, Count: {1}\n", response.GetTotal(), response.GetCount()));
+            Console.WriteLine(response.GetData());
+         }
+         else
+         {
+            Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
+            Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
+            Console.WriteLine(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
+         }
+      }
+   }
 }
 ```
 
