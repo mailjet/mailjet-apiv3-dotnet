@@ -47,7 +47,7 @@ Make sure you have a Mailjet API Key and Secret Key. Both API key and API secret
 You can either clone the present Github repository or use NuGet package manager whit the following command
 
 ```
-PM> Install-Package Mailjet.Api -Pre
+PM> Install-Package Mailjet.Api
 ```
 
 For more information about our Nuget package, follow this [link][nuget] 
