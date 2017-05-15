@@ -23,7 +23,7 @@ namespace Mailjet.Client
     public class MailjetClient : IMailjetClient
     {
         private const string DefaultBaseAdress = "https://api.mailjet.com";
-        private const string UserAgent = "mailjet-api-v3-net/1.0";
+        private const string UserAgent = "mailjet-api-v3-net/1.0.0";
         private const string JsonMediaType = "application/json";
         private const string ApiVersionPathV3 = "v3";
         private const string ApiVersionPathV3_1 = "v3.1";
