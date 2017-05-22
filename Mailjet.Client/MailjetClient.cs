@@ -140,7 +140,7 @@ namespace Mailjet.Client
         {
             switch (Version)
             {
-                case ApiVersion.V3_1: return ApiVersionPathV3;
+                case ApiVersion.V3_1: return ApiVersionPathV3_1;
                 default: return ApiVersionPathV3;
             }
         }
