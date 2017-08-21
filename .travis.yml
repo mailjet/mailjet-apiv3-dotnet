@@ -2,9 +2,11 @@ language: csharp
 dist: trusty
 mono: none
 dotnet: 1.0.1
-
 script:
-  - dotnet restore
-  - dotnet build ./Mailjet.Client/Mailjet.Client.csproj -f netstandard1.1 -c Release
-  - dotnet build ./Mailjet.ConsoleApplication/Mailjet.ConsoleApplication.csproj -c Release
-  - dotnet test ./Mailjet.Tests/Mailjet.Tests.csproj -c Release
+- dotnet restore
+- dotnet build ./Mailjet.Client/Mailjet.Client.csproj -f netstandard1.1 -c Release
+- dotnet build ./Mailjet.ConsoleApplication/Mailjet.ConsoleApplication.csproj -c Release
+- dotnet test ./Mailjet.Tests/Mailjet.Tests.csproj -c Release
+notifications:
+  slack:
+    secure: HJFfNJPpFNwdvJ8hjWKOANXAubhzvYWJqKcSHUXC40kXp11UWgAwhqf4rzbse2H/yv24CY1YkrGReO/MQbEUwb8juZTtrM3k8XolFXASOCAM8qHM/domp7h0sXS32sOY5bERyCVOy/1SEj+UiCAuIuChESanzSiLLFESWu9FKW+7SdDFJQNG8F2wuwahfH+6hyIsx7bXIBq72lYMa3qG6KVqr0Xr8EnvLLOKkqXnqezeQnlPo2SuN/2nTtYE3v5scU7whb5NG7TxeDKmGUy/6jRelYJews49s5uGlMpLmHWB+pwb7BXgcG/gvZEZq+K41yP7ByIlv8tISC76Whz/3ogZ7JaRPossOFL+SdURsoT9fSsZgmZwFVy+NadZPahCgIVrPGMKnP9l3LtAgal4MssGdC+hLw/aODfUPaJnF4TmbvNwiO39xVkT1CG9dcKcGZbps2RWIlO9Mkx+R22x0Gdj8qbTky94JqqWIGcn/swW8j8kUaORAB8kvcALPIfu1QeSliMAByEMWuBMRf4K4MUHpIlVUacQEHqQRoYtiCxGGTyzKNCUwEyNnSViajSr6OEZry5hVOYyQAa8qTGIrJ1W1YjkvYY0aH5qDLa0mb1wUYCbetDQ+TLfp1TUROY4Rm3Vzhq+ZFTPtjxt0C6LANBVpOvAyRrCfE58AUuMvr0=
