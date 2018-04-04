@@ -51,7 +51,7 @@ namespace Mailjet.Client
                 return result;
             }
 
-            result = new JArray();
+            result = new JArray(_content);
             return result;
         }
 
