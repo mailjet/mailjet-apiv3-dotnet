@@ -58,7 +58,7 @@ namespace Mailjet.Tests
         [TestMethod]
         public void TestSmsSendAsync()
         {
-            IMailjetClient client = new MailjetClient("e1a937c6a01f4b988f41d0228ca3d8eb")
+            IMailjetClient client = new MailjetClient("ApiToken")
             {
                 Version = ApiVersion.V4
             };
@@ -78,7 +78,7 @@ namespace Mailjet.Tests
         [TestMethod]
         public void TestSmsCountAsync()
         {
-            IMailjetClient client = new MailjetClient("e1a937c6a01f4b988f41d0228ca3d8eb")
+            IMailjetClient client = new MailjetClient("ApiToken")
             {
                 Version = ApiVersion.V4
             };
@@ -101,7 +101,7 @@ namespace Mailjet.Tests
         [TestMethod]
         public void TestSmsExportAsync()
         {
-            IMailjetClient client = new MailjetClient("e1a937c6a01f4b988f41d0228ca3d8eb")
+            IMailjetClient client = new MailjetClient("ApiToken")
             {
                 Version = ApiVersion.V4
             };
@@ -123,7 +123,7 @@ namespace Mailjet.Tests
         [TestMethod]
         public void TestSmsAsync()
         {
-            IMailjetClient client = new MailjetClient("e1a937c6a01f4b988f41d0228ca3d8eb")
+            IMailjetClient client = new MailjetClient("ApiToken")
             {
                 Version = ApiVersion.V4
             };
