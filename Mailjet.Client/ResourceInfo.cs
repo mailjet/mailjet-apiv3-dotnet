@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Mailjet.Client
+﻿namespace Mailjet.Client
 {
     public enum ResourceType
     {
@@ -62,7 +55,7 @@ namespace Mailjet.Client
                     return "REST";
                 case ResourceType.Data:
                     return "DATA";
-                case ResourceType.Send: 
+                case ResourceType.Send:
                 case ResourceType.V4:
                     return string.Empty;
                 default:
