@@ -1,3 +1,5 @@
+using System;
+
 namespace Mailjet.Client.Resources
 {
     public static class Domainstatistics
@@ -16,7 +18,10 @@ namespace Mailjet.Client.Resources
         public const string SpamComplaintCount = "SpamComplaintCount";
         public const string UnsubscribedCount = "UnsubscribedCount";
         public const string CampaignID = "CampaignID";
+
+        [Obsolete]
         public const string CampaignStatus = "CampaignStatus";
+
         public const string ContactsList = "ContactsList";
         public const string CustomCampaign = "CustomCampaign";
         public const string From = "From";

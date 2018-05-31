@@ -21,6 +21,11 @@ namespace Mailjet.Client.Resources
         public const string Offset = "Offset";
         public const string Sort = "Sort";
         public const string CountOnly = "CountOnly";
+
+        public const string DeferredCount = "DeferredCount";
+        public const string HardbouncedCount = "HardbouncedCount";
+        public const string SoftbouncedCount = "SoftbouncedCount";
+        public const string WorkFlowExitedCount = "WorkFlowExitedCount";
     }
 }
 
