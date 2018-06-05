@@ -1,5 +1,7 @@
+using System;
 namespace Mailjet.Client.Resources
 {
+    
     public static class Liststatistics
     {
         public static readonly ResourceInfo Resource = new ResourceInfo("liststatistics");
@@ -16,7 +18,10 @@ namespace Mailjet.Client.Resources
         public const string ExcludedSubscriberCount = "ExcludedSubscriberCount";
         public const string ID = "ID";
         public const string IsDeleted = "IsDeleted";
+
+        [Obsolete]
         public const string LastActivityAt = "LastActivityAt";
+
         public const string Name = "Name";
         public const string OpenedCount = "OpenedCount";
         public const string SpamComplaintCount = "SpamComplaintCount";
@@ -35,6 +40,18 @@ namespace Mailjet.Client.Resources
         public const string Offset = "Offset";
         public const string Sort = "Sort";
         public const string CountOnly = "CountOnly";
+        public const string SoftbouncedCount = "SoftbouncedCount";
+        public const string HardbouncedCount = "HardbouncedCount";
+        public const string DeferredCount = "DeferredCount";
+        public const string Blocked = "Blocked";
+        public const string Bounced = "Bounced";
+        public const string MaxLastActivityAt = "MaxLastActivityAt";
+        public const string MinLastActivityAt = "MinLastActivityAt";
+        public const string Open = "Open";
+        public const string Queued = "Queued";
+        public const string Sent = "Sent";
+        public const string Spam = "Spam";
+        public const string Unsubscribed = "Unsubscribed";
     }
 }
 
