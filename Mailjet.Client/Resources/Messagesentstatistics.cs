@@ -1,5 +1,8 @@
+using System;
+
 namespace Mailjet.Client.Resources
 {
+    [Obsolete]
     public static class Messagesentstatistics
     {
         public static readonly ResourceInfo Resource = new ResourceInfo("messagesentstatistics");
@@ -53,6 +56,10 @@ namespace Mailjet.Client.Resources
         public const string Offset = "Offset";
         public const string Sort = "Sort";
         public const string CountOnly = "CountOnly";
+
+        public const string SoftbouncedCount = "SoftbouncedCount";
+        public const string HardbouncedCount = "HardbouncedCount";
+        public const string DeferredCount = "DeferredCount";
     }
 }
 
