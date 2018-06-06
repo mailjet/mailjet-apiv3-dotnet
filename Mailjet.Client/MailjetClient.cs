@@ -1,9 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -45,9 +42,7 @@ namespace Mailjet.Client
         {
             InitHttpClient(httpMessageHandler);
 
-            // Set token authentification
-            var byteArray = Encoding.UTF8.GetBytes(token);
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Convert.ToBase64String(byteArray));
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
         public ApiVersion Version { get; set; } = ApiVersion.V3;

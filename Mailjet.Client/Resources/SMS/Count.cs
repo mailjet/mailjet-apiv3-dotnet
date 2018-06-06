@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Mailjet.Client.Resources.SMS
+﻿namespace Mailjet.Client.Resources.SMS
 {
     public static class Count
     {
