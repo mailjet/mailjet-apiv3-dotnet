@@ -1,9 +1,9 @@
-﻿namespace Mailjet.Client
-{
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 
+namespace Mailjet.Client
+{
     public class UrlHelper
     {
         public static string CombineUrl(string url1, string url2)
