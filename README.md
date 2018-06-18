@@ -5,6 +5,8 @@
 [csharp_documentation]:http://dev.mailjet.com/guides/?csharp
 [api_doc_repo]:https://github.com/mailjet/api-documentation
 [nuget]:https://www.nuget.org/packages/Mailjet.Api/
+[smsDashboard]:https://app.mailjet.com/sms?_ga=2.81581655.1972348350.1522654521-1279766791.1506937572
+[smsInfo]:https://app.mailjet.com/docs/transactional-sms?_ga=2.183303910.1972348350.1522654521-1279766791.1506937572#sms-token
 
 ![alt text](http://cdn.appstorm.net/web.appstorm.net/files/2012/02/mailjet_logo_200x200.png "Mailjet")
 
@@ -35,7 +37,9 @@ This .NET library is supported by :
  - Windows Phone 8.1
 
 
-Make sure you have a Mailjet API Key and Secret Key. Both API key and API secret can be found [here][api_credential] after opening a Mailjet account.
+Make sure you have a Mailjet API Key and Secret Key. Both API key and API secret can be found [here][api_credential] after opening a Mailjet account.  
+Alternatively for V4 namespace you will need a Bearer token. To generate a new token, please go Mailjet's [SMS Dashboard][smsDashboard] and click on 'Generate a token'. 
+Any additional information can be found [here][smsInfo].
 
 ### Dependencies .NETStandard 1.1
 
@@ -402,6 +406,23 @@ namespace Mailjet.ConsoleApplication
       }
    }
 }
+```
+
+### V4 namespace and Authorization
+
+For V4 namespace the authorization method is changed - now it is based on Bearer token. 
+
+To use Bearer token you will need to replace client clientin from:
+```C#
+... 
+	MailjetClient client = new MailjetClient(ConfigurationManager.AppSettings["apiKey"], ConfigurationManager.AppSettings["apiSecret"]);
+...
+```
+with
+```C#
+...
+	MailjetClient client = new MailjetClient(ConfigurationManager.AppSettings["bearerToken"]);
+...
 ```
 
 ## Contribute

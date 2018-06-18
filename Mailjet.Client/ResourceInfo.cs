@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Mailjet.Client
+﻿namespace Mailjet.Client
 {
     public enum ResourceType
     {
@@ -13,6 +6,7 @@ namespace Mailjet.Client
         Rest,
         Data,
         Send,
+        V4,
     }
 
     public class ResourceInfo
@@ -57,10 +51,15 @@ namespace Mailjet.Client
         {
             switch (Type)
             {
-                case ResourceType.Rest: return "REST";
-                case ResourceType.Data: return "DATA";
-                case ResourceType.Send: return string.Empty;
-                default: return Resource != "send" ? "REST" : string.Empty;
+                case ResourceType.Rest:
+                    return "REST";
+                case ResourceType.Data:
+                    return "DATA";
+                case ResourceType.Send:
+                case ResourceType.V4:
+                    return string.Empty;
+                default:
+                    return Resource != "send" ? "REST" : string.Empty;
             }
         }
     }

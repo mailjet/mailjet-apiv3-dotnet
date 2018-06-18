@@ -1,9 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Mailjet.Client
 {
@@ -51,7 +47,7 @@ namespace Mailjet.Client
                 return result;
             }
 
-            result = new JArray();
+            result = new JArray(_content);
             return result;
         }
 
