@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 using RichardSzalay.MockHttp;
 using System;
+using System.Net;
 using sms = Mailjet.Client.Resources.SMS;
 
 namespace Mailjet.Tests
@@ -67,6 +68,50 @@ namespace Mailjet.Tests
             Assert.AreEqual(expectedTotal, response.GetTotal());
             Assert.AreEqual(expectedCount, response.GetCount());
             Assert.IsTrue(JToken.DeepEquals(expectedData, response.GetData()));
+        }
+
+        [TestMethod]
+        public void TestTooManyRequestsStatus()
+        {
+            var mockHttp = new MockHttpMessageHandler();
+            mockHttp.When("https://api.mailjet.com/v3/*")
+                   .Respond(((HttpStatusCode) 429));
+
+            // Inject the handler into your application code
+            IMailjetClient client = new MailjetClient(ApiKeyTest, ApiSecretTest, mockHttp);
+
+            MailjetRequest request = new MailjetRequest
+            {
+                Resource = Apikey.Resource,
+            };
+
+            MailjetResponse response = client.GetAsync(request).Result;
+
+            Assert.AreEqual(429, response.StatusCode);
+            Assert.AreEqual("Too many requests", response.GetErrorInfo());
+        }
+
+
+        [TestMethod]
+        public void TestInternalServerErrorStatus()
+        {
+            var mockHttp = new MockHttpMessageHandler();
+            mockHttp.When("https://api.mailjet.com/v3/*")
+                   .Respond(HttpStatusCode.InternalServerError);
+
+
+            // Inject the handler into your application code
+            IMailjetClient client = new MailjetClient(ApiKeyTest, ApiSecretTest, mockHttp);
+
+            MailjetRequest request = new MailjetRequest
+            {
+                Resource = Apikey.Resource,
+            };
+
+            MailjetResponse response = client.GetAsync(request).Result;
+
+            Assert.AreEqual(500, response.StatusCode);
+            Assert.AreEqual("Internal Server Error", response.GetErrorInfo());
         }
 
         [TestMethod]
