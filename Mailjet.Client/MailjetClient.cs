@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -26,6 +27,9 @@ namespace Mailjet.Client
         private const string ApiVersionPathV3 = "v3";
         private const string ApiVersionPathV3_1 = "v3.1";
         private const string ApiVersionPathV4 = "v4";
+        private const string ErrorInfo = "ErrorInfo";
+        private const string TooManyRequestsMessage = "Too many requests";
+        private const string InternalServerErrorGeneralMessage = "Internal Server Error";
 
         private HttpClient _httpClient;
 
@@ -119,7 +123,18 @@ namespace Mailjet.Client
 
                 if (!responseMessage.IsSuccessStatusCode)
                 {
-                    content.Add("ErrorInfo", new JValue(responseMessage.ReasonPhrase));
+                    if (responseMessage.StatusCode == ((HttpStatusCode) 429))
+                    {
+                        content.Add(ErrorInfo, new JValue(TooManyRequestsMessage));
+                    }
+                    else if (responseMessage.StatusCode == HttpStatusCode.InternalServerError)
+                    {
+                        content.Add(ErrorInfo, new JValue(InternalServerErrorGeneralMessage));
+                    }
+                    else
+                    {
+                        content.Add(ErrorInfo, new JValue(responseMessage.ReasonPhrase));
+                    }
                 }
             }
 
