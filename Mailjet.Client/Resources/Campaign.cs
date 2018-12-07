@@ -29,7 +29,7 @@ namespace Mailjet.Client.Resources
         public const string UnsubscribeTrackedCount = "UnsubscribeTrackedCount";
         public const string CampaignID = "CampaignID";
         public const string CampaignStatus = "CampaignStatus";
-        public const string ContactsList = "ContactsList";
+        public const string ContactsListID = "ContactsListID";
         public const string CustomCampaign = "CustomCampaign";
         public const string FromDomain = "FromDomain";
         public const string FromID = "FromID";

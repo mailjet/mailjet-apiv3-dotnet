@@ -7,7 +7,7 @@ namespace Mailjet.Client.Resources
         public const string AXFractionName = "AXFractionName";
         public const string AXTesting = "AXTesting";
         public const string Campaign = "Campaign";
-        public const string ContactsList = "ContactsList";
+        public const string ContactsListID = "ContactsListID";
         public const string CreatedAt = "CreatedAt";
         public const string Current = "Current";
         public const string DeliveredAt = "DeliveredAt";
