@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net45;netstandard1.1</TargetFrameworks>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Version>1.0.1</Version>
+    <Version>1.2.2</Version>
     <Authors>Mailjet, Dimitar Kostov</Authors>
     <PackageLicenseUrl>https://github.com/mailjet/mailjet-apiv3-dotnet/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/mailjet/mailjet-apiv3-dotnet</PackageProjectUrl>
