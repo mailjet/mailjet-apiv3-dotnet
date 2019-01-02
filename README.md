@@ -8,10 +8,9 @@
 [smsDashboard]:https://app.mailjet.com/sms?_ga=2.81581655.1972348350.1522654521-1279766791.1506937572
 [smsInfo]:https://app.mailjet.com/docs/transactional-sms?_ga=2.183303910.1972348350.1522654521-1279766791.1506937572#sms-token
 
-![alt text](http://cdn.appstorm.net/web.appstorm.net/files/2012/02/mailjet_logo_200x200.png "Mailjet")
+![alt text](https://www.mailjet.com/images/email/transac/logo_header.png "Mailjet")
 
-
-# Official Mailjet API v3 .NET wrapper
+# Official Mailjet API v3 .NET Wrapper
 
 This .NET library is a client for version 3 of the [Mailjet API][doc].
 
@@ -25,7 +24,7 @@ Every code examples can be found on the [Mailjet Documentation][csharp_documenta
 
 ### Prerequisites
 
-This .NET library is supported by : 
+This .NET library is supported by: 
 
  - .NET Core 1.0
  - .NET Framework 4.5
@@ -429,7 +428,7 @@ with
 
 We welcome any contribution.
 
-Please make sure you follow this step-by-step guide before contributing :
+Please make sure you follow this step-by-step guide before contributing:
 
 * Fork the project.
 * Create a topic branch.
