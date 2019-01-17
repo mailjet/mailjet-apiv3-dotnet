@@ -55,6 +55,26 @@ PM> Install-Package Mailjet.Api
 
 For more information about our Nuget package, follow this [link][nuget] 
 
+## API Versioning
+
+The Mailjet API is spread among three distinct versions:
+
+- `v3` - The Email API
+- `v3.1` - Email Send API v3.1, which is the latest version of our Send API
+- `v4` - SMS API
+
+Since most Email API endpoints are located under `v3`, it is set as the default one and does not need to be specified when making your request. For the others you need to specify the version using `ApiVersion`. For example, if using Send API `v3.1`:
+
+``` C#
+
+MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"))
+         {
+            Version = ApiVersion.V3_1,
+         };
+```
+
+For additional information refer to our [API Reference](https://dev.preprod.mailjet.com/reference/overview/versioning/).
+
 ## Examples
 
 ### List resources
@@ -353,7 +373,7 @@ namespace Mailjet.ConsoleApplication
 }
 ```
 
-### Send a mail
+### Send an email
 
 Don't forget to set and validate your sender before trying the following code.
 
@@ -417,6 +437,8 @@ namespace Mailjet.ConsoleApplication
    }
 }
 ```
+
+You can also use the previous version of Mailjet's Send API (v3). You can find the documentation explaining the overall differences and code samples [here](https://dev.mailjet.com/guides/?csharp#send-api-v3-1).
 
 ### V4 namespace and Authorization
 
