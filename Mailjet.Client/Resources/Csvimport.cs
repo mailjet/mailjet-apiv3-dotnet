@@ -5,7 +5,7 @@ namespace Mailjet.Client.Resources
         public static readonly ResourceInfo Resource = new ResourceInfo("csvimport");
 
         public const string AliveAt = "AliveAt";
-        public const string ContactsList = "ContactsList";
+        public const string ContactsList = "ContactsListID";
         public const string Count = "Count";
         public const string Current = "Current";
         public const string DataID = "DataID";

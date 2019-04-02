@@ -1,11 +1,13 @@
-﻿namespace Mailjet.Client
+﻿using System.IO;
+
+namespace Mailjet.Client
 {
     public class ResourceId
     {
         public enum ResourceIdType
         {
             Alphanumeric,
-            Numeric,
+            Numeric
         }
 
         public ResourceIdType Type { get; private set; }
@@ -23,6 +25,7 @@
             Type = ResourceIdType.Alphanumeric;
             Id = id;
         }
+
 
         public static ResourceId Alphanumeric(string id)
         {

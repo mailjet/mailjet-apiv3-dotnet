@@ -21,6 +21,8 @@ namespace Mailjet.Client
         // The request body is a JObject that will be cast into a String before the call
         public JObject Body { get; set; } = new JObject();
 
+        public string RawBody { get; set; }
+
         public MailjetRequest Filter(string key, string value)
         {
             Filters.Add(key, value);

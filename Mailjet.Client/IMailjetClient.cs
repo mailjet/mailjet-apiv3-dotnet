@@ -5,7 +5,9 @@ namespace Mailjet.Client
     public interface IMailjetClient
     {
         Task<MailjetResponse> GetAsync(MailjetRequest request);
+        Task<MailjetResponse> GetDataAsync(MailjetRequest request);
         Task<MailjetResponse> PostAsync(MailjetRequest request);
+        Task<MailjetResponse> PostDataAsync(MailjetRequest request);
         Task<MailjetResponse> PutAsync(MailjetRequest request);
         Task<MailjetResponse> DeleteAsync(MailjetRequest request);
     }

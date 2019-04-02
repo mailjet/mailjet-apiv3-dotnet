@@ -24,6 +24,7 @@ namespace Mailjet.Client
         private const string DefaultBaseAdress = "https://api.mailjet.com";
         private const string UserAgent = "mailjet-api-v3-net/1.2.2";
         private const string JsonMediaType = "application/json";
+        private const string TextMediaType = "text/plain";
         private const string ApiVersionPathV3 = "v3";
         private const string ApiVersionPathV3_1 = "v3.1";
         private const string ApiVersionPathV4 = "v4";
@@ -67,6 +68,14 @@ namespace Mailjet.Client
             return new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
         }
 
+        public async Task<MailjetResponse> GetDataAsync(MailjetRequest request)
+        {
+            string url = BuildUrl(request);
+            var responseMessage = await _httpClient.GetAsync(url);
+            string content = await GetContentStr(responseMessage);
+            return new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
+        }
+
         public async Task<MailjetResponse> PostAsync(MailjetRequest request)
         {
             string url = BuildUrl(request);
@@ -76,6 +85,17 @@ namespace Mailjet.Client
             var responseMessage = await _httpClient.PostAsync(url, contentPost);
 
             JObject content = await GetContent(responseMessage);
+            return new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
+        }
+
+        public async Task<MailjetResponse> PostDataAsync(MailjetRequest request)
+        {
+            string url = BuildUrl(request);
+            var output = request.RawBody;
+            HttpContent contentPost = new StringContent(output, Encoding.UTF8, TextMediaType);
+            var responseMessage = await _httpClient.PostAsync(url, contentPost);
+            string content = await GetContentStr(responseMessage);
+
             return new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
         }
 
@@ -139,6 +159,19 @@ namespace Mailjet.Client
             }
 
             return content;
+        }
+
+
+        private async Task<string> GetContentStr(HttpResponseMessage responseMessage)
+        {
+            string cnt = null;
+
+            if (responseMessage.Content != null)
+            {
+                cnt = await responseMessage.Content.ReadAsStringAsync();
+            }
+
+            return cnt;
         }
 
         private void InitHttpClient(HttpMessageHandler httpMessageHandler)

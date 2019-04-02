@@ -6,6 +6,7 @@ namespace Mailjet.Client
     public class MailjetResponse
     {
         private JObject _content;
+        private string _rawcontent;
 
         public bool IsSuccessStatusCode { get; private set; }
         public int StatusCode { get; private set; }
@@ -15,6 +16,13 @@ namespace Mailjet.Client
             IsSuccessStatusCode = isSuccessStatusCode;
             StatusCode = statusCode;
             _content = content;
+        }
+
+        public MailjetResponse(bool isSuccessStatusCode, int statusCode, string content)
+        {
+            IsSuccessStatusCode = isSuccessStatusCode;
+            StatusCode = statusCode;
+            _rawcontent = content;
         }
 
         public int GetTotal()
@@ -49,6 +57,11 @@ namespace Mailjet.Client
 
             result = new JArray(_content);
             return result;
+        }
+
+        public string GetRawData()
+        {
+            return _rawcontent;
         }
 
         public int GetCount()
