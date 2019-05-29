@@ -75,6 +75,21 @@ MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_
 
 For additional information refer to our [API Reference](https://dev.preprod.mailjet.com/reference/overview/versioning/).
 
+### Base URL
+
+The default base domain name for the Mailjet API is `https://api.mailjet.com`. You can modify this base URL by setting a value for `BaseAdress` in your call:
+
+```C#
+MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"))
+         {
+            Version = ApiVersion.V3_1,
+            BaseAdress = "https://api.us.mailjet.com",
+         };
+```
+
+If your account has been moved to Mailjet's US architecture, the URL value you need to set is `https://api.us.mailjet.com`.
+
+
 ## Examples
 
 ### List resources
