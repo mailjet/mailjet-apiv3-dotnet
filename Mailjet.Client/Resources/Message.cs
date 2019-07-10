@@ -14,6 +14,7 @@ namespace Mailjet.Client.Resources
         public const string FilterTime = "FilterTime";
         public const string From = "From";
         public const string ID = "ID";
+        public const string CustomID = "CustomID";
         public const string IsClickTracked = "IsClickTracked";
         public const string IsHTMLPartIncluded = "IsHTMLPartIncluded";
         public const string IsOpenTracked = "IsOpenTracked";
