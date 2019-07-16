@@ -8,7 +8,7 @@
 [nuget]: https://www.nuget.org/packages/Mailjet.Api/
 [smsDashboard]: https://app.mailjet.com/sms?_ga=2.81581655.1972348350.1522654521-1279766791.1506937572
 [smsInfo]: https://app.mailjet.com/docs/transactional-sms?_ga=2.183303910.1972348350.1522654521-1279766791.1506937572#sms-token
-
+[mailjet]: http://www.mailjet.com
 ![alt text](https://www.mailjet.com/images/email/transac/logo_header.png "Mailjet")
 
 # Mailjet .NET Wrapper
