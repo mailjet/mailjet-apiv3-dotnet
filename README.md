@@ -161,9 +161,9 @@ namespace Mailjet.ConsoleApplication
 
 The Mailjet API is spread among three distinct versions:
 
-- `v3` - The Email API
-- `v3.1` - Email Send API v3.1, which is the latest version of our Send API
-- `v4` - SMS API
+- v3 : `ApiVersion.V3` - The Email API
+- v3.1 : `ApiVersion.V3_1` - Email Send API v3.1, which is the latest version of our Send API
+- v4 : `ApiVersion.V4` - SMS API
 
 Since most Email API endpoints are located under `v3`, it is set as the default one and does not need to be specified when making your request. For the others you need to specify the version using `ApiVersion`. For example, if using Send API `v3.1`:
 
@@ -193,11 +193,14 @@ If your account has been moved to Mailjet's US architecture, the URL value you n
 
 ## List of resources
 
-You can find the list of all available resources for this library in, as well as their configuration, in [https://github.com/mailjet/mailjet-apiv3-dotnet/tree/master/Mailjet.Client/Resources]. Check the [API reference][api_ref] for complete details on the functionality of these resources.
+You can find the list of all available resources for this library in, as well as their configuration, in [/Mailjet.Client/Resources](https://github.com/mailjet/mailjet-apiv3-dotnet/tree/master/Mailjet.Client/Resources). Check the [API reference][api_ref] for complete details on the functionality of these resources.
 
 ## Request Examples
 
 ### POST Request
+
+Use the `PostAsync` method of the Mailjet CLient (i.e. `MailjetResponse response = await client.PostAsync(request);`).
+`request` will be a `MailjetRequest` object.
 
 #### Simple POST request
 
@@ -246,6 +249,8 @@ namespace Mailjet.ConsoleApplication
 ```
 
 #### Using actions
+
+To access endpoints with action, you will be able to find Resources object definition. For example, the `/Contact/$ID/Managecontactslists` endpoint can be used with the object `ContactManagecontactslists` available in `Mailjet.Client.Resources` 
 
 ```csharp
 using Mailjet.Client;
@@ -301,6 +306,9 @@ namespace Mailjet.ConsoleApplication
 
 ### GET request
 
+Use the `PostAsync` method of the Mailjet CLient (i.e. `MailjetResponse response = await client.GetAsync(request);`).
+`request` will be a `MailjetRequest` object.
+
 #### Retrieve all objects
 
 ```csharp
@@ -346,6 +354,9 @@ namespace Mailjet.ConsoleApplication
 
 #### Use filtering
 
+You can add filter for your API call on the `MailjetRequest` by using the `Filter` method. 
+Example: `.Filter(Contact.IsExcludedFromCampaigns, "false")`
+
 ```csharp
 using Mailjet.Client;
 using Mailjet.Client.Resources;
@@ -389,6 +400,8 @@ namespace Mailjet.ConsoleApplication
 ```
 
 #### Retrieve a single object
+
+When instantiating the `MailjetRequest`, you can specify the Id of the resource you want to access with `ResourceId` (example: `ResourceId = ResourceId.Numeric(ID)`).
 
 ```csharp
 using Mailjet.Client;
@@ -436,7 +449,8 @@ namespace Mailjet.ConsoleApplication
 
 A `PUT` request in the Mailjet API will work as a `PATCH` request - the update will affect only the specified properties. The other properties of an existing resource will neither be modified, nor deleted. It also means that all non-mandatory properties can be omitted from your payload.
 
-Here's an example of a PUT request:
+Use the `PutAsync` method of the Mailjet CLient (i.e. `MailjetResponse response = await client.PutAsync(request);`).
+`request` will be a `MailjetRequest` object.
 
 ```csharp
 using Mailjet.Client;
@@ -490,7 +504,8 @@ namespace Mailjet.ConsoleApplication
 
 Upon a successful `DELETE` request the response will not include a response body, but only a `204 No Content` response code.
 
-Here's an example of a `DELETE` request:
+Use the `DeleteAsync` method of the Mailjet CLient (i.e. `MailjetResponse response = await client.DeleteAsync(request);`).
+`request` will be a `MailjetRequest` object.
 
 ```csharp
 using Mailjet.Client;
@@ -596,6 +611,17 @@ namespace Mailjet.ConsoleApplication
    }
 }
 ```
+### Response 
+
+The `GetAsync`, `PostAsync`, `PutAsync` and `DeleteAsync` method will return a `MailjetResponse` object with the following available methods and properties:
+
+ - `IsSuccessStatusCode` : indicate if the API call was successful
+ - `StatusCode` : http status code (ie: 200,400 ...)
+ - `GetData()` : content of the property `data` of the JSON response payload if exist or the full JSON payload returned by the API call. This will be PHP associative array.   
+ - `GetCount()` : number of elements returned in the response
+ - `GetErrorInfo()` : http response message phrases ("OK", "Bad Request" ...)
+ - `GetErrorMessage()` :  error reason message from the API response payload
+
 
 ## Contribute
 
