@@ -12,7 +12,7 @@ namespace Mailjet.Client
     {
 
         /// <summary>
-        /// Setting MediaType, BaseUrl, and UserAgent to default headers
+        /// Setting MediaType, BaseAddress, and UserAgent to default headers
         /// </summary>
         /// <param name="client">Instance of mailjet <see cref="HttpClient"/></param>
         public static void SetDefaultSettings(this HttpClient client)

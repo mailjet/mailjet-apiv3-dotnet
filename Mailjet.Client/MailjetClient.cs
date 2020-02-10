@@ -40,6 +40,16 @@ namespace Mailjet.Client
         /// <param name="httpClient"></param>
         public MailjetClient(HttpClient httpClient)
         {
+            if (httpClient == null)
+            {
+                throw new ArgumentNullException(nameof(httpClient));
+            }
+
+            if (httpClient.BaseAddress == null)
+            {
+                httpClient.SetDefaultSettings();
+            }
+
             _httpClient = httpClient;
         }
 
