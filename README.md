@@ -613,16 +613,18 @@ namespace Mailjet.ConsoleApplication
       static async Task RunAsync()
       {
          MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("Your_Bearer_token"));
-         MailjetRequest request = new MailjetRequest
          {
             Version = ApiVersion.V4,
          };
+
+         MailjetRequest request = new MailjetRequest
          {
             Resource = Send.Resource,
          }
-            .Property(Send.From, "MJ Pilot")
-            .Property(Send.To, "+336000000000")
-            .Property(Send.Text, "Have a nice SMS flight with Mailjet !");
+         .Property(Send.From, "MJ Pilot")
+         .Property(Send.To, "+336000000000")
+         .Property(Send.Text, "Have a nice SMS flight with Mailjet !");
+
          MailjetResponse response = await client.PostAsync(request);
          if (response.IsSuccessStatusCode)
          {
