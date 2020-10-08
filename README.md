@@ -383,7 +383,7 @@ namespace Mailjet.ConsoleApplication
 
 #### Use filtering
 
-You can add filter for your API call on the `MailjetRequest` by using the `Filter` method. 
+In case API endpoint supports query params filtering, you can add filter for your API call on the `MailjetRequest` by using the `Filter` method. 
 Example: `.Filter(Contact.IsExcludedFromCampaigns, "false")`
 
 ```csharp
@@ -426,6 +426,18 @@ namespace Mailjet.ConsoleApplication
       }
    }
 }
+```
+
+To filter resource by it's identifier, common REST style convention is used, so you can specify resource id in the request itself. For example, you can get single contact by email:
+
+```csharp
+MailjetRequest request = new MailjetRequest
+{
+    Resource = Contact.Resource,
+    ResourceId = ResourceId.Alphanumeric(email)
+};
+
+MailjetResponse response = await client.GetAsync(request);
 ```
 
 #### Retrieve a single object
