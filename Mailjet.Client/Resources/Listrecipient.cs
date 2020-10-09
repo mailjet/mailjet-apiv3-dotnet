@@ -24,7 +24,9 @@ namespace Mailjet.Client.Resources
         public const string Offset = "Offset";
         public const string Sort = "Sort";
         public const string CountOnly = "CountOnly";
+        public const string ContactID = "ContactID";
+        public const string ListID = "ListID";
+        public const string ContactAlt = "ContactAlt";
+        public const string ListAlt = "ListAlt";
     }
 }
-
-

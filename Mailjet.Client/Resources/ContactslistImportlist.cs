@@ -8,5 +8,3 @@ namespace Mailjet.Client.Resources
         public const string ListID = "ListID";
     }
 }
-
-
