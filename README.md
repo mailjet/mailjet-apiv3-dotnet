@@ -109,8 +109,10 @@ namespace Mailjet.ConsoleApplication
       /// </summary>
       static void Main(string[] args)
       {
+         // TODO: blocking call, try to use async Main and async eventhandlers in WinForms/WPF
          RunAsync().Wait();
       }
+
       static async Task RunAsync()
       {
          MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"))
@@ -247,6 +249,7 @@ namespace Mailjet.ConsoleApplication
       /// </summary>
       static void Main(string[] args)
       {
+         // TODO: blocking call, try to use async Main and async eventhandlers in WinForms/WPF
          RunAsync().Wait();
       }
       static async Task RunAsync()
@@ -383,7 +386,7 @@ namespace Mailjet.ConsoleApplication
 
 #### Use filtering
 
-You can add filter for your API call on the `MailjetRequest` by using the `Filter` method. 
+In case API endpoint supports query params filtering, you can add filter for your API call on the `MailjetRequest` by using the `Filter` method. 
 Example: `.Filter(Contact.IsExcludedFromCampaigns, "false")`
 
 ```csharp
@@ -426,6 +429,18 @@ namespace Mailjet.ConsoleApplication
       }
    }
 }
+```
+
+To filter resource by it's identifier, common REST style convention is used, so you can specify resource id in the request itself. For example, you can get single contact by email:
+
+```csharp
+MailjetRequest request = new MailjetRequest
+{
+    Resource = Contact.Resource,
+    ResourceId = ResourceId.Alphanumeric(email)
+};
+
+MailjetResponse response = await client.GetAsync(request);
 ```
 
 #### Retrieve a single object
@@ -613,16 +628,18 @@ namespace Mailjet.ConsoleApplication
       static async Task RunAsync()
       {
          MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("Your_Bearer_token"));
-         MailjetRequest request = new MailjetRequest
          {
             Version = ApiVersion.V4,
          };
+
+         MailjetRequest request = new MailjetRequest
          {
             Resource = Send.Resource,
          }
-            .Property(Send.From, "MJ Pilot")
-            .Property(Send.To, "+336000000000")
-            .Property(Send.Text, "Have a nice SMS flight with Mailjet !");
+         .Property(Send.From, "MJ Pilot")
+         .Property(Send.To, "+336000000000")
+         .Property(Send.Text, "Have a nice SMS flight with Mailjet !");
+
          MailjetResponse response = await client.PostAsync(request);
          if (response.IsSuccessStatusCode)
          {
