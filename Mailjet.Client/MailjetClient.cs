@@ -65,9 +65,9 @@ namespace Mailjet.Client
         {
             string url = BuildUrl(request);
 
-            var responseMessage = await _httpClient.GetAsync(url);
+            var responseMessage = await _httpClient.GetAsync(url).ConfigureAwait(false);
 
-            JObject content = await GetContent(responseMessage);
+            JObject content = await GetContent(responseMessage).ConfigureAwait(false);
             return new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
         }
 
@@ -77,9 +77,9 @@ namespace Mailjet.Client
 
             var output = request.Body.ToString(Formatting.None);
             HttpContent contentPost = new StringContent(output, Encoding.UTF8, MailjetDefaults.JsonMediaType);
-            var responseMessage = await _httpClient.PostAsync(url, contentPost);
+            var responseMessage = await _httpClient.PostAsync(url, contentPost).ConfigureAwait(false);
 
-            JObject content = await GetContent(responseMessage);
+            JObject content = await GetContent(responseMessage).ConfigureAwait(false);
             return new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
         }
 
@@ -89,9 +89,9 @@ namespace Mailjet.Client
 
             var output = request.Body.ToString(Formatting.None);
             HttpContent contentPut = new StringContent(output, Encoding.UTF8, MailjetDefaults.JsonMediaType);
-            var responseMessage = await _httpClient.PutAsync(url, contentPut);
+            var responseMessage = await _httpClient.PutAsync(url, contentPut).ConfigureAwait(false);
 
-            JObject content = await GetContent(responseMessage);
+            JObject content = await GetContent(responseMessage).ConfigureAwait(false);
             MailjetResponse mailjetResponse = new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
             return mailjetResponse;
         }
@@ -100,9 +100,9 @@ namespace Mailjet.Client
         {
             string url = BuildUrl(request);
 
-            var responseMessage = await _httpClient.DeleteAsync(url);
+            var responseMessage = await _httpClient.DeleteAsync(url).ConfigureAwait(false);
 
-            JObject content = await GetContent(responseMessage);
+            JObject content = await GetContent(responseMessage).ConfigureAwait(false);
             return new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
         }
 
@@ -112,7 +112,7 @@ namespace Mailjet.Client
 
             if (responseMessage.Content != null)
             {
-                cnt = await responseMessage.Content.ReadAsStringAsync();
+                cnt = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
 
             JObject content;
