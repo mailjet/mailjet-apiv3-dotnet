@@ -109,8 +109,10 @@ namespace Mailjet.ConsoleApplication
       /// </summary>
       static void Main(string[] args)
       {
+         // TODO: blocking call, try to use async Main and async eventhandlers in WinForms/WPF
          RunAsync().Wait();
       }
+
       static async Task RunAsync()
       {
          MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"))
@@ -247,6 +249,7 @@ namespace Mailjet.ConsoleApplication
       /// </summary>
       static void Main(string[] args)
       {
+         // TODO: blocking call, try to use async Main and async eventhandlers in WinForms/WPF
          RunAsync().Wait();
       }
       static async Task RunAsync()
