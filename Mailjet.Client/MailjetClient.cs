@@ -3,7 +3,6 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,32 +20,37 @@ namespace Mailjet.Client
     /// </summary>
     public class MailjetClient : IMailjetClient
     {
-        private const string DefaultBaseAdress = "https://api.mailjet.com";
-        private const string UserAgent = "mailjet-api-v3-net/1.2.2";
-        private const string JsonMediaType = "application/json";
-        private const string ApiVersionPathV3 = "v3";
-        private const string ApiVersionPathV3_1 = "v3.1";
-        private const string ApiVersionPathV4 = "v4";
-        private const string ErrorInfo = "ErrorInfo";
-        private const string TooManyRequestsMessage = "Too many requests";
-        private const string InternalServerErrorGeneralMessage = "Internal Server Error";
-
         private HttpClient _httpClient;
 
         public MailjetClient(string apiKey, string apiSecret, HttpMessageHandler httpMessageHandler = null)
         {
             InitHttpClient(httpMessageHandler);
-
-            // Set basic authentification
-            var byteArray = Encoding.UTF8.GetBytes(string.Format("{0}:{1}", apiKey, apiSecret));
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+            _httpClient.UseBasicAuthentication(apiKey, apiSecret);
         }
 
         public MailjetClient(string token, HttpMessageHandler httpMessageHandler = null)
         {
             InitHttpClient(httpMessageHandler);
+            _httpClient.UseBearerAuthentication(token);
+        }
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        /// <summary>
+        /// Create MailJet client with predefinet HttpClient instance
+        /// </summary>
+        /// <param name="httpClient"></param>
+        public MailjetClient(HttpClient httpClient)
+        {
+            if (httpClient == null)
+            {
+                throw new ArgumentNullException(nameof(httpClient));
+            }
+
+            if (httpClient.BaseAddress == null)
+            {
+                httpClient.SetDefaultSettings();
+            }
+
+            _httpClient = httpClient;
         }
 
         public ApiVersion Version { get; set; } = ApiVersion.V3;
@@ -72,7 +76,7 @@ namespace Mailjet.Client
             string url = BuildUrl(request);
 
             var output = request.Body.ToString(Formatting.None);
-            HttpContent contentPost = new StringContent(output, Encoding.UTF8, JsonMediaType);
+            HttpContent contentPost = new StringContent(output, Encoding.UTF8, MailjetDefaults.JsonMediaType);
             var responseMessage = await _httpClient.PostAsync(url, contentPost);
 
             JObject content = await GetContent(responseMessage);
@@ -84,7 +88,7 @@ namespace Mailjet.Client
             string url = BuildUrl(request);
 
             var output = request.Body.ToString(Formatting.None);
-            HttpContent contentPut = new StringContent(output, Encoding.UTF8, JsonMediaType);
+            HttpContent contentPut = new StringContent(output, Encoding.UTF8, MailjetDefaults.JsonMediaType);
             var responseMessage = await _httpClient.PutAsync(url, contentPut);
 
             JObject content = await GetContent(responseMessage);
@@ -112,7 +116,7 @@ namespace Mailjet.Client
             }
 
             JObject content;
-            if (!string.IsNullOrEmpty(cnt) && responseMessage.Content.Headers.ContentType.MediaType == JsonMediaType)
+            if (!string.IsNullOrEmpty(cnt) && responseMessage.Content.Headers.ContentType.MediaType == MailjetDefaults.JsonMediaType)
             {
                 content = JObject.Parse(cnt);
             }
@@ -123,17 +127,17 @@ namespace Mailjet.Client
 
                 if (!responseMessage.IsSuccessStatusCode)
                 {
-                    if (responseMessage.StatusCode == ((HttpStatusCode) 429))
+                    if (responseMessage.StatusCode == ((HttpStatusCode)429))
                     {
-                        content.Add(ErrorInfo, new JValue(TooManyRequestsMessage));
+                        content.Add(MailjetDefaults.ErrorInfo, new JValue(MailjetDefaults.TooManyRequestsMessage));
                     }
                     else if (responseMessage.StatusCode == HttpStatusCode.InternalServerError)
                     {
-                        content.Add(ErrorInfo, new JValue(InternalServerErrorGeneralMessage));
+                        content.Add(MailjetDefaults.ErrorInfo, new JValue(MailjetDefaults.InternalServerErrorGeneralMessage));
                     }
                     else
                     {
-                        content.Add(ErrorInfo, new JValue(responseMessage.ReasonPhrase));
+                        content.Add(MailjetDefaults.ErrorInfo, new JValue(responseMessage.ReasonPhrase));
                     }
                 }
             }
@@ -146,15 +150,7 @@ namespace Mailjet.Client
             // Create HttpClient
             _httpClient = (httpMessageHandler != null) ? new HttpClient(httpMessageHandler) : new HttpClient();
 
-            // Set base URI
-            _httpClient.BaseAddress = new Uri(DefaultBaseAdress);
-
-            // Set accepted media type
-            _httpClient.DefaultRequestHeaders.Accept.Clear();
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(JsonMediaType));
-
-            // Set user-agent
-            _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
+            _httpClient.SetDefaultSettings();
         }
 
         private string BuildUrl(MailjetRequest request)
@@ -167,11 +163,11 @@ namespace Mailjet.Client
             switch (Version)
             {
                 case ApiVersion.V3_1:
-                    return ApiVersionPathV3_1;
+                    return MailjetDefaults.ApiVersionPathV3_1;
                 case ApiVersion.V4:
-                    return ApiVersionPathV4;
+                    return MailjetDefaults.ApiVersionPathV4;
                 default:
-                    return ApiVersionPathV3;
+                    return MailjetDefaults.ApiVersionPathV3;
             }
         }
     }

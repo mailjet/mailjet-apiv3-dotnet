@@ -88,6 +88,7 @@ setx -m $MJ_APIKEY_PUBLIC "Enter your API Key here"
 setx -m $MJ_APIKEY_PRIVATE "Enter your API Secret here"
 ```
 
+
 > Note: For the SMS API the authorization is based on a Bearer token. See information about it in the [SMS API](#sms-api) section of the readme.
 
 ## Make your first call
@@ -156,6 +157,34 @@ namespace Mailjet.ConsoleApplication
 ```
 
 ## Client / Call configuration specifics
+
+### Dependency Injection
+
+The MailJet client supports HttpClientFactory.
+To configure IMailjetClient to be Typed HttpClient, see an example. 
+```csharp
+services.AddHttpClient<IMailjetClient, MailjetClient>(client =>
+{
+    //set BaseAddress, MediaType, UserAgent
+    client.SetDefaultSettings();
+
+    client.UseBearerAuthentication("access_token");
+    //or
+    client.UseBasicAuthentication("apiKey", "apiSecret");
+});
+```
+Then IMailjetClient can be used like:
+```csharp
+public class EmailService : IEmailService
+{
+    private readonly IMailjetClient _mailjetClient;
+
+    public EmailService(IMailjetClient mailjetClient)
+    {
+        _mailjetClient = mailjetClient;
+    }
+}
+```
 
 ### API Versioning
 
