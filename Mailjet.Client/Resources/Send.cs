@@ -4,6 +4,8 @@ namespace Mailjet.Client.Resources
     {
         public static readonly ResourceInfo Resource = new ResourceInfo("send", null, ResourceType.Send);
 
+        public const string SandboxMode = "SandboxMode";
+
         public const string FromEmail = "FromEmail";
         public const string FromName = "FromName";
         public const string Subject = "Subject";
@@ -27,6 +29,5 @@ namespace Mailjet.Client.Resources
         public const string MjEventPayload = "Mj-EventPayload";
         public const string Headers = "Headers";
         public const string Messages = "Messages";
-
     }
 }
