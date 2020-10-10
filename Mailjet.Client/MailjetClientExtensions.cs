@@ -34,6 +34,9 @@ namespace Mailjet.Client
         /// <param name="token">Access token</param>
         public static void UseBearerAuthentication(this HttpClient client, string token)
         {
+            if (token == null)
+                throw new ArgumentNullException(nameof(token));
+
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
@@ -45,6 +48,12 @@ namespace Mailjet.Client
         /// <param name="apiSecret">Api secret</param>
         public static void UseBasicAuthentication(this HttpClient client, string apiKey, string apiSecret)
         {
+            if (apiKey == null)
+                throw new ArgumentNullException(nameof(apiKey));
+
+            if (apiSecret == null)
+                throw new ArgumentNullException(nameof(apiSecret));
+
             // Set basic authentification
             var byteArray = Encoding.UTF8.GetBytes(string.Format("{0}:{1}", apiKey, apiSecret));
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
