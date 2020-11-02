@@ -17,14 +17,14 @@ namespace Mailjet.Client
         /// <param name="client">Instance of mailjet <see cref="HttpClient"/></param>
         public static void SetDefaultSettings(this HttpClient client)
         {
-            client.BaseAddress = new Uri(MailjetDefaults.DefaultBaseAdress);
+            client.BaseAddress = new Uri(MailjetConstants.DefaultBaseAdress);
 
             // Set accepted media type
             client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MailjetDefaults.JsonMediaType));
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(MailjetConstants.JsonMediaType));
 
             // Set user-agent
-            client.DefaultRequestHeaders.UserAgent.ParseAdd(MailjetDefaults.UserAgent);
+            client.DefaultRequestHeaders.UserAgent.ParseAdd(MailjetConstants.UserAgent);
         }
 
         /// <summary>

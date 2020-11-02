@@ -5,7 +5,7 @@ namespace Mailjet.Client
 {
     public class MailjetResponse
     {
-        private JObject _content;
+        private readonly JObject _content;
 
         public bool IsSuccessStatusCode { get; private set; }
         public int StatusCode { get; private set; }
@@ -64,8 +64,7 @@ namespace Mailjet.Client
 
         public string GetErrorInfo()
         {
-            string errorInfo;
-            if (!TryGetValue("ErrorInfo", out errorInfo))
+            if (!TryGetValue(MailjetConstants.ErrorInfo, out string errorInfo))
             {
                 errorInfo = string.Empty;
             }
@@ -75,8 +74,7 @@ namespace Mailjet.Client
 
         public string GetErrorMessage()
         {
-            string errorMessage;
-            if (!TryGetValue("ErrorMessage", out errorMessage))
+            if (!TryGetValue("ErrorMessage", out string errorMessage))
             {
                 errorMessage = string.Empty;
             }
