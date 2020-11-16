@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>net45;netstandard1.1</TargetFrameworks>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Version>1.2.2</Version>
+    <Version>1.2.3</Version>
     <Authors>Mailjet, Dimitar Kostov</Authors>
     <PackageLicenseUrl>https://github.com/mailjet/mailjet-apiv3-dotnet/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/mailjet/mailjet-apiv3-dotnet</PackageProjectUrl>
@@ -18,6 +18,7 @@ Documentation: https://dev.mailjet.com/guides/
     </Description>
     <PackageTags>Mailjet API Email Mail Microsoft Azure Transactional Marketing .NET Core</PackageTags>
     <RepositoryUrl>https://github.com/mailjet/mailjet-apiv3-dotnet</RepositoryUrl>
+    <PackageVersion>1.2.3</PackageVersion>
   </PropertyGroup>
 
   <ItemGroup>

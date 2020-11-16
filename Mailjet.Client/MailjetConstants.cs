@@ -3,7 +3,7 @@
     public static class MailjetConstants
     {
         public const string DefaultBaseAdress = "https://api.mailjet.com";
-        public const string UserAgent = "mailjet-api-v3-net/1.2.2";
+        public const string UserAgent = "mailjet-api-v3-net/1.2.3";
         public const string JsonMediaType = "application/json";
         public const string ApiVersionPathV3 = "v3";
         public const string ApiVersionPathV3_1 = "v3.1";

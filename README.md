@@ -33,7 +33,6 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
   - [Options](#options)
     - [API versioning](#api-versioning)
     - [Base URL](#base-url)
-    - [Request timeout](#request-timeout)
     - [Use proxy](#use-proxy)
   - [Disable API call](#disable-api-call)
 - [Request examples](#request-examples)
@@ -67,7 +66,7 @@ This .NET library is supported by:
 ### Dependencies .NETStandard 1.1
 
  - NETStandard.Library (>= 1.6.1)
- - Newtonsoft.Json (>= 9.0.1)
+ - Newtonsoft.Json (>= 12.0.3)
 
 ## Installation
 
@@ -592,7 +591,6 @@ namespace Mailjet.ConsoleApplication
    }
 }
 ```
-
 ## SMS API
 
 ### Token authentication
@@ -668,6 +666,13 @@ The `GetAsync`, `PostAsync`, `PutAsync` and `DeleteAsync` method will return a `
  - `GetErrorInfo()` : http response message phrases ("OK", "Bad Request" ...)
  - `GetErrorMessage()` :  error reason message from the API response payload
 
+
+## More examples
+
+* [Send with attached files](https://dev.mailjet.com/email/guides/send-api-v31/#send-with-attached-files)
+
+* [GDPR Delete contacts](https://dev.mailjet.com/email/guides/contact-management/#gdpr-delete-contacts)
+* and many more can be found can under [guides section](https://dev.mailjet.com/email/guides/) on our docs site
 
 ## Contribute
 
