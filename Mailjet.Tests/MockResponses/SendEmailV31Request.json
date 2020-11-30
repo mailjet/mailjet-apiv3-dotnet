@@ -1,0 +1,21 @@
+﻿{
+  "SandboxMode": true,
+  "AdvanceErrorHandling": true,
+  "Messages": [
+    {
+      "From":{
+        "Email": "pilot@mailjet.com",
+        "Name": "Your Mailjet Pilot"
+      },
+      "HTMLPart": "<h3>Dear passenger, welcome to Mailjet!</h3><br />May the delivery force be with you!",
+      "Subject": "Your email flight plan!",
+      "TextPart": "Dear passenger, welcome to Mailjet! May the delivery force be with you!",
+      "To": [
+        {
+          "Email": "passenger@mailjet.com",
+          "Name": "Passenger 1"
+        }
+      ]
+    }
+  ]
+}
