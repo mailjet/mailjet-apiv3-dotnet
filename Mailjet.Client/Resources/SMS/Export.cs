@@ -2,7 +2,7 @@
 {
     public static class Export
     {
-        public static readonly ResourceInfo Resource = new ResourceInfo("sms/export", null, ResourceType.V4);
+        public static readonly ResourceInfo Resource = new ResourceInfo("sms/export", null, ApiVersion.V4, ResourceType.V4);
 
         public const string FromTS = "FromTS";
         public const string ToTS = "ToTS";

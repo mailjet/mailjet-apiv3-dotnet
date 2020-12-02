@@ -2,7 +2,7 @@ namespace Mailjet.Client.Resources
 {
     public static class Send
     {
-        public static readonly ResourceInfo Resource = new ResourceInfo("send", null, ResourceType.Send);
+        public static readonly ResourceInfo Resource = new ResourceInfo("send", null, ApiVersion.V3_1, ResourceType.Send);
 
         public const string SandboxMode = "SandboxMode";
 

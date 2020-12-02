@@ -38,8 +38,6 @@ namespace Mailjet.Client.TransactionalEmails
         public static async Task<TransactionalEmailResponse> SendTransactionalEmailsAsync(this MailjetClient mailjetClient,
             IEnumerable<TransactionalEmail> transactionalEmails, bool isSandboxMode = false)
         {
-            mailjetClient.Version = ApiVersion.V3_1;
-
             if (transactionalEmails.Count() > MaxEmailsPerBatch || !transactionalEmails.Any())
                 throw new MailjetClientConfigurationException($"Send Emails API v3.1 allows to send not more than {MaxEmailsPerBatch} emails per call");
 

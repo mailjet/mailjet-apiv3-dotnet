@@ -114,8 +114,6 @@ namespace Mailjet.Tests
                 Resource = Sender.Resource
             };
 
-            client.Version = ApiVersion.V3;
-
             MailjetResponse response = await client.GetAsync(request);
 
             Assert.AreEqual(200, response.StatusCode);
