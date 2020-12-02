@@ -1,4 +1,6 @@
-﻿namespace Mailjet.Client
+﻿using System;
+
+namespace Mailjet.Client
 {
     public enum ResourceType
     {
@@ -76,8 +78,10 @@
                     return MailjetConstants.ApiVersionPathV3_1;
                 case ApiVersion.V4:
                     return MailjetConstants.ApiVersionPathV4;
-                default:
+                case ApiVersion.V3:
                     return MailjetConstants.ApiVersionPathV3;
+                default:
+                    throw new NotImplementedException("Wrong API version");
             }
         }
     }

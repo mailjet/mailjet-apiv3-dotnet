@@ -11,8 +11,6 @@ namespace Mailjet.Client.TransactionalEmails
 {
     public static class MailjetClientExtensions
     {
-        private const int MaxEmailsPerBatch = 50;
-
         private static readonly JsonSerializer Serializer = JsonSerializer.CreateDefault(new JsonSerializerSettings
         {
             DefaultValueHandling = DefaultValueHandling.Ignore,
@@ -38,8 +36,8 @@ namespace Mailjet.Client.TransactionalEmails
         public static async Task<TransactionalEmailResponse> SendTransactionalEmailsAsync(this MailjetClient mailjetClient,
             IEnumerable<TransactionalEmail> transactionalEmails, bool isSandboxMode = false)
         {
-            if (transactionalEmails.Count() > MaxEmailsPerBatch || !transactionalEmails.Any())
-                throw new MailjetClientConfigurationException($"Send Emails API v3.1 allows to send not more than {MaxEmailsPerBatch} emails per call");
+            if (transactionalEmails.Count() > SendV31.MaxEmailsPerBatch || !transactionalEmails.Any())
+                throw new MailjetClientConfigurationException($"Send Emails API v3.1 allows to send not more than {SendV31.MaxEmailsPerBatch} emails per call");
 
             var request = new SendEmailRequest
             {
@@ -50,7 +48,7 @@ namespace Mailjet.Client.TransactionalEmails
 
             var clientRequest = new MailjetRequest
             {
-                Resource = Send.Resource,
+                Resource = SendV31.Resource,
                 Body = JObject.FromObject(request, Serializer)
             };
 
