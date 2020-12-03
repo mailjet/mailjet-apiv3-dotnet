@@ -46,8 +46,6 @@ namespace Mailjet.Client
             _httpClient = httpClient;
         }
 
-        public ApiVersion Version { get; set; } = ApiVersion.V3;
-
         public string BaseAdress
         {
             get { return _httpClient.BaseAddress != null ? _httpClient.BaseAddress.ToString() : null; }
@@ -56,7 +54,7 @@ namespace Mailjet.Client
 
         public async Task<MailjetResponse> GetAsync(MailjetRequest request)
         {
-            string url = BuildUrl(request);
+            string url = request.BuildUrl();
 
             var responseMessage = await _httpClient.GetAsync(url).ConfigureAwait(false);
 
@@ -66,7 +64,7 @@ namespace Mailjet.Client
 
         public async Task<MailjetResponse> PostAsync(MailjetRequest request)
         {
-            string url = BuildUrl(request);
+            string url = request.BuildUrl();
 
             var output = request.Body.ToString(Formatting.None);
             HttpContent contentPost = new StringContent(output, Encoding.UTF8, MailjetConstants.JsonMediaType);
@@ -78,7 +76,7 @@ namespace Mailjet.Client
 
         public async Task<MailjetResponse> PutAsync(MailjetRequest request)
         {
-            string url = BuildUrl(request);
+            string url = request.BuildUrl();
 
             var output = request.Body.ToString(Formatting.None);
             HttpContent contentPut = new StringContent(output, Encoding.UTF8, MailjetConstants.JsonMediaType);
@@ -91,7 +89,7 @@ namespace Mailjet.Client
 
         public async Task<MailjetResponse> DeleteAsync(MailjetRequest request)
         {
-            string url = BuildUrl(request);
+            string url = request.BuildUrl();
 
             var responseMessage = await _httpClient.DeleteAsync(url).ConfigureAwait(false);
 
@@ -144,24 +142,6 @@ namespace Mailjet.Client
             _httpClient = (httpMessageHandler != null) ? new HttpClient(httpMessageHandler) : new HttpClient();
 
             _httpClient.SetDefaultSettings();
-        }
-
-        private string BuildUrl(MailjetRequest request)
-        {
-            return UrlHelper.CombineUrl(GetApiVersionPath(), request.BuildUrl());
-        }
-
-        private string GetApiVersionPath()
-        {
-            switch (Version)
-            {
-                case ApiVersion.V3_1:
-                    return MailjetConstants.ApiVersionPathV3_1;
-                case ApiVersion.V4:
-                    return MailjetConstants.ApiVersionPathV4;
-                default:
-                    return MailjetConstants.ApiVersionPathV3;
-            }
         }
     }
 }

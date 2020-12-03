@@ -129,11 +129,7 @@ namespace Mailjet.Tests
             mockHttp.When("https://api.mailjet.com/v4/*")
                     .Respond(JsonMediaType, jsonResponse); // Respond with JSON
 
-            IMailjetClient client = new MailjetClient(API_TOKEN, mockHttp)
-            {
-                Version = ApiVersion.V4
-            };
-
+            IMailjetClient client = new MailjetClient(API_TOKEN, mockHttp);
 
             MailjetRequest request = new MailjetRequest
             {
@@ -178,10 +174,7 @@ namespace Mailjet.Tests
             // timsestamp range offset
             int offset = 1000;
 
-            IMailjetClient client = new MailjetClient(API_TOKEN, mockHttp)
-            {
-                Version = ApiVersion.V4
-            };
+            IMailjetClient client = new MailjetClient(API_TOKEN, mockHttp);
 
             MailjetRequest request = new MailjetRequest
             {
@@ -210,10 +203,7 @@ namespace Mailjet.Tests
             mockHttp.When("https://api.mailjet.com/v4/*")
                     .Respond(JsonMediaType, jsonResponse); // Respond with JSON
 
-            IMailjetClient client = new MailjetClient(API_TOKEN, mockHttp)
-            {
-                Version = ApiVersion.V4
-            };
+            IMailjetClient client = new MailjetClient(API_TOKEN, mockHttp);
 
             MailjetRequest request = new MailjetRequest
             {

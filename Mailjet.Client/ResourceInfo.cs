@@ -1,4 +1,6 @@
-﻿namespace Mailjet.Client
+﻿using System;
+
+namespace Mailjet.Client
 {
     public enum ResourceType
     {
@@ -18,11 +20,14 @@
         // Mailjet resource action, if any
         public string Action { get; private set; }
 
-        public ResourceInfo(string resource, string action = null, ResourceType type = ResourceType.Rest)
+        public ApiVersion ApiVersion { get; private set; }
+
+        public ResourceInfo(string resource, string action = null, ApiVersion apiVersion = ApiVersion.V3, ResourceType type = ResourceType.Rest)
         {
             Resource = resource;
             Action = action;
             Type = type;
+            ApiVersion = apiVersion;
         }
 
         public virtual string BuildUrl(string resourceId, string actionId)
@@ -49,17 +54,34 @@
 
         private string GetPath()
         {
+            var path = GetApiVersionPath();
+
             switch (Type)
             {
                 case ResourceType.Rest:
-                    return "REST";
+                    return path + "/REST";
                 case ResourceType.Data:
-                    return "DATA";
+                    return path + "/DATA";
                 case ResourceType.Send:
                 case ResourceType.V4:
-                    return string.Empty;
+                    return path;
                 default:
-                    return Resource != "send" ? "REST" : string.Empty;
+                    return Resource != "send" ? path + "/REST" : path;
+            }
+        }
+
+        private string GetApiVersionPath()
+        {
+            switch (ApiVersion)
+            {
+                case ApiVersion.V3_1:
+                    return MailjetConstants.ApiVersionPathV3_1;
+                case ApiVersion.V4:
+                    return MailjetConstants.ApiVersionPathV4;
+                case ApiVersion.V3:
+                    return MailjetConstants.ApiVersionPathV3;
+                default:
+                    throw new NotImplementedException("Wrong API version");
             }
         }
     }

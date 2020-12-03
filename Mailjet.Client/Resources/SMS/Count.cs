@@ -2,7 +2,7 @@
 {
     public static class Count
     {
-        public static readonly ResourceInfo Resource = new ResourceInfo("sms/count", null, ResourceType.V4);
+        public static readonly ResourceInfo Resource = new ResourceInfo("sms/count", null, ApiVersion.V4, ResourceType.V4);
 
         public const string To = "To";
         public const string FromTS = "FromTS";

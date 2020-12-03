@@ -2,7 +2,7 @@
 {
     public static class Send
     {
-        public static readonly ResourceInfo Resource = new ResourceInfo("sms-send", null, ResourceType.V4);
+        public static readonly ResourceInfo Resource = new ResourceInfo("sms-send", null, ApiVersion.V4, ResourceType.V4);
 
         public const string From = "From";
         public const string To = "To";

@@ -5,8 +5,7 @@ namespace Mailjet.Client
 {
     public class MailjetResponse
     {
-        private readonly JObject _content;
-
+        public JObject Content { get; private set; }
         public bool IsSuccessStatusCode { get; private set; }
         public int StatusCode { get; private set; }
 
@@ -14,7 +13,7 @@ namespace Mailjet.Client
         {
             IsSuccessStatusCode = isSuccessStatusCode;
             StatusCode = statusCode;
-            _content = content;
+            Content = content;
         }
 
         public int GetTotal()
@@ -47,7 +46,7 @@ namespace Mailjet.Client
                 return result;
             }
 
-            result = new JArray(_content);
+            result = new JArray(Content);
             return result;
         }
 
@@ -85,7 +84,7 @@ namespace Mailjet.Client
         public bool TryGetValue<T>(string key, out T value)
         {
             JToken token;
-            if (!_content.TryGetValue(key, StringComparison.OrdinalIgnoreCase, out token))
+            if (!Content.TryGetValue(key, StringComparison.OrdinalIgnoreCase, out token))
             {
                 value = default(T);
                 return false;

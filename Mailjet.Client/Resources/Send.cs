@@ -1,8 +1,11 @@
 namespace Mailjet.Client.Resources
 {
+    /// <summary>
+    /// Represents Send API v3
+    /// </summary>
     public static class Send
     {
-        public static readonly ResourceInfo Resource = new ResourceInfo("send", null, ResourceType.Send);
+        public static readonly ResourceInfo Resource = new ResourceInfo("send", null, ApiVersion.V3, ResourceType.Send);
 
         public const string SandboxMode = "SandboxMode";
 

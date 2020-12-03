@@ -14,7 +14,7 @@
 # Mailjet .NET Wrapper
 
 [![Build Status](https://travis-ci.org/mailjet/mailjet-apiv3-dotnet.svg?branch=master)](https://travis-ci.org/mailjet/mailjet-apiv3-dotnet)
-![Current Version](https://img.shields.io/badge/version-1.2.2-green.svg)
+![Current Version](https://img.shields.io/badge/version-2.0.0-green.svg)
 
 ## Overview
 
@@ -24,31 +24,44 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
 
 ## Table of contents
 
-- [Compatibility](#compatibility)
-- [Installation](#installation)
-  - [Dependencies .NETStandard 1.1](#dependencies-netstandard-11)
-- [Authentication](#authentication)
-- [Make your first call](#make-your-first-call)
-- [Client / Call configuration specifics](#client--call-configuration-specifics)
-  - [Options](#options)
-    - [API versioning](#api-versioning)
+- [Mailjet .NET Wrapper](#mailjet-net-wrapper)
+  - [Overview](#overview)
+  - [Table of contents](#table-of-contents)
+  - [Release notes](#release-notes)
+    - [v 2.0.0](#v-200)
+  - [Compatibility](#compatibility)
+    - [Dependencies .NETStandard 1.1](#dependencies-netstandard-11)
+  - [Installation](#installation)
+  - [Authentication](#authentication)
+  - [Make your first call](#make-your-first-call)
+  - [Client / Call configuration specifics](#client--call-configuration-specifics)
+    - [Dependency Injection](#dependency-injection)
+    - [API Versioning](#api-versioning)
     - [Base URL](#base-url)
-    - [Use proxy](#use-proxy)
-  - [Disable API call](#disable-api-call)
-- [Request examples](#request-examples)
-  - [POST request](#post-request)
-    - [Simple POST request](#simple-post-request)
-    - [Using actions](#using-actions)
-  - [GET request](#get-request)
-    - [Retrieve all objects](#retrieve-all-objects)
-    - [Use filtering](#use-filtering)
-    - [Retrieve a single object](#retrieve-a-single-object)
-  - [PUT request](#put-request)
-  - [DELETE request](#delete-request)
-- [SMS API](#sms-api)
-  - [Token authentication](#token-authentication)
-  - [Example Request](#example-request)
-- [Contribute](#contribute)
+  - [List of resources](#list-of-resources)
+  - [Request Examples](#request-examples)
+    - [POST Request](#post-request)
+      - [Simple POST request](#simple-post-request)
+      - [Using actions](#using-actions)
+    - [GET request](#get-request)
+      - [Retrieve all objects](#retrieve-all-objects)
+      - [Use filtering](#use-filtering)
+      - [Retrieve a single object](#retrieve-a-single-object)
+    - [PUT request](#put-request)
+    - [DELETE request](#delete-request)
+  - [SMS API](#sms-api)
+    - [Token authentication](#token-authentication)
+    - [Example request](#example-request)
+    - [Response](#response)
+  - [More examples](#more-examples)
+  - [Contribute](#contribute)
+
+## Release notes
+
+### v 2.0.0
+   - Added TransactionalEmailBuidler and TransactionalEmail strongly typed models - now you can send transactional emails more easily! Please, check [tests for more information](Mailjet.Tests/Integration/SendTransactionalEmailIntegrationTests.cs)
+   - Added Contacts delete API - now you can support [GDPR delete contacts](https://dev.mailjet.com/email/guides/contact-management/#gdpr-delete-contacts) easily
+   - Removed ApiVersion from the client configuration - now client will determine needed API version automatically based on resource! Less configuration - easier life!
 
 ## Compatibility
 
@@ -114,44 +127,28 @@ namespace Mailjet.ConsoleApplication
 
       static async Task RunAsync()
       {
-         MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"))
-         {
-            Version = ApiVersion.V3_1,
-         };
+         MailjetClient client = new MailjetClient(
+            Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), 
+            Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"));
+
          MailjetRequest request = new MailjetRequest
          {
             Resource = Send.Resource,
          }
-            .Property(Send.Messages, new JArray {
-                new JObject {
-                 {"From", new JObject {
-                  {"Email", "$SENDER_EMAIL"},
-                  {"Name", "Me"}
-                  }},
-                 {"To", new JArray {
-                  new JObject {
-                   {"Email", "$RECIPIENT_EMAIL"},
-                   {"Name", "You"}
-                   }
-                  }},
-                 {"Subject", "My first Mailjet Email!"},
-                 {"TextPart", "Greetings from Mailjet!"},
-                 {"HTMLPart", "<h3>Dear passenger 1, welcome to <a href=\"https://www.mailjet.com/\">Mailjet</a>!</h3><br />May the delivery force be with you!"}
-                 }
-                });
-         MailjetResponse response = await client.PostAsync(request);
-         if (response.IsSuccessStatusCode)
-         {
-            Console.WriteLine(string.Format("Total: {0}, Count: {1}\n", response.GetTotal(), response.GetCount()));
-            Console.WriteLine(response.GetData());
-         }
-         else
-         {
-            Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
-            Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
-            Console.WriteLine(response.GetData());
-            Console.WriteLine(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
-         }
+
+         // construct your email with builder
+         var email = new TransactionalEmailBuilder()
+                .WithFrom(new SendContact("from@test.com"))
+                .WithSubject("Test subject")
+                .WithHtmlPart("<h1>Header</h1>")
+                .WithTo(new SendContact("to@test.com"))
+                .Build();
+
+         // invoke API to send email
+         var response = await _client.SendTransactionalEmailAsync(email);
+
+         // check response
+         Assert.AreEqual(1, response.Messages.Length);
       }
    }
 }
@@ -193,17 +190,9 @@ The Mailjet API is spread among three distinct versions:
 
 - v3 : `ApiVersion.V3` - The Email API
 - v3.1 : `ApiVersion.V3_1` - Email Send API v3.1, which is the latest version of our Send API
-- v4 : `ApiVersion.V4` - SMS API
+- v4 : `ApiVersion.V4` - SMS API, contacts delete API etc
 
-Since most Email API endpoints are located under `v3`, it is set as the default one and does not need to be specified when making your request. For the others you need to specify the version using `ApiVersion`. For example, if using Send API `v3.1`:
-
-```csharp
-
-MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"))
-         {
-            Version = ApiVersion.V3_1,
-         };
-```
+Right now, client wrapper will determine what API version to call under the hood.
 
 For additional information refer to our [API Reference](https://dev.preprod.mailjet.com/reference/overview/versioning/).
 
@@ -214,7 +203,6 @@ The default base domain name for the Mailjet API is `https://api.mailjet.com`. Y
 ```csharp
 MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"))
          {
-            Version = ApiVersion.V3_1,
             BaseAdress = "https://api.us.mailjet.com",
          };
 ```
@@ -626,9 +614,6 @@ namespace Mailjet.ConsoleApplication
       static async Task RunAsync()
       {
          MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("Your_Bearer_token"));
-         {
-            Version = ApiVersion.V4,
-         };
 
          MailjetRequest request = new MailjetRequest
          {
