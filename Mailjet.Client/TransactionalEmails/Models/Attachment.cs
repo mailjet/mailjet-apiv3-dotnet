@@ -5,6 +5,13 @@
         /// <summary>
         /// Creates attachment object
         /// </summary>
+        /// <example>
+        ///   var contentType = "text/plain";
+        ///   var fileName = Path.GetFileName(filePath);
+        ///   var fileContent = File.ReadAllBytes(filePath);
+        ///   var base64FileContent = Convert.ToBase64String(fileContent);
+        ///   return new Attachment(fileName, contentType, base64FileContent);
+        /// </example>
         /// <param name="filename">The full name of the file (including the file extension).</param>
         /// <param name="contentType">Defines the type of content being sent out using a MIME type.
         /// See the official MIME type list for additional information. https://www.iana.org/assignments/media-types/media-types.xhtml </param>
@@ -16,18 +23,33 @@
             Base64Content = base64Content;
         }
 
-
+        /// <summary>
+        /// Creates attachment object
+        /// </summary>
+        /// <example>
+        ///   var contentType = "text/plain";
+        ///   var fileName = Path.GetFileName(filePath);
+        ///   var fileContent = File.ReadAllBytes(filePath);
+        ///   var base64FileContent = Convert.ToBase64String(fileContent);
+        ///   return new Attachment(fileName, contentType, base64FileContent);
+        /// </example>
         /// <remarks>
         /// If the attachment is inlined, you can set ContentId
         /// Then you can set Name of the cid to be inserted in the HTML content of the message.
         /// The value of ContentId must be unique across all inline attachments in the message.
         /// </remarks>
+        /// <param name="filename">The full name of the file (including the file extension).</param>
+        /// <param name="contentType">Defines the type of content being sent out using a MIME type.
+        /// See the official MIME type list for additional information. https://www.iana.org/assignments/media-types/media-types.xhtml </param>
+        /// <param name="base64Content">Base64 encoded content of the attached file.</param>
+        /// <param name="contentId">Unique Content ID that can be referenced in the email body</param>
         public Attachment(string filename, string contentType, string base64Content, string contentId)
             : this(filename, contentType, base64Content)
         {
             ContentID = contentId;
         }
 
+        // todo uncomment this when migrated to netstandard 2+
         //public static Attachment FromFile(string filePath)
         //{
         //    var contentType = MimeMapping.GetMimeType(filePath);

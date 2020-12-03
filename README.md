@@ -60,7 +60,8 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
 
 ### v 2.0.0
    - Added TransactionalEmailBuidler and TransactionalEmail strongly typed models - now you can send transactional emails more easily! Please, check [tests for more information](Mailjet.Tests/Integration/SendTransactionalEmailIntegrationTests.cs)
-   - Added Contacts delete API - now you can support GDPR easily
+   - Added Contacts delete API - now you can support [GDPR delete contacts](https://dev.mailjet.com/email/guides/contact-management/#gdpr-delete-contacts) easily
+   - Removed ApiVersion from the client configuration - now client will determine needed API version automatically based on resource! Less configuration - easier life!
 
 ## Compatibility
 
