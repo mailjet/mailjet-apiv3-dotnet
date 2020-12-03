@@ -23,7 +23,6 @@ namespace Mailjet.ConsoleApplication
             //MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"), clientHandler)
             //{
             //    BaseAdress = "https://api.mailjet.com",
-            //    Version = ApiVersion.V3,
             //};
 
             IMailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"));
