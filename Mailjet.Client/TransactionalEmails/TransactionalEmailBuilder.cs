@@ -10,17 +10,17 @@ namespace Mailjet.Client.TransactionalEmails
         private string _subject;
         private string _htmlPart;
         private string _textPart;
-        private Contact _sender;
-        private Contact _from;
-        private Contact _replyTo;
+        private SendContact _sender;
+        private SendContact _from;
+        private SendContact _replyTo;
 
-        private List<Contact> _to = new List<Contact>();
-        private List<Contact> _cc;
-        private List<Contact> _bcc;
+        private List<SendContact> _to = new List<SendContact>();
+        private List<SendContact> _cc;
+        private List<SendContact> _bcc;
 
         private long? _templateId;
         private bool? _templateLanguage;
-        private Contact _templateErrorReporting;
+        private SendContact _templateErrorReporting;
         private bool? _templateErrorDelivery;
 
         private List<Attachment> _attachments;
@@ -73,7 +73,7 @@ namespace Mailjet.Client.TransactionalEmails
         /// <remarks>
         /// Note: This option is disabled by default. Contact the Support team if you want us to enable this setting on a specific API Key.
         /// </remarks>
-        public TransactionalEmailBuilder WithSender(Contact sender)
+        public TransactionalEmailBuilder WithSender(SendContact sender)
         {
             _sender = sender;
             return this;
@@ -90,7 +90,7 @@ namespace Mailjet.Client.TransactionalEmails
         /// <remarks>
         /// If the From domain has a DMARC policy in effect(e.g.Yahoo, AOL), the message will not be delivered.Instead, it will either bounce or be considered as Spam.
         /// </remarks>
-        public TransactionalEmailBuilder WithFrom(Contact from)
+        public TransactionalEmailBuilder WithFrom(SendContact from)
         {
             _from = from;
             return this;
@@ -99,7 +99,7 @@ namespace Mailjet.Client.TransactionalEmails
         /// <summary>
         /// the email address and name(optional), to which replies to this message will go.
         /// </summary>
-        public TransactionalEmailBuilder WithReplyTo(Contact replyTo)
+        public TransactionalEmailBuilder WithReplyTo(SendContact replyTo)
         {
             _replyTo = replyTo;
             return this;
@@ -108,7 +108,7 @@ namespace Mailjet.Client.TransactionalEmails
         /// <summary>
         /// To recipients
         /// </summary>
-        public TransactionalEmailBuilder WithTo(Contact to)
+        public TransactionalEmailBuilder WithTo(SendContact to)
         {
             _to.Add(to);
             return this;
@@ -117,7 +117,7 @@ namespace Mailjet.Client.TransactionalEmails
         /// <summary>
         /// To recipients
         /// </summary>
-        public TransactionalEmailBuilder WithTo(IEnumerable<Contact> toContacts)
+        public TransactionalEmailBuilder WithTo(IEnumerable<SendContact> toContacts)
         {
             _to.AddRange(toContacts);
             return this;
@@ -126,10 +126,10 @@ namespace Mailjet.Client.TransactionalEmails
         /// <summary>
         /// Carbon copy recipients
         /// </summary>
-        public TransactionalEmailBuilder WithCc(Contact cc)
+        public TransactionalEmailBuilder WithCc(SendContact cc)
         {
             if (_cc == null)
-                _cc = new List<Contact>();
+                _cc = new List<SendContact>();
 
             _cc.Add(cc);
             return this;
@@ -138,10 +138,10 @@ namespace Mailjet.Client.TransactionalEmails
         /// <summary>
         /// Carbon copy recipients
         /// </summary>
-        public TransactionalEmailBuilder WithCc(IEnumerable<Contact> ccContacts)
+        public TransactionalEmailBuilder WithCc(IEnumerable<SendContact> ccContacts)
         {
             if (_cc == null)
-                _cc = new List<Contact>();
+                _cc = new List<SendContact>();
 
             _cc.AddRange(ccContacts);
             return this;
@@ -150,10 +150,10 @@ namespace Mailjet.Client.TransactionalEmails
         /// <summary>
         /// Blind carbon copy recipients
         /// </summary>
-        public TransactionalEmailBuilder WithBcc(Contact bcc)
+        public TransactionalEmailBuilder WithBcc(SendContact bcc)
         {
             if (_bcc == null)
-                _bcc = new List<Contact>();
+                _bcc = new List<SendContact>();
 
             _bcc.Add(bcc);
             return this;
@@ -162,10 +162,10 @@ namespace Mailjet.Client.TransactionalEmails
         /// <summary>
         /// Blind carbon copy recipients
         /// </summary>
-        public TransactionalEmailBuilder WithBcc(IEnumerable<Contact> bccContacts)
+        public TransactionalEmailBuilder WithBcc(IEnumerable<SendContact> bccContacts)
         {
             if (_bcc == null)
-                _bcc = new List<Contact>();
+                _bcc = new List<SendContact>();
 
             _bcc.AddRange(bccContacts);
             return this;
@@ -198,7 +198,7 @@ namespace Mailjet.Client.TransactionalEmails
         /// to whom a carbon copy with the error message is sent to in case of sending issues. Can only be used when TemplateLanguage=true.
         /// Equivalent to using the X-MJ-TemplateErrorReporting header through SMTP.
         /// </summary>
-        public TransactionalEmailBuilder WithTemplateErrorReporting(Contact contactForErrorNotifications)
+        public TransactionalEmailBuilder WithTemplateErrorReporting(SendContact contactForErrorNotifications)
         {
             _templateErrorReporting = contactForErrorNotifications;
             return this;

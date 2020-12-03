@@ -93,7 +93,7 @@ namespace Mailjet.Tests.Integration
             // arrange
             MailjetRequest request = new MailjetRequest
             {
-                Resource = Contacts.Resource, // pay attantion - GDPR DELETE contact resource is named in plural
+                Resource = Contacts.Resource, // pay attention - GDPR DELETE contact resource is named in plural
                 ResourceId = ResourceId.Numeric(contactId)
             };
 

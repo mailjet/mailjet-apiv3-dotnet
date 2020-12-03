@@ -3,15 +3,15 @@ using Mailjet.Client.Exceptions;
 
 namespace Mailjet.Client.TransactionalEmails
 {
-    public class Contact
+    public class SendContact
     {
-        public Contact(string email, string name)
+        public SendContact(string email, string name)
             : this(email)
         {
             Name = name;
         }
 
-        public Contact(string email)
+        public SendContact(string email)
         {
             if (email == null || email.IndexOf("@", StringComparison.Ordinal) == -1)
                 throw new MailjetClientConfigurationException("Valid email address is required");

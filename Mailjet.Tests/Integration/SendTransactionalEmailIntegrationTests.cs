@@ -7,9 +7,8 @@ using Mailjet.Client.Resources;
 using Mailjet.Client.TransactionalEmails;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
-using Contact = Mailjet.Client.TransactionalEmails.Contact;
 
-namespace Mailjet.Tests
+namespace Mailjet.Tests.Integration
 {
     [TestClass]
     public class SendTransactionalEmailIntegrationTests
@@ -31,10 +30,10 @@ namespace Mailjet.Tests
         {
             // arrange
             var email = new TransactionalEmailBuilder()
-                .WithFrom(new Contact(_senderEmail))
+                .WithFrom(new SendContact(_senderEmail))
                 .WithSubject("Test subject")
                 .WithHtmlPart("<h1>Header</h1>")
-                .WithTo(new Contact(_senderEmail))
+                .WithTo(new SendContact(_senderEmail))
                 .Build();
 
             // act
@@ -56,14 +55,14 @@ namespace Mailjet.Tests
             var attachment = new Attachment("test1.txt", "text/plain", base64Content);
 
             var email = new TransactionalEmailBuilder()
-                .WithFrom(new Contact(_senderEmail))
+                .WithFrom(new SendContact(_senderEmail))
                 .WithSubject("Test subject")
                 .WithHtmlPart("<h1>Header</h1>")
                 .WithHeader("header1", "value1")
                 .WithHeader("header2", "value2")
                 .WithAttachment(attachment)
                 .WithCustomId("customIdValue")
-                .WithTo(new Contact(_senderEmail))
+                .WithTo(new SendContact(_senderEmail))
                 .Build();
 
             // act
@@ -84,11 +83,11 @@ namespace Mailjet.Tests
             // arrange
             long nonExistentTemplateId = 12345;
             var email = new TransactionalEmailBuilder()
-                .WithFrom(new Contact(_senderEmail))
+                .WithFrom(new SendContact(_senderEmail))
                 .WithSubject("Test subject")
                 .WithTemplateId(nonExistentTemplateId)
                 .WithTrackOpens(TrackOpens.enabled)
-                .WithTo(new Contact(_senderEmail))
+                .WithTo(new SendContact(_senderEmail))
                 .Build();
 
             // act

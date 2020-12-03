@@ -83,11 +83,11 @@ namespace Mailjet.Tests
                 .Respond("application/json", "{}");
 
             var email = new TransactionalEmailBuilder()
-                .WithFrom(new Contact("pilot@mailjet.com", "Your Mailjet Pilot"))
+                .WithFrom(new SendContact("pilot@mailjet.com", "Your Mailjet Pilot"))
                 .WithHtmlPart("<h3>Dear passenger, welcome to Mailjet!</h3><br />May the delivery force be with you!")
                 .WithSubject("Your email flight plan!")
                 .WithTextPart("Dear passenger, welcome to Mailjet! May the delivery force be with you!")
-                .WithTo(new Contact("passenger@mailjet.com", "Passenger 1"))
+                .WithTo(new SendContact("passenger@mailjet.com", "Passenger 1"))
                 .Build();
 
             // act

@@ -7,17 +7,17 @@ namespace Mailjet.Client.TransactionalEmails
         public string Subject { get; set; }
         public string HTMLPart { get; set; }
         public string TextPart { get; set; }
-        public Contact Sender { get; set; }
-        public Contact From { get; set; }
-        public Contact ReplyTo { get; set; }
+        public SendContact Sender { get; set; }
+        public SendContact From { get; set; }
+        public SendContact ReplyTo { get; set; }
 
-        public List<Contact> To { get; set; }
-        public List<Contact> Cc { get; set; }
-        public List<Contact> Bcc { get; set; }
+        public List<SendContact> To { get; set; }
+        public List<SendContact> Cc { get; set; }
+        public List<SendContact> Bcc { get; set; }
 
         public long? TemplateID { get; set; }
         public bool? TemplateLanguage { get; set; }
-        public Contact TemplateErrorReporting { get; set; }
+        public SendContact TemplateErrorReporting { get; set; }
         public bool? TemplateErrorDelivery { get; set; }
 
         public List<Attachment> Attachments { get; set; }
