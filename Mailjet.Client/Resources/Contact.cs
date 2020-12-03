@@ -27,5 +27,3 @@ namespace Mailjet.Client.Resources
         public const string CountOnly = "CountOnly";
     }
 }
-
-

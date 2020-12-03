@@ -87,6 +87,7 @@ namespace Mailjet.Tests
                 .WithFrom(new Contact(_senderEmail))
                 .WithSubject("Test subject")
                 .WithTemplateId(nonExistentTemplateId)
+                .WithTrackOpens(TrackOpens.enabled)
                 .WithTo(new Contact(_senderEmail))
                 .Build();
 
