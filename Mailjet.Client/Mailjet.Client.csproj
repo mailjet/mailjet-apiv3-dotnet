@@ -1,33 +1,42 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net45;netstandard1.1</TargetFrameworks>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Version>1.2.3</Version>
-    <Authors>Mailjet, Dimitar Kostov</Authors>
-    <PackageLicenseUrl>https://github.com/mailjet/mailjet-apiv3-dotnet/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://github.com/mailjet/mailjet-apiv3-dotnet</PackageProjectUrl>
-    <Product>Mailjet.Api</Product>
-    <PackageId>Mailjet.Api</PackageId>
-    <Company>Mailjet</Company>
-    <PackageIconUrl>https://www.mailjet.com/wp-content/uploads/2017/04/Mailjet.png</PackageIconUrl>
-    <Description>
-Official C# client library For Mailjet API version 3. 
+	<PropertyGroup>
+		<TargetFrameworks>net45;netstandard1.1</TargetFrameworks>
+		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+		<Version>1.2.3</Version>
+		<Authors>Mailjet, Dimitar Kostov</Authors>
+		<PackageLicenseUrl>https://github.com/mailjet/mailjet-apiv3-dotnet/blob/master/LICENSE</PackageLicenseUrl>
+		<PackageProjectUrl>https://github.com/mailjet/mailjet-apiv3-dotnet</PackageProjectUrl>
+		<Product>Mailjet.Api</Product>
+		<PackageId>Mailjet.Api</PackageId>
+		<Company>Mailjet</Company>
+		<PackageIconUrl>https://www.mailjet.com/wp-content/uploads/2017/04/Mailjet.png</PackageIconUrl>
+		<Description>
+			Official C# client library For Mailjet API version 3.
 
-Documentation: https://dev.mailjet.com/guides/
-    </Description>
-    <PackageTags>Mailjet API Email Mail Microsoft Azure Transactional Marketing .NET Core</PackageTags>
-    <RepositoryUrl>https://github.com/mailjet/mailjet-apiv3-dotnet</RepositoryUrl>
-    <PackageVersion>1.2.3</PackageVersion>
-  </PropertyGroup>
+			Documentation: https://dev.mailjet.com/guides/
+		</Description>
+		<PackageTags>Mailjet API Email Mail Microsoft Azure Transactional Marketing .NET Core</PackageTags>
+		<RepositoryUrl>https://github.com/mailjet/mailjet-apiv3-dotnet</RepositoryUrl>
+		<PackageVersion>1.2.3</PackageVersion>
+		<SignAssembly>true</SignAssembly>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-  </ItemGroup>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<Deterministic>true</Deterministic>
+		<AssemblyOriginatorKeyFile>../Mailjet.snk</AssemblyOriginatorKeyFile>
+	</PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' != 'netstandard1.1' ">
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Net.Http" />
-  </ItemGroup>
-  
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' != 'netstandard1.1' ">
+		<Reference Include="Microsoft.CSharp" />
+		<Reference Include="System.Net.Http" />
+	</ItemGroup>
+
 </Project>
