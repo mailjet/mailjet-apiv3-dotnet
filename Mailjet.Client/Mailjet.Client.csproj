@@ -4,8 +4,8 @@
 		<TargetFrameworks>net45;netstandard1.1</TargetFrameworks>
 		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
 		
-		<Version>1.2.3</Version>
-		<PackageVersion>1.2.3</PackageVersion>
+		<Version>2.0.0</Version>
+		<PackageVersion>2.0.0</PackageVersion>
 
 		<Authors>Mailjet, Dimitar Kostov</Authors>
 		<PackageLicenseUrl>https://github.com/mailjet/mailjet-apiv3-dotnet/blob/master/LICENSE</PackageLicenseUrl>
@@ -30,7 +30,7 @@
 
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+
 		<Deterministic>true</Deterministic>
 	</PropertyGroup>
 
