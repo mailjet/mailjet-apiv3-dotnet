@@ -32,6 +32,6 @@ namespace Mailjet.Client.TransactionalEmails
         public string URLTags { get; set; }
 
         public Dictionary<string, string> Headers { get; set; }
-        public Dictionary<string, string> Variables { get; set; }
+        public Dictionary<string, object> Variables { get; set; }
     }
 }

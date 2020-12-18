@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Mailjet.Client.Exceptions;
 
@@ -35,7 +34,7 @@ namespace Mailjet.Client.TransactionalEmails
         private string _urlTags;
 
         private Dictionary<string, string> _headers;
-        private Dictionary<string, string> _variables;
+        private Dictionary<string, object> _variables;
 
         /// <summary>
         /// The email subject line
@@ -384,10 +383,10 @@ namespace Mailjet.Client.TransactionalEmails
         /// Enter the information in the template text / HTML part by using the [[var:{var_name}]] format.
         /// Equivalent of using X-MJ-Vars header through SMTP.
         /// </summary>
-        public TransactionalEmailBuilder WithVariable(string variableName, string variableValue)
+        public TransactionalEmailBuilder WithVariable(string variableName, object variableValue)
         {
             if (_variables == null)
-                _variables = new Dictionary<string, string>();
+                _variables = new Dictionary<string, object>();
 
             _variables.Add(variableName, variableValue);
 
