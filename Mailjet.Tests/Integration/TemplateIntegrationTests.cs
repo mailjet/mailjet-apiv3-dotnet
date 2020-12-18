@@ -29,17 +29,6 @@ namespace Mailjet.Tests.Integration
         [TestMethod]
         public async Task SendTransactionalEmailAsync_SendsEmail()
         {
-
-            MailjetRequest request = new MailjetRequest
-            {
-                Resource = TemplateDetailcontent.Resource,
-                ResourceId = ResourceId.Numeric(2095787)
-            };
-
-            var resp = await _client.GetAsync(request);
-
-
-
             long templateId = await CreateTemplate();
 
             Assert.IsTrue(templateId > 0);
@@ -70,7 +59,7 @@ namespace Mailjet.Tests.Integration
         private async Task FillTemplateContent(long templateId)
         {
             // arrange
-            var content = File.ReadAllText(@"Resources\MJMLTemplate.mjml");
+            var content = File.ReadAllText(Path.Combine("Resources", "MJMLTemplate.mjml"));
 
             MailjetRequest request = new MailjetRequest 
             {
