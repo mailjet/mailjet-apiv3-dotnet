@@ -28,6 +28,7 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
   - [Overview](#overview)
   - [Table of contents](#table-of-contents)
   - [Release notes](#release-notes)
+    - [v 2.0.1](#v-201)
     - [v 2.0.0](#v-200)
   - [Compatibility](#compatibility)
     - [Dependencies .NETStandard 1.1](#dependencies-netstandard-11)
@@ -58,6 +59,8 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
 
 ## Release notes
 
+### v 2.0.1
+   - TransactionalEmailBuidler now accepts variables of any type (previously only strings)
 ### v 2.0.0
    - Added TransactionalEmailBuidler and TransactionalEmail strongly typed models - now you can send transactional emails more easily! Please, check [tests for more information](Mailjet.Tests/Integration/SendTransactionalEmailIntegrationTests.cs)
    - Added Contacts delete API - now you can support [GDPR delete contacts](https://dev.mailjet.com/email/guides/contact-management/#gdpr-delete-contacts) easily

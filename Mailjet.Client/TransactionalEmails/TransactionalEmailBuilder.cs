@@ -34,7 +34,7 @@ namespace Mailjet.Client.TransactionalEmails
         private string _urlTags;
 
         private Dictionary<string, string> _headers;
-        private Dictionary<string, object> _variables;
+        private IDictionary<string, object> _variables;
 
         /// <summary>
         /// The email subject line
@@ -394,6 +394,18 @@ namespace Mailjet.Client.TransactionalEmails
         }
 
         /// <summary>
+        /// Adds dictionary with variables used to modify the content of your email.
+        /// Enter the information in the template text / HTML part by using the [[var:{var_name}]] format.
+        /// Equivalent of using X-MJ-Vars header through SMTP.
+        /// </summary>
+        public TransactionalEmailBuilder WithVariables(IDictionary<string, object> variables)
+        {
+            _variables = variables;
+
+            return this;
+        }
+
+        /// <summary>
         /// Builds the mail message
         /// </summary>
         public TransactionalEmail Build()
@@ -435,6 +447,7 @@ namespace Mailjet.Client.TransactionalEmails
         /// with single preconfigured builder instance
         /// performs the deep clone of the current builder instance
         /// </summary>
+        /// <remarks>Clone creates a deep clone of the builder itself, but does not clone passed variables</remarks>
         public TransactionalEmailBuilder Clone()
         {
             var result = (TransactionalEmailBuilder) MemberwiseClone();
@@ -459,7 +472,8 @@ namespace Mailjet.Client.TransactionalEmails
 
         private void Validate()
         {
-            if (_from == null)
+            // template could have a default sender, so in case of using template we should allow sending w/o sender specified
+            if (_from == null && _templateId == null)
                 throw new MailjetClientConfigurationException("From field should be specified");
 
             if (string.IsNullOrEmpty(_textPart) &&
