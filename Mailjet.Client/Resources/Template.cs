@@ -21,11 +21,21 @@ namespace Mailjet.Client.Resources
         public const string APIKey = "APIKey";
         public const string CategoriesSelectionMethod = "CategoriesSelectionMethod";
         public const string PurposesSelectionMethod = "PurposesSelectionMethod";
+        public const string IsTextPartGenerationEnabled = "IsTextPartGenerationEnabled";
         public const string User = "User";
         public const string Limit = "Limit";
         public const string Offset = "Offset";
         public const string Sort = "Sort";
         public const string CountOnly = "CountOnly";
+
+        public const long EditModeValue_DNDBuilder = 1;
+        public const long EditModeValue_HTMLBuilder = 2;
+        public const long EditModeValue_SavedSectionBuilder = 3;
+        public const long EditModeValue_MJMLBuilder = 4;
+
+        public const string OwnerTypeValue_Apikey = "apikey";
+        public const string OwnerTypeValue_User = "user";
+        public const string OwnerTypeValue_Global = "global";
     }
 }
 
