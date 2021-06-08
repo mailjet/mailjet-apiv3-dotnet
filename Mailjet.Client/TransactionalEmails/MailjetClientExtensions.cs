@@ -24,7 +24,7 @@ namespace Mailjet.Client.TransactionalEmails
         /// Sends a single transactional email using send API v3.1
         /// </summary>
         public static Task<TransactionalEmailResponse> SendTransactionalEmailAsync(
-            this MailjetClient mailjetClient,
+            this IMailjetClient mailjetClient,
             TransactionalEmail transactionalEmail, bool isSandboxMode = false)
         {
             return mailjetClient.SendTransactionalEmailsAsync(new[] {transactionalEmail}, isSandboxMode);
@@ -33,7 +33,7 @@ namespace Mailjet.Client.TransactionalEmails
         /// <summary>
         /// Sends transactional emails using send API v3.1
         /// </summary>
-        public static async Task<TransactionalEmailResponse> SendTransactionalEmailsAsync(this MailjetClient mailjetClient,
+        public static async Task<TransactionalEmailResponse> SendTransactionalEmailsAsync(this IMailjetClient mailjetClient,
             IEnumerable<TransactionalEmail> transactionalEmails, bool isSandboxMode = false)
         {
             if (transactionalEmails.Count() > SendV31.MaxEmailsPerBatch || !transactionalEmails.Any())
