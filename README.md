@@ -39,6 +39,7 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
     - [Dependency Injection](#dependency-injection)
     - [API Versioning](#api-versioning)
     - [Base URL](#base-url)
+    - [Proxy](#proxy)
   - [List of resources](#list-of-resources)
   - [Request Examples](#request-examples)
     - [POST Request](#post-request)
@@ -212,6 +213,38 @@ MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_
 ```
 
 If your account has been moved to Mailjet's US architecture, the URL value you need to set is `https://api.us.mailjet.com`.
+
+### Proxy
+
+You can set proxy for the client by passing it's parameters to the httpClientHandler:
+
+```csharp
+            // create instance of proxy with configuration
+            var proxy = new WebProxy
+            {
+                // Credentials = new NetworkCredential("<proxyusername>", "<proxypassword>"),
+                // if your proxy requires credentials, uncomment this line ^^
+
+                // address of the proxy
+                // please, note - even if it's https proxy, the address should start from http
+                // https://github.com/dotnet/core/issues/2043
+                Address = new Uri("http://51.79.xx.xx:8080"),
+
+                UseDefaultCredentials = false
+            };
+
+            // pass the created proxy to HttpClientHandler
+            HttpClientHandler handler = new HttpClientHandler
+            {
+                Proxy = proxy,
+            };
+
+            // pass HttpClientHandler to the MailjetClient, so client will be using a proxy
+            var client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"),
+                Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"), handler);
+
+            // use client here...
+```
 
 ## List of resources
 
