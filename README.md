@@ -28,6 +28,7 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
   - [Overview](#overview)
   - [Table of contents](#table-of-contents)
   - [Release notes](#release-notes)
+    - [v 2.0.2](#v-202)
     - [v 2.0.1](#v-201)
     - [v 2.0.0](#v-200)
   - [Compatibility](#compatibility)
@@ -60,6 +61,8 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
 
 ## Release notes
 
+### v 2.0.2
+   - TransactionalEmailBuidler extension now not exposed in the IMailjetClient interface
 ### v 2.0.1
    - TransactionalEmailBuidler now accepts variables of any type (previously only strings)
 ### v 2.0.0
