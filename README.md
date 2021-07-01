@@ -637,7 +637,7 @@ To use a Bearer token you will need to client clientin from:
 
 ```csharp
 using Mailjet.Client;
-using Mailjet.Client.Resources;
+using Mailjet.Client.Resources.SMS;
 using System;
 using Newtonsoft.Json.Linq;
 namespace Mailjet.ConsoleApplication
