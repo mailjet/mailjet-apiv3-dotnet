@@ -1,6 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using Mailjet.Client.Exceptions;
+using Mailjet.Client.Resources;
+using Mailjet.Client.TransactionalEmails;
+using Mailjet.Client.TransactionalEmails.Response;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -14,6 +20,14 @@ namespace Mailjet.Client
     public class MailjetClient : IMailjetClient
     {
         private HttpClient _httpClient;
+        private static readonly JsonSerializer Serializer = JsonSerializer.CreateDefault(new JsonSerializerSettings
+        {
+            DefaultValueHandling = DefaultValueHandling.Ignore,
+            Converters = new List<JsonConverter>
+            {
+                new Newtonsoft.Json.Converters.StringEnumConverter()
+            }
+        });
 
         public MailjetClient(string apiKey, string apiSecret, HttpMessageHandler httpMessageHandler = null)
         {
@@ -95,6 +109,45 @@ namespace Mailjet.Client
 
             JObject content = await GetContent(responseMessage).ConfigureAwait(false);
             return new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
+        }
+
+        /// <summary>
+        /// Sends a single transactional email using send API v3.1
+        /// </summary>
+        public Task<TransactionalEmailResponse> SendTransactionalEmailAsync(
+            TransactionalEmail transactionalEmail, bool isSandboxMode = false)
+        {
+            return SendTransactionalEmailsAsync(new[] { transactionalEmail }, isSandboxMode);
+        }
+
+        /// <summary>
+        /// Sends transactional emails using send API v3.1
+        /// </summary>
+        public async Task<TransactionalEmailResponse> SendTransactionalEmailsAsync(
+            IEnumerable<TransactionalEmail> transactionalEmails, bool isSandboxMode = false)
+        {
+            if (transactionalEmails.Count() > SendV31.MaxEmailsPerBatch || !transactionalEmails.Any())
+                throw new MailjetClientConfigurationException($"Send Emails API v3.1 allows to send not more than {SendV31.MaxEmailsPerBatch} emails per call");
+
+            var request = new SendEmailRequest
+            {
+                Messages = transactionalEmails.ToList(),
+                SandboxMode = isSandboxMode,
+                AdvanceErrorHandling = true
+            };
+
+            var clientRequest = new MailjetRequest
+            {
+                Resource = SendV31.Resource,
+                Body = JObject.FromObject(request, Serializer)
+            };
+
+            var clientResponse = await PostAsync(clientRequest)
+                .ConfigureAwait(false);
+
+            var result = clientResponse.Content.ToObject<TransactionalEmailResponse>();
+
+            return result;
         }
 
         private async Task<JObject> GetContent(HttpResponseMessage responseMessage)
