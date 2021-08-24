@@ -107,6 +107,55 @@ namespace Mailjet.Tests.Integration
             Assert.AreEqual("TemplateID", error.ErrorRelatedTo.Single());
         }
 
+        [TestMethod]
+        async public System.Threading.Tasks.Task SendTransactionalEmailAsync_TemplateIdReturnsWrongSenderType_advanceErrorHandlingTrue()
+        {
+            System.Collections.Generic.Dictionary<string, object> variables = new System.Collections.Generic.Dictionary<string, object>() { { "actionLink", "https://anywhere.com" } };
+
+            var email = new TransactionalEmailBuilder()
+                .WithFrom(new SendContact(_senderEmail))
+                .WithTo(new SendContact(_senderEmail))
+                .WithTemplateId(3120707)
+                .WithVariables(variables)
+                .Build();
+
+
+            // invoke API to send email
+            var response = await _client.SendTransactionalEmailAsync(email, advanceErrorHandling: true);
+
+            Assert.AreEqual(1, response.Messages.Length);
+            var message = response.Messages[0];
+
+            Assert.AreEqual("error", message.Status);
+            Assert.AreEqual(1, message.Errors.Count);
+
+            var error = message.Errors.Single();
+            Assert.AreEqual(400, error.StatusCode);
+        }
+
+        [TestMethod]
+        async public System.Threading.Tasks.Task SendTransactionalEmailAsync_TemplateIdReturnsWrongSenderType_advanceErrorHandlingFalse()
+        {
+            System.Collections.Generic.Dictionary<string, object> variables = new System.Collections.Generic.Dictionary<string, object>() { { "actionLink", "https://anywhere.com" } };
+
+            var email = new TransactionalEmailBuilder()
+                .WithFrom(new SendContact(_senderEmail))
+                .WithTo(new SendContact(_senderEmail))
+                .WithTemplateId(3120707)
+                .WithVariables(variables)
+                .Build();
+
+
+            // invoke API to send email
+            var response = await _client.SendTransactionalEmailAsync(email, advanceErrorHandling: false);
+
+            Assert.AreEqual(1, response.Messages.Length);
+            var message = response.Messages[0];
+
+            Assert.AreEqual("success", message.Status);
+            Assert.IsNull(message.Errors);
+        }
+
         public static async Task<string> GetValidSenderEmail(MailjetClient client)
         {
             MailjetRequest request = new MailjetRequest

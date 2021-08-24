@@ -25,16 +25,16 @@ namespace Mailjet.Client.TransactionalEmails
         /// </summary>
         public static Task<TransactionalEmailResponse> SendTransactionalEmailAsync(
             this IMailjetClient mailjetClient,
-            TransactionalEmail transactionalEmail, bool isSandboxMode = false)
+            TransactionalEmail transactionalEmail, bool isSandboxMode = false, bool advanceErrorHandling = true)
         {
-            return mailjetClient.SendTransactionalEmailsAsync(new[] {transactionalEmail}, isSandboxMode);
+            return mailjetClient.SendTransactionalEmailsAsync(new[] {transactionalEmail}, isSandboxMode, advanceErrorHandling);
         }
 
         /// <summary>
         /// Sends transactional emails using send API v3.1
         /// </summary>
         public static async Task<TransactionalEmailResponse> SendTransactionalEmailsAsync(this IMailjetClient mailjetClient,
-            IEnumerable<TransactionalEmail> transactionalEmails, bool isSandboxMode = false)
+            IEnumerable<TransactionalEmail> transactionalEmails, bool isSandboxMode = false, bool advanceErrorHandling = true)
         {
             if (transactionalEmails.Count() > SendV31.MaxEmailsPerBatch || !transactionalEmails.Any())
                 throw new MailjetClientConfigurationException($"Send Emails API v3.1 allows to send not more than {SendV31.MaxEmailsPerBatch} emails per call");
@@ -43,7 +43,7 @@ namespace Mailjet.Client.TransactionalEmails
             {
                 Messages = transactionalEmails.ToList(),
                 SandboxMode = isSandboxMode,
-                AdvanceErrorHandling = true
+                AdvanceErrorHandling = advanceErrorHandling
             };
 
             var clientRequest = new MailjetRequest
