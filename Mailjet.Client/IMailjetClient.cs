@@ -8,5 +8,9 @@ namespace Mailjet.Client
         Task<MailjetResponse> PostAsync(MailjetRequest request);
         Task<MailjetResponse> PutAsync(MailjetRequest request);
         Task<MailjetResponse> DeleteAsync(MailjetRequest request);
+        MailjetResponse Get(MailjetRequest request);
+        MailjetResponse Post(MailjetRequest request);
+        MailjetResponse Put(MailjetRequest request);
+        MailjetResponse Delete(MailjetRequest request);
     }
 }
