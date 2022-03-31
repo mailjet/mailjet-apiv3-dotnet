@@ -141,8 +141,8 @@ namespace Mailjet.ConsoleApplication
 
          MailjetRequest request = new MailjetRequest
          {
-            Resource = Send.Resource,
-         }
+            Resource = Send.Resource
+         };
 
          // construct your email with builder
          var email = new TransactionalEmailBuilder()
