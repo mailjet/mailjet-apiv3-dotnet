@@ -60,7 +60,10 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
   - [Contribute](#contribute)
 
 ## Release notes
-
+### v 2.1.0
+- bums newtonsoft.json version to not trigger security warnings
+- removes .net framework target to not trigger sectuiry warnings
+- moves SendTransactionalEmailAsync methds to the client itself to be able mock in unit tests
 ### v 2.0.2
    - TransactionalEmailBuidler extension now not exposed in the IMailjetClient interface
 ### v 2.0.1
@@ -75,8 +78,8 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
 
 This .NET library is supported by:
 
- - .NET Core 1.0
- - .NET Framework 4.5
+ - .NET Core 3.1+
+ - .NET Framework 4.6.2
  - Mono 4.6
  - Xamarin.iOS 10.0
  - Xamarin.Android 7.0
@@ -87,7 +90,7 @@ This .NET library is supported by:
 ### Dependencies .NETStandard 1.1
 
  - NETStandard.Library (>= 1.6.1)
- - Newtonsoft.Json (>= 12.0.3)
+ - Newtonsoft.Json (>= 13.0.1)
 
 ## Installation
 
