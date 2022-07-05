@@ -13,7 +13,7 @@ namespace Mailjet.Tests.Integration
     [TestClass]
     public class SendTransactionalEmailIntegrationTests
     {
-        private MailjetClient _client;
+        private IMailjetClient _client;
         private string _senderEmail;
 
         [TestInitialize]
@@ -108,7 +108,7 @@ namespace Mailjet.Tests.Integration
         }
 
         [TestMethod]
-        async public System.Threading.Tasks.Task SendTransactionalEmailAsync_TemplateIdReturnsWrongSenderType_advanceErrorHandlingTrue()
+        public async Task SendTransactionalEmailAsync_TemplateIdReturnsWrongSenderType_advanceErrorHandlingTrue()
         {
             System.Collections.Generic.Dictionary<string, object> variables = new System.Collections.Generic.Dictionary<string, object>() { { "actionLink", "https://anywhere.com" } };
 
@@ -134,7 +134,7 @@ namespace Mailjet.Tests.Integration
         }
 
         [TestMethod]
-        async public System.Threading.Tasks.Task SendTransactionalEmailAsync_TemplateIdReturnsWrongSenderType_advanceErrorHandlingFalse()
+        public async Task SendTransactionalEmailAsync_TemplateIdReturnsWrongSenderType_advanceErrorHandlingFalse()
         {
             System.Collections.Generic.Dictionary<string, object> variables = new System.Collections.Generic.Dictionary<string, object>() { { "actionLink", "https://anywhere.com" } };
 
@@ -156,7 +156,7 @@ namespace Mailjet.Tests.Integration
             Assert.IsNull(message.Errors);
         }
 
-        public static async Task<string> GetValidSenderEmail(MailjetClient client)
+        public static async Task<string> GetValidSenderEmail(IMailjetClient client)
         {
             MailjetRequest request = new MailjetRequest
             {
