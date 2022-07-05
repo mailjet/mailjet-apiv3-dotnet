@@ -28,9 +28,6 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
   - [Overview](#overview)
   - [Table of contents](#table-of-contents)
   - [Release notes](#release-notes)
-    - [v 2.0.2](#v-202)
-    - [v 2.0.1](#v-201)
-    - [v 2.0.0](#v-200)
   - [Compatibility](#compatibility)
     - [Dependencies .NETStandard 1.1](#dependencies-netstandard-11)
   - [Installation](#installation)
@@ -60,6 +57,8 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
   - [Contribute](#contribute)
 
 ## Release notes
+### v 3.0.0
+- bums version to indicate breaking change (removing extension methods like SendTransactionalEmailAsync)
 ### v 2.1.0
 - bums newtonsoft.json version to not trigger security warnings
 - removes .net framework target to not trigger sectuiry warnings
