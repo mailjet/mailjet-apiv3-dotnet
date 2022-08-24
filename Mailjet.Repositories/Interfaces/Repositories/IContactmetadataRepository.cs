@@ -3,6 +3,7 @@ using Mailjet.Repositories.Models.DataContracts.Contact;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,5 +14,7 @@ namespace Mailjet.Repositories.Interfaces.Repositories
         IRepositoryList<ContactmetadataDataContract>
     {
 
+        IList<ContactmetadataDataContract> Create<T>()
+                    where T : class, new();
     }
 }

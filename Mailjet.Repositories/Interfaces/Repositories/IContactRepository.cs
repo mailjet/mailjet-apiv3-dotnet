@@ -7,6 +7,7 @@ using Mailjet.Repositories.Models.MailJet.DataContracts.Template;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,5 +18,6 @@ namespace Mailjet.Repositories.Interfaces.Repositories
         IRepositoryList<ContactDataContract, PagingRequestBaseDataContract>
     {
         IList<ContactDataContract> ListByContacsList(long iD);
+  
     }
 }

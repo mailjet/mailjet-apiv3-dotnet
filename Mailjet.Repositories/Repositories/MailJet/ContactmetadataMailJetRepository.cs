@@ -61,6 +61,34 @@ namespace Mailjet.Repositories.Repositories.MailJet
             }
         }
 
+        public IList<ContactmetadataDataContract> Create<T>() where T : class, new()
+        {
+            var modelInstance = new T();
+            var properties = modelInstance.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(property => {
+                Boolean result = property.CanRead && property.CanWrite;
+                return result;
+            }).ToList();
+
+            IList<ContactmetadataDataContract> existingContactmetadatas = this.List();
+
+            var missingPropertires = properties.Where(x => !existingContactmetadatas.Any(m => m.Name == x.Name)).ToList();
+
+            IList<ContactmetadataDataContract> addedContactmetadatas = new List<ContactmetadataDataContract>();
+            foreach (PropertyInfo property in missingPropertires)
+            {
+                ContactmetadataDataContract contactmetadataUnsaved = new()
+                {
+                    Name = property.Name
+                };
+
+                var contactmetadata = this.Create(contactmetadataUnsaved);
+
+                addedContactmetadatas.Add(contactmetadata);
+            }
+
+            return addedContactmetadatas;
+        }
+
         public IList<ContactmetadataDataContract> List()
         {
             IMailjetClient client = this.GetMailjetClient();
