@@ -7,8 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CRResearch.ContactFacade\CRResearch.ContactFacade.csproj" />
-    <ProjectReference Include="..\Mailjet.Client.Upgraded\Mailjet.Client.Upgraded.csproj" />
+    <ProjectReference Include="..\Mailjet.Client\Mailjet.Client.csproj" />
     <ProjectReference Include="..\Mailjet.Repositories\Mailjet.Repositories.csproj" />
   </ItemGroup>
 
