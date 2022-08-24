@@ -8,9 +8,9 @@ namespace Mailjet.Repositories.Interfaces.Configuration
 {
     public interface IMailJetConfiguration
     {
-        string GetMailJetApiPublicKey();
+        string MailJetApiPublicKey { get; }
 
-        string GetMailJetApiPrivateKey();
+        string MailJetApiPrivateKey { get; }
 
     }
 }
