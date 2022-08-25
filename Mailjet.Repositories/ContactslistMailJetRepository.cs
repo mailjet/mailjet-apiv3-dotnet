@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using Mailjet.Repositories.Models;
 using Mailjet.Repositories.Interfaces;
 using Microsoft.Extensions.Options;
+using Mailjet.Repositories.Models.MailJet.DataContracts.Base;
 
 namespace Mailjet.Repositories
 {
@@ -66,19 +67,14 @@ namespace Mailjet.Repositories
             throw new NotImplementedException();
         }
 
-        public IList<ContactslistDataContract> List()
+        public IList<ContactslistDataContract> List(PagingRequestBaseDataContract query)
         {
             IMailjetClient client = GetMailjetClient();
-
-            var contactslist = new ContactslistDataContract
-            {
-                Limit = 1000
-            };
 
             MailjetRequest request = new()
             {
                 Resource = Contactslist.Resource,
-                Filters = contactslist.ToDictionary()
+                Filters = query.ToDictionary()
             };
 
             MailjetResponse response = client.GetAsync(request).Result;

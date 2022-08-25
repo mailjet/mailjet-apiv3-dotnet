@@ -1,6 +1,7 @@
 ﻿using Mailjet.Client.Resources;
 using Mailjet.Repositories.Interfaces.Bases;
 using Mailjet.Repositories.Models.DataContracts.Contact;
+using Mailjet.Repositories.Models.MailJet.DataContracts.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Mailjet.Repositories.Interfaces
 {
     public interface IContactslistRepository :
         IRepositoryCreate<ContactslistDataContract>,
-        IRepositoryList<ContactslistDataContract>,
+        IRepositoryList<ContactslistDataContract, PagingRequestBaseDataContract>,
         IRepositoryRead<ContactslistDataContract, long>
     {
     }

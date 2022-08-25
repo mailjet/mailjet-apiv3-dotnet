@@ -29,7 +29,7 @@ namespace Mailjet.Repositories
         {
 
         }
-        public TemplateDetailcontentDataContract Get(int templateId)
+        public TemplateDetailcontentDataContract Read(Int64 templateId)
         {
             IMailjetClient client = GetMailjetClient();
 
@@ -48,7 +48,6 @@ namespace Mailjet.Repositories
                 IList<TemplateDetailcontentDataContract> results = rawData.ToObject<IList<TemplateDetailcontentDataContract>>()!;
 
                 return results.Single();
-
             }
             else
             {
@@ -63,16 +62,14 @@ namespace Mailjet.Repositories
             }
         }
 
-
-        public TemplateDetailcontentDataContract Create(TemplateDetailcontentDataContract templateDetailcontent)
+        public TemplateDetailcontentDataContract Create(Int64 templateId, TemplateDetailcontentDataContract templateDetailcontent)
         {
             IMailjetClient client = GetMailjetClient();
 
-
-
             MailjetRequest request = new()
             {
-                Resource = Template.Resource,
+                Resource = TemplateDetailcontent.Resource,
+                ResourceId = ResourceId.Numeric(templateId),
                 Body = (JObject)JToken.FromObject(templateDetailcontent)
             };
 
@@ -84,7 +81,7 @@ namespace Mailjet.Repositories
 
                 IList<TemplateDetailcontentDataContract> results = rawData.ToObject<IList<TemplateDetailcontentDataContract>>()!;
 
-                return results[0];
+                return results.Single();
             }
             else
             {

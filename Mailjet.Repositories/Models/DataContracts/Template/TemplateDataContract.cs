@@ -30,7 +30,7 @@ namespace Mailjet.Repositories.Models.MailJet.DataContracts.Template
         [DataMember]
         public EditModeValueTypes EditMode { get; set; }
         [DataMember]
-        public string ID { get; set; }
+        public Int64 ID { get; set; }
         [DataMember]
         public bool IsStarred { get; set; }
         [DataMember]

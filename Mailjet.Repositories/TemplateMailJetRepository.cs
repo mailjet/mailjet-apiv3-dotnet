@@ -4,6 +4,7 @@ using Mailjet.Repositories.Exceptions;
 using Mailjet.Repositories.Interfaces;
 using Mailjet.Repositories.Interfaces.Configuration;
 using Mailjet.Repositories.Models.MailJet;
+using Mailjet.Repositories.Models.MailJet.DataContracts.Base;
 using Mailjet.Repositories.Models.MailJet.DataContracts.Template;
 using Mailjet.Repositories.Repositories.Base;
 using Microsoft.Extensions.Options;
@@ -29,55 +30,15 @@ namespace Mailjet.Repositories
         {
 
         }
-        public TemplateReponseDataContract Get(int templateId)
+
+        public IList<TemplateReponseDataContract> List(PagingRequestBaseDataContract query)
         {
             IMailjetClient client = GetMailjetClient();
 
             MailjetRequest request = new()
             {
                 Resource = Template.Resource,
-                ResourceId = ResourceId.Numeric(templateId)
-            };
-
-            MailjetResponse response = client.GetAsync(request).Result;
-
-            if (response.IsSuccessStatusCode)
-            {
-                var rawData = response.GetData();
-
-                TemplateReponseDataContract[] results = rawData.ToObject<TemplateReponseDataContract[]>()!;
-
-                return results.Single();
-
-            }
-            else
-            {
-                var exceptionData = new MailJetExceptionModel
-                {
-                    StatusCode = response.StatusCode,
-                    ErrorInfo = response.GetErrorInfo(),
-                    ErrorMessage = response.GetErrorMessage()
-                };
-
-                throw new MailJetException(exceptionData);
-            }
-        }
-
-        public IList<TemplateReponseDataContract> List()
-        {
-            IMailjetClient client = GetMailjetClient();
-
-            var requestTempateContract = new TemplateDataContract
-            {
-                Locale = "en_US",
-                IsStarred = true,
-                Limit = 1000
-            };
-
-            MailjetRequest request = new()
-            {
-                Resource = Template.Resource,
-                Filters = requestTempateContract.ToDictionary()
+                Filters = query.ToDictionary()
             };
 
             MailjetResponse response = client.GetAsync(request).Result;
@@ -136,6 +97,40 @@ namespace Mailjet.Repositories
 
             }
 
+        }
+
+        public TemplateReponseDataContract Read(long templateId)
+        {
+            IMailjetClient client = GetMailjetClient();
+
+            MailjetRequest request = new()
+            {
+                Resource = Template.Resource,
+                ResourceId = ResourceId.Numeric(templateId)
+            };
+
+            MailjetResponse response = client.GetAsync(request).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                var rawData = response.GetData();
+
+                TemplateReponseDataContract[] results = rawData.ToObject<TemplateReponseDataContract[]>()!;
+
+                return results.Single();
+
+            }
+            else
+            {
+                var exceptionData = new MailJetExceptionModel
+                {
+                    StatusCode = response.StatusCode,
+                    ErrorInfo = response.GetErrorInfo(),
+                    ErrorMessage = response.GetErrorMessage()
+                };
+
+                throw new MailJetException(exceptionData);
+            }
         }
     }
 }

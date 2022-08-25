@@ -16,6 +16,7 @@ using Mailjet.Repositories.Models.DataContracts.Contact;
 using Newtonsoft.Json.Linq;
 using Mailjet.Repositories.Interfaces;
 using Microsoft.Extensions.Options;
+using Mailjet.Repositories.Models.MailJet.DataContracts.Base;
 
 namespace Mailjet.Repositories
 {
@@ -64,6 +65,12 @@ namespace Mailjet.Repositories
                 throw new MailJetException(exceptionData);
             }
         }
+
+        public IList<ContactdataDataContract> List(PagingRequestBaseDataContract key)
+        {
+            throw new NotImplementedException();
+        }
+
         public ContactdataDataContract Read(long key)
         {
             IMailjetClient client = GetMailjetClient();

@@ -40,7 +40,7 @@ namespace Mailjet.Repositories
                 Resource = Campaign.Resource
             };
 
-            MailjetResponse response = client.GetAsync(request).Result;
+            MailjetResponse response = client.PostAsync(request).Result;
 
             if (response.IsSuccessStatusCode)
             {
@@ -103,7 +103,35 @@ namespace Mailjet.Repositories
 
         public CampaignDataContract Read(int key)
         {
-            throw new NotImplementedException();
+            IMailjetClient client = GetMailjetClient();
+
+            MailjetRequest request = new()
+            {
+                Resource = Campaign.Resource,
+                ResourceId = ResourceId.Numeric(key)
+            };
+
+            MailjetResponse response = client.GetAsync(request).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                var rawData = response.GetData();
+
+                IList<CampaignDataContract> results = rawData.ToObject<IList<CampaignDataContract>>();
+
+                return results.Single();
+            }
+            else
+            {
+                var exceptionData = new MailJetExceptionModel
+                {
+                    StatusCode = response.StatusCode,
+                    ErrorInfo = response.GetErrorInfo(),
+                    ErrorMessage = response.GetErrorMessage()
+                };
+
+                throw new MailJetException(exceptionData);
+            }
         }
 
         public CampaignDataContract Update(CampaignDataContract key)

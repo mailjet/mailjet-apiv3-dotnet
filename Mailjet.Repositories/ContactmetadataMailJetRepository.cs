@@ -17,6 +17,7 @@ using Newtonsoft.Json.Linq;
 using System.Reflection;
 using Mailjet.Repositories.Interfaces;
 using Microsoft.Extensions.Options;
+using Mailjet.Repositories.Models.MailJet.DataContracts.Base;
 
 namespace Mailjet.Repositories
 {
@@ -76,7 +77,12 @@ namespace Mailjet.Repositories
                 return result;
             }).ToList();
 
-            IList<ContactmetadataDataContract> existingContactmetadatas = List();
+            var query = new ContactmetadataDataContract
+            {
+                Limit = 1000
+            };
+
+            IList<ContactmetadataDataContract> existingContactmetadatas = List(query);
 
             var missingPropertires = properties.Where(x => !existingContactmetadatas.Any(m => m.Name == x.Name)).ToList();
 
@@ -96,19 +102,14 @@ namespace Mailjet.Repositories
             return addedContactmetadatas;
         }
 
-        public IList<ContactmetadataDataContract> List()
+        public IList<ContactmetadataDataContract> List(PagingRequestBaseDataContract query)
         {
             IMailjetClient client = GetMailjetClient();
-
-            var contactmetadata = new ContactmetadataDataContract
-            {
-                Limit = 1000
-            };
 
             MailjetRequest request = new()
             {
                 Resource = Contactmetadata.Resource,
-                Filters = contactmetadata.ToDictionary()
+                Filters = query.ToDictionary()
             };
 
             MailjetResponse response = client.GetAsync(request).Result;
@@ -132,7 +133,6 @@ namespace Mailjet.Repositories
 
                 throw new MailJetException(exceptionData);
             }
-
         }
     }
 }

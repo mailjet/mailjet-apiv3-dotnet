@@ -28,7 +28,7 @@ namespace Mailjet.Repositories.Models.DataContracts.Campaign
         [DataMember]
         public string HasTxtCount { get; set; }
         [DataMember]
-        public string ID { get; set; }
+        public Int64 ID { get; set; }
         [DataMember]
         public string IsDeleted { get; set; }
         [DataMember]
@@ -58,7 +58,7 @@ namespace Mailjet.Repositories.Models.DataContracts.Campaign
         [DataMember]
         public string CampaignStatus { get; set; }
         [DataMember]
-        public string ContactsListID { get; set; }
+        public Int64 ContactsListID { get; set; }
         [DataMember]
         public string CustomCampaign { get; set; }
         [DataMember]

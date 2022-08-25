@@ -11,7 +11,7 @@ namespace Mailjet.Repositories.Models.DataContracts.Campaign
         [DataMember]
         public string Clickcount { get; set; }
         [DataMember]
-        public string ID { get; set; }
+        public Int64 ID { get; set; }
         [DataMember]
         public string Opencount { get; set; }
         [DataMember]

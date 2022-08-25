@@ -16,7 +16,7 @@ namespace Mailjet.Repositories.Models.DataContracts.Contact
         [DataMember]
         public string Email { get; set; }
         [DataMember]
-        public string ID { get; set; }
+        public Int64 ID { get; set; }
         [DataMember]
         public string List { get; set; }
         [DataMember]
