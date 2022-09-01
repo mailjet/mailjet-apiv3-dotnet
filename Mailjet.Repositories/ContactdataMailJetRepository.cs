@@ -35,7 +35,7 @@ namespace Mailjet.Repositories
 
         public ContactdataDataContract Create(ContactdataCreateDataContract model)
         {
-            IMailjetClient client = GetMailjetClient();
+            IMailjetClient client = this.GetMailjetClient();
 
             MailjetRequest request = new()
             {
@@ -49,7 +49,7 @@ namespace Mailjet.Repositories
             {
                 var rawData = response.GetData();
 
-                IList<ContactdataDataContract> results = rawData.ToObject<IList<ContactdataDataContract>>();
+                IList<ContactdataDataContract> results = rawData.ToObject<IList<ContactdataDataContract>>()!;
 
                 return results.Single();
             }
@@ -73,7 +73,7 @@ namespace Mailjet.Repositories
 
         public ContactdataDataContract Read(long key)
         {
-            IMailjetClient client = GetMailjetClient();
+            IMailjetClient client = this.GetMailjetClient();
 
             MailjetRequest request = new()
             {
@@ -87,7 +87,7 @@ namespace Mailjet.Repositories
             {
                 var rawData = response.GetData();
 
-                IList<ContactdataDataContract> results = rawData.ToObject<IList<ContactdataDataContract>>();
+                IList<ContactdataDataContract> results = rawData.ToObject<IList<ContactdataDataContract>>()!;
 
                 return results.Single();
             }
@@ -106,7 +106,7 @@ namespace Mailjet.Repositories
 
         public ContactdataDataContract Read(string email)
         {
-            IMailjetClient client = GetMailjetClient();
+            IMailjetClient client = this.GetMailjetClient();
 
             ContactdataDataContract contactdataRequest = new()
             {
@@ -125,7 +125,7 @@ namespace Mailjet.Repositories
             {
                 var rawData = response.GetData();
 
-                IList<ContactdataDataContract> results = rawData.ToObject<IList<ContactdataDataContract>>();
+                IList<ContactdataDataContract> results = rawData.ToObject<IList<ContactdataDataContract>>()!;
 
                 if (results.Any())
                 {

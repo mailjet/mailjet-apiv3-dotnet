@@ -24,15 +24,16 @@ namespace Mailjet.Repositories
     {
         public CampaigndraftDetailcontentMailJetRepository(IMailJetConfiguration configurationRepository) : base(configurationRepository)
         {
+
         }
 
         public CampaigndraftDetailcontentDataContract Create(long campaigndraftId, CampaigndraftDetailcontentDataContract campaigndraftDetailcontent)
         {
-            IMailjetClient client = GetMailjetClient();
+            IMailjetClient client = this.GetMailjetClient();
 
             MailjetRequest request = new()
             {
-                Resource = TemplateDetailcontent.Resource,
+                Resource = CampaigndraftDetailcontent.Resource,
                 ResourceId = ResourceId.Numeric(campaigndraftId),
                 Body = (JObject)JToken.FromObject(campaigndraftDetailcontent)
             };
@@ -62,7 +63,7 @@ namespace Mailjet.Repositories
 
         public CampaigndraftDetailcontentDataContract Read(Int64 campaigndraftDataId)
         {
-            IMailjetClient client = GetMailjetClient();
+            IMailjetClient client = this.GetMailjetClient();
 
             MailjetRequest request = new()
             {
@@ -92,5 +93,6 @@ namespace Mailjet.Repositories
                 throw new MailJetException(exceptionData);
             }
         }
+
     }
 }

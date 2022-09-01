@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Mailjet.Repositories.Interfaces.Methods;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,26 +9,18 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Mailjet.Repositories.Models.MailJet.DataContracts.Base
 {
     [DataContract]
-    public abstract class RequestBaseDataContract
+    public abstract class RequestBaseDataContract : IConvertToJSON
     {
         internal JObject ToJObject()
         {
-            return (JObject)JToken.FromObject(this.ToDictionary());
+            return JObject.Parse(this.ToJSON());
         }
 
-
-        internal IList<NameValueDataContract> ToNameValueList()
-        {
-           var dictionary = this.ToDictionary();
-
-            return dictionary.Select((x) => new NameValueDataContract() { Name = x.Key, Value = x.Value }).ToList();
-        }
-
-        
         internal Dictionary<String, String> ToDictionary()
         {
             Dictionary<String, String> dctionary = this.GetType().GetProperties()
@@ -52,12 +45,68 @@ namespace Mailjet.Repositories.Models.MailJet.DataContracts.Base
                         //}
                         //else
                         //{
-                            return d.GetValue(this, null)!.ToString();
+                        return d.GetValue(this, null)!.ToString()!;
                         //}
                     }
                  );
 
             return dctionary;
+        }
+
+        public string ToJSON()
+        {
+            IList<String> listResult = new List<String>();
+
+            IList<PropertyInfo> properties = this.GetType().GetProperties()
+                .Where(p =>
+                {
+                    object value = p.GetValue(this, null);
+                    if (value == null)
+                    {
+                        return false;
+                    }
+                    else if (value.ToString() == "0" || String.IsNullOrWhiteSpace(value.ToString()))
+                    {
+                        return false;
+                    }
+                    return true;
+                }).ToList();
+
+            foreach (PropertyInfo property in properties)
+            {
+                var name = property.Name;
+                object value = property.GetValue(this, null)!;
+                TypeCode typeCode = Type.GetTypeCode(value.GetType());
+
+                if (value is IConvertToJSON)
+                {
+                    listResult.Add($"\"{name}\": {((IConvertToJSON)value).ToJSON()}");
+                }
+                else if (typeCode == TypeCode.Boolean)
+                {
+                    listResult.Add($"\"{name}\": {value.ToString()!.ToLower()}");
+                }
+                else if (typeCode == TypeCode.Byte
+                         || typeCode == TypeCode.SByte
+                         || typeCode == TypeCode.UInt16
+                         || typeCode == TypeCode.UInt32
+                         || typeCode == TypeCode.UInt64
+                         || typeCode == TypeCode.Int16
+                         || typeCode == TypeCode.Int32
+                         || typeCode == TypeCode.Int64
+                         || typeCode == TypeCode.Decimal
+                         || typeCode == TypeCode.Double
+                         || typeCode == TypeCode.Single)
+                {
+                    listResult.Add($"\"{name}\": {value}");
+                }
+                else
+                {
+                    listResult.Add($"\"{name}\": \"{value}\"");
+                }
+            }
+
+            return "{" + string.Join(",", listResult) + "}";
         }
     }
 }

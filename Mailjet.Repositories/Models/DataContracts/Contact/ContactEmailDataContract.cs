@@ -1,16 +1,16 @@
 using Mailjet.Client;
+using Mailjet.Repositories.Interfaces.Models;
 using Mailjet.Repositories.Models.MailJet.DataContracts.Base;
 using System.Runtime.Serialization;
 
 namespace Mailjet.Repositories.Models.DataContracts.Contact
 {
     [DataContract]
-    public class ContactBasicDataContract<T>: ContactEmailDataContract
-        where T : class, new()
+    public class ContactEmailDataContract: RequestBaseDataContract, IContactEmail
     {
         [DataMember]
-        public Boolean IsExcludedFromCampaigns { get; set; }
+        public string Email { get; set; } = "";
         [DataMember]
-        public T Properties { get; set; } = new ();
+        public string Name { get; set; } = "";
 }
 }

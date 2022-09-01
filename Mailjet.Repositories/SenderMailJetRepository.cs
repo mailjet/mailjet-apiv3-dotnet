@@ -1,44 +1,47 @@
 ﻿using Mailjet.Client;
 using Mailjet.Client.Resources;
 using Mailjet.Repositories.Exceptions;
-using Mailjet.Repositories.Interfaces;
 using Mailjet.Repositories.Interfaces.Configuration;
-using Mailjet.Repositories.Models.DataContracts.Campaign;
 using Mailjet.Repositories.Models.MailJet;
-using Mailjet.Repositories.Models.MailJet.DataContracts;
-using Mailjet.Repositories.Models.MailJet.DataContracts.Base;
-using Mailjet.Repositories.Models.MailJet.DataContracts.Template;
 using Mailjet.Repositories.Repositories.Base;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Mailjet.Repositories.Models.DataContracts.Campaign;
+using Mailjet.Repositories.Models.DataContracts.Contact;
+using Mailjet.Repositories.Models.MailJet.DataContracts.Base;
+using Mailjet.Repositories.Interfaces;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
+using System.Reflection;
+using Mailjet.Repositories.Models.DataContracts.Sender;
 
 namespace Mailjet.Repositories
 {
-    public class CampaignMailJetRepository : MailJetRepositoryBase, ICampaignRepository
+    public class SenderMailJetRepository : MailJetRepositoryBase, ISenderRepository
     {
-        public CampaignMailJetRepository(IOptions<IMailJetConfiguration> configurationRepositoryOptions)
+        public SenderMailJetRepository(IOptions<IMailJetConfiguration> configurationRepositoryOptions)
            : base(configurationRepositoryOptions)
         {
 
         }
-        public CampaignMailJetRepository(IMailJetConfiguration configurationRepository)
+
+        public SenderMailJetRepository(IMailJetConfiguration configurationRepository)
             : base(configurationRepository)
         {
 
         }
 
-        public IList<CampaignDataContract> List(PagingRequestBaseDataContract search)
+        public IList<SenderDataContract> List(PagingRequestBaseDataContract query)
         {
             IMailjetClient client = this.GetMailjetClient();
 
             MailjetRequest request = new()
             {
-                Resource = Template.Resource,
-                Filters = search.ToDictionary()
+                Resource = Sender.Resource,
+                Filters = query.ToDictionary()
             };
 
             MailjetResponse response = client.GetAsync(request).Result;
@@ -47,7 +50,7 @@ namespace Mailjet.Repositories
             {
                 var rawData = response.GetData();
 
-                IList<CampaignDataContract> results = rawData.ToObject<IList<CampaignDataContract>>()!;
+                IList<SenderDataContract> results = rawData.ToObject<IList<SenderDataContract>>()!;
 
                 return results;
             }
@@ -64,13 +67,13 @@ namespace Mailjet.Repositories
             }
         }
 
-        public CampaignDataContract Read(long key)
+        public SenderDataContract Read(Int64 key)
         {
             IMailjetClient client = this.GetMailjetClient();
 
             MailjetRequest request = new()
             {
-                Resource = Campaign.Resource,
+                Resource = Sender.Resource,
                 ResourceId = ResourceId.Numeric(key)
             };
 
@@ -80,7 +83,7 @@ namespace Mailjet.Repositories
             {
                 var rawData = response.GetData();
 
-                IList<CampaignDataContract> results = rawData.ToObject<IList<CampaignDataContract>>()!;
+                IList<SenderDataContract> results = rawData.ToObject<IList<SenderDataContract>>()!;
 
                 return results.Single();
             }
@@ -96,32 +99,5 @@ namespace Mailjet.Repositories
                 throw new MailJetException(exceptionData);
             }
         }
-
-        public CampaignDataContract Update(DateTimeOffset key)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }
-
-//https://api.mailjet.com/v3/REST/campaigndraft
-//{
-//    "AXFraction": 0,
-//    "AXFractionName": "Version A",
-//    "AXTesting": 123456,
-//    "Current": 345678,
-//    "EditMode": "tool2",
-//    "IsStarred": false,
-//    "IsTextPartIncluded": true,
-//    "ReplyEmail": "replyto@mailjet.com",
-//    "SenderName": "Your Mailjet Pilot",
-//    "TemplateID": 123456,
-//    "Title": "My Mailjet Campaign",
-//    "ContactsListID": 123456,
-//    "Locale": "en_US",
-//    "SegmentationID": 123,
-//    "Sender": 1234,
-//    "SenderEmail": "pilot@mailjet.com",
-//    "Subject": "Your email flight plan!"
-//}

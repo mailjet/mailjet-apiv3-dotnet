@@ -14,6 +14,6 @@ namespace Mailjet.Repositories.Interfaces
         IRepositoryRead<TemplateReponseDataContract, Int64>,
         IRepositoryList<TemplateReponseDataContract, PagingRequestBaseDataContract>
     {
-
+        TemplateReponseDataContract ReadLast();
     }
 }

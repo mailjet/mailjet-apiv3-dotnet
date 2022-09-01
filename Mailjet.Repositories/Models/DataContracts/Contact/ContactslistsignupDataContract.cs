@@ -1,4 +1,5 @@
 using Mailjet.Client;
+using Mailjet.Repositories.Interfaces.Models;
 using Mailjet.Repositories.Models.MailJet.DataContracts.Base;
 using System.Runtime.Serialization;
 

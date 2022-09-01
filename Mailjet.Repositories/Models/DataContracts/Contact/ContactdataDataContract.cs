@@ -24,9 +24,9 @@ namespace Mailjet.Repositories.Models.DataContracts.Contact
         [DataMember]
         public string Fields { get; set; }
         [DataMember]
-        public string IsExcludedFromCampaigns { get; set; }
+        public Boolean IsExcludedFromCampaigns { get; set; }
         [DataMember]
-        public string IsUnsubscribed { get; set; }
+        public Boolean IsUnsubscribed { get; set; }
         [DataMember]
         public string LastActivityAt { get; set; }
         [DataMember]

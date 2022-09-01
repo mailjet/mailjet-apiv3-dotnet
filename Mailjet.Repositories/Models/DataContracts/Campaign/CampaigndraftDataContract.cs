@@ -26,9 +26,9 @@ namespace Mailjet.Repositories.Models.DataContracts.Campaign
         [DataMember]
         public Int64 ID { get; set; }
         [DataMember]
-        public string IsStarred { get; set; }
+        public Boolean IsStarred { get; set; }
         [DataMember]
-        public string IsTextPartIncluded { get; set; }
+        public Boolean IsTextPartIncluded { get; set; }
         [DataMember]
         public string Locale { get; set; }
         [DataMember]
@@ -58,13 +58,13 @@ namespace Mailjet.Repositories.Models.DataContracts.Campaign
         [DataMember]
         public string Used { get; set; }
         [DataMember]
-        public string IsArchived { get; set; }
+        public Boolean IsArchived { get; set; }
         [DataMember]
-        public string IsCampaign { get; set; }
+        public Boolean IsCampaign { get; set; }
         [DataMember]
-        public string IsDeleted { get; set; }
+        public Boolean IsDeleted { get; set; }
         [DataMember]
-        public string IsHandled { get; set; }
+        public Boolean IsHandled { get; set; }
         [DataMember]
         public string Modified { get; set; }
         [DataMember]

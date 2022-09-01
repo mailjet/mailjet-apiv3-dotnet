@@ -31,7 +31,7 @@ namespace Mailjet.Repositories
         }
         public TemplateDetailcontentDataContract Read(Int64 templateId)
         {
-            IMailjetClient client = GetMailjetClient();
+            IMailjetClient client = this.GetMailjetClient();
 
             MailjetRequest request = new()
             {
@@ -64,7 +64,7 @@ namespace Mailjet.Repositories
 
         public TemplateDetailcontentDataContract Create(Int64 templateId, TemplateDetailcontentDataContract templateDetailcontent)
         {
-            IMailjetClient client = GetMailjetClient();
+            IMailjetClient client = this.GetMailjetClient();
 
             MailjetRequest request = new()
             {

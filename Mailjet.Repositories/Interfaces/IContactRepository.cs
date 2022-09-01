@@ -13,9 +13,12 @@ using System.Threading.Tasks;
 
 namespace Mailjet.Repositories.Interfaces
 {
-    public interface IContactRepository : IRepository<ContactDataContract, Int64>,
+    public interface IContactRepository : IRepositoryCreate<ContactDataContract, ContactCreateDataContract>,
+        IRepositoryRead<ContactDataContract, Int64>,
         IRepositoryRead<ContactDataContract, String>,
-        IRepositoryList<ContactDataContract, PagingRequestBaseDataContract>
+        IRepositoryList<ContactDataContract, PagingRequestBaseDataContract>,
+        IRepositoryUpdate<ContactDataContract>, 
+        IRepositoryDelete<ContactDataContract, Int64>
     {
         IList<ContactDataContract> ListByContacsList(long iD);
   

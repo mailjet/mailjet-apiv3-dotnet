@@ -16,6 +16,7 @@ using Mailjet.Repositories.Models.MailJet.DataContracts.Base;
 using Mailjet.Repositories.Interfaces;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
+using System.Reflection;
 
 namespace Mailjet.Repositories
 {
@@ -35,7 +36,7 @@ namespace Mailjet.Repositories
 
         public CampaigndraftDataContract Create(CampaigndraftCreateDataContract model)
         {
-            IMailjetClient client = GetMailjetClient();
+            IMailjetClient client = this.GetMailjetClient();
 
             MailjetRequest request = new()
             {
@@ -43,13 +44,13 @@ namespace Mailjet.Repositories
                 Body = (JObject)JToken.FromObject(model)
             };
 
-            MailjetResponse response = client.GetAsync(request).Result;
+            MailjetResponse response = client.PostAsync(request).Result;
 
             if (response.IsSuccessStatusCode)
             {
                 var rawData = response.GetData();
 
-                CampaigndraftDataContract[] results = rawData.ToObject<CampaigndraftDataContract[]>();
+                CampaigndraftDataContract[] results = rawData.ToObject<CampaigndraftDataContract[]>()!;
 
                 return results.Single();
             }
@@ -66,14 +67,14 @@ namespace Mailjet.Repositories
             }
         }
 
-        public IList<CampaigndraftDataContract> List(PagingRequestBaseDataContract search)
+        public IList<CampaigndraftDataContract> List(PagingRequestBaseDataContract query)
         {
-            IMailjetClient client = GetMailjetClient();
+            IMailjetClient client = this.GetMailjetClient();
 
             MailjetRequest request = new()
             {
-                Resource = Template.Resource,
-                Filters = search.ToDictionary()
+                Resource = Campaigndraft.Resource,
+                Filters = query.ToDictionary()
             };
 
             MailjetResponse response = client.GetAsync(request).Result;
@@ -101,7 +102,7 @@ namespace Mailjet.Repositories
 
         public CampaigndraftDataContract Read(Int64 key)
         {
-            IMailjetClient client = GetMailjetClient();
+            IMailjetClient client = this.GetMailjetClient();
 
             MailjetRequest request = new()
             {
@@ -115,7 +116,7 @@ namespace Mailjet.Repositories
             {
                 var rawData = response.GetData();
 
-                IList<CampaigndraftDataContract> results = rawData.ToObject<IList<CampaigndraftDataContract>>();
+                IList<CampaigndraftDataContract> results = rawData.ToObject<IList<CampaigndraftDataContract>>()!;
 
                 return results.Single();
             }
@@ -132,14 +133,121 @@ namespace Mailjet.Repositories
             }
         }
 
-        public CampaigndraftDataContract Update(CampaigndraftDataContract key)
+        public CampaigndraftDataContract ReadLast()
         {
-            throw new NotImplementedException();
+            IMailjetClient client = this.GetMailjetClient();
+
+            PagingRequestBaseDataContract query = new()
+            {
+                Limit = 1
+            };
+
+            MailjetRequest request = new()
+            {
+                Resource = Campaigndraft.Resource,
+                Filters = query.ToDictionary()
+            };
+
+            MailjetResponse response = client.GetAsync(request).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                var rawData = response.GetData();
+
+                IList<CampaigndraftDataContract> results = rawData.ToObject<IList<CampaigndraftDataContract>>()!;
+
+                results = results.OrderByDescending(x => x.CreatedAt).ToList();
+
+                return results.Single();
+            }
+            else
+            {
+                var exceptionData = new MailJetExceptionModel
+                {
+                    StatusCode = response.StatusCode,
+                    ErrorInfo = response.GetErrorInfo(),
+                    ErrorMessage = response.GetErrorMessage()
+                };
+
+                throw new MailJetException(exceptionData);
+            }
+        }
+
+        public CampaigndraftDataContract Update(long item, CampaigndraftUpdateDataContract model)
+        {
+            IMailjetClient client = this.GetMailjetClient();
+
+            MailjetRequest request = new()
+            {
+                Resource = Campaigndraft.Resource,
+                Body = (JObject)JToken.FromObject(model)
+            };
+
+            MailjetResponse response = client.PutAsync(request).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                var rawData = response.GetData();
+
+                CampaigndraftDataContract[] results = rawData.ToObject<CampaigndraftDataContract[]>()!;
+
+                return results.Single();
+            }
+            else
+            {
+                MailJetExceptionModel exceptionData = new()
+                {
+                    StatusCode = response.StatusCode,
+                    ErrorInfo = response.GetErrorInfo(),
+                    ErrorMessage = response.GetErrorMessage()
+                };
+
+                throw new MailJetException(exceptionData);
+            }
+        }
+
+        public object SendTest(long campaigndraftId, RecipientsDataContract recipients)
+        {
+            IMailjetClient client = this.GetMailjetClient();
+
+            MailjetRequest request = new()
+            {
+                Resource = CampaigndraftTest.Resource,
+                ResourceId = ResourceId.Numeric(campaigndraftId),
+                Body = (JObject)JToken.FromObject(recipients)
+            };
+
+            MailjetResponse response = client.PostAsync(request).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                var rawData = response.GetData();
+
+                IList<CampaigndraftDetailcontentDataContract> results = rawData.ToObject<IList<CampaigndraftDetailcontentDataContract>>()!;
+
+                return results.Single();
+            }
+            else
+            {
+                var exceptionData = new MailJetExceptionModel
+                {
+                    StatusCode = response.StatusCode,
+                    ErrorInfo = response.GetErrorInfo(),
+                    ErrorMessage = response.GetErrorMessage()
+                };
+
+                throw new MailJetException(exceptionData);
+            }
         }
 
         public CampaigndraftDataContract Delete(long item)
         {
-            throw new NotImplementedException();
+            CampaigndraftUpdateDataContract model = new()
+            {
+                IsDeleted = true
+            };
+
+            return this.Update(item, model);
         }
     }
 }

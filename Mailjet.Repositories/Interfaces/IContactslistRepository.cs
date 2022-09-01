@@ -1,5 +1,6 @@
 ﻿using Mailjet.Client.Resources;
 using Mailjet.Repositories.Interfaces.Bases;
+using Mailjet.Repositories.Models.DataContracts.Campaign;
 using Mailjet.Repositories.Models.DataContracts.Contact;
 using Mailjet.Repositories.Models.MailJet.DataContracts.Base;
 using System;
@@ -15,5 +16,6 @@ namespace Mailjet.Repositories.Interfaces
         IRepositoryList<ContactslistDataContract, PagingRequestBaseDataContract>,
         IRepositoryRead<ContactslistDataContract, long>
     {
+        ContactslistDataContract ReadLast();
     }
 }

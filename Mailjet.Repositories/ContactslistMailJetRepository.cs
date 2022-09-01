@@ -14,6 +14,7 @@ using Mailjet.Repositories.Models;
 using Mailjet.Repositories.Interfaces;
 using Microsoft.Extensions.Options;
 using Mailjet.Repositories.Models.MailJet.DataContracts.Base;
+using System.Collections;
 
 namespace Mailjet.Repositories
 {
@@ -30,7 +31,7 @@ namespace Mailjet.Repositories
 
         public ContactslistDataContract Create(ContactslistDataContract model)
         {
-            IMailjetClient client = GetMailjetClient();
+            IMailjetClient client = this.GetMailjetClient();
 
             MailjetRequest request = new()
             {
@@ -69,7 +70,7 @@ namespace Mailjet.Repositories
 
         public IList<ContactslistDataContract> List(PagingRequestBaseDataContract query)
         {
-            IMailjetClient client = GetMailjetClient();
+            IMailjetClient client = this.GetMailjetClient();
 
             MailjetRequest request = new()
             {
@@ -83,7 +84,7 @@ namespace Mailjet.Repositories
             {
                 var rawData = response.GetData();
 
-                IList<ContactslistDataContract> results = rawData.ToObject<IList<ContactslistDataContract>>();
+                IList<ContactslistDataContract> results = rawData.ToObject<IList<ContactslistDataContract>>()!;
 
                 return results;
             }
@@ -102,7 +103,7 @@ namespace Mailjet.Repositories
 
         public ContactslistDataContract Read(long key)
         {
-            IMailjetClient client = GetMailjetClient();
+            IMailjetClient client = this.GetMailjetClient();
 
             MailjetRequest request = new()
             {
@@ -116,7 +117,46 @@ namespace Mailjet.Repositories
             {
                 var rawData = response.GetData();
 
-                IList<ContactslistDataContract> results = rawData.ToObject<IList<ContactslistDataContract>>();
+                IList<ContactslistDataContract> results = rawData.ToObject<IList<ContactslistDataContract>>()!;
+
+                return results.Single();
+            }
+            else
+            {
+                var exceptionData = new MailJetExceptionModel
+                {
+                    StatusCode = response.StatusCode,
+                    ErrorInfo = response.GetErrorInfo(),
+                    ErrorMessage = response.GetErrorMessage()
+                };
+
+                throw new MailJetException(exceptionData);
+            }
+        }
+
+        public ContactslistDataContract ReadLast()
+        {
+            IMailjetClient client = this.GetMailjetClient();
+
+            PagingRequestBaseDataContract query = new()
+            {
+                Limit = 1,
+                Sort = "CreatedAt DESC",
+            };
+
+            MailjetRequest request = new()
+            {
+                Resource = Contactslist.Resource,
+                Filters = query.ToDictionary()
+            };
+
+            MailjetResponse response = client.GetAsync(request).Result;
+
+            if (response.IsSuccessStatusCode)
+            {
+                var rawData = response.GetData();
+
+                IList<ContactslistDataContract> results = rawData.ToObject<IList<ContactslistDataContract>>()!;
 
                 return results.Single();
             }

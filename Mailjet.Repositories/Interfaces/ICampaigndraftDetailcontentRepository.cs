@@ -1,6 +1,7 @@
 ﻿using Mailjet.Client.Resources;
 using Mailjet.Repositories.Interfaces.Bases;
 using Mailjet.Repositories.Models.DataContracts.Campaign;
+using Mailjet.Repositories.Models.DataContracts.Contact;
 using Mailjet.Repositories.Models.MailJet.DataContracts.Base;
 using Mailjet.Repositories.Models.MailJet.DataContracts.Template;
 using System;
@@ -15,6 +16,5 @@ namespace Mailjet.Repositories.Interfaces
         IRepositoryCreate<CampaigndraftDetailcontentDataContract, Int64, CampaigndraftDetailcontentDataContract>,
         IRepositoryRead<CampaigndraftDetailcontentDataContract, Int64>
     {
-
     }
 }

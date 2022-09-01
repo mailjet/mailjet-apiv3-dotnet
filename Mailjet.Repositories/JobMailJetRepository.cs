@@ -33,7 +33,7 @@ namespace Mailjet.Repositories
         public JobDataContract CreateMergeContactsIntoListJob<T>(long contactslistId, IList<ContactBasicDataContract<T>> contacts)
             where T : class, new()
         {
-            IMailjetClient client = GetMailjetClient();
+            IMailjetClient client = this.GetMailjetClient();
 
             ContactslistManagemanycontactsDataContract contactslist = new()
             {
@@ -78,7 +78,7 @@ namespace Mailjet.Repositories
         public JobDataContract ReadContactListJobStatus(long jobId, long contactslistId)
         {
 
-            IMailjetClient client = GetMailjetClient();
+            IMailjetClient client = this.GetMailjetClient();
 
             MailjetRequest request = new()
             {

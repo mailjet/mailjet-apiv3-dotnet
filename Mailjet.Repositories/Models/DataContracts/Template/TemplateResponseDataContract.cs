@@ -5,10 +5,12 @@ using System.Runtime.Serialization;
 
 namespace Mailjet.Repositories.Models.MailJet.DataContracts.Template
 {
+
+    [DataContract]
     public class TemplateReponseDataContract : ReponseBaseDataContract
     {
         [DataMember]
-        public int ID { get; set; }
+        public Int64 ID { get; set; }
         [DataMember]
         public string Name { get; set; }
         [DataMember]

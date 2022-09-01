@@ -33,9 +33,9 @@ namespace Mailjet.Repositories
 
         }
 
-        public ContactDataContract Create(ContactDataContract model)
+        public ContactDataContract Create(ContactCreateDataContract model)
         {
-            IMailjetClient client = GetMailjetClient();
+            IMailjetClient client = this.GetMailjetClient();
 
             MailjetRequest request = new()
             {
@@ -68,7 +68,7 @@ namespace Mailjet.Repositories
 
         public ContactDataContract Read(long key)
         {
-            IMailjetClient client = GetMailjetClient();
+            IMailjetClient client = this.GetMailjetClient();
 
             MailjetRequest request = new()
             {
@@ -101,7 +101,7 @@ namespace Mailjet.Repositories
 
         public ContactDataContract? Read(string email)
         {
-            IMailjetClient client = GetMailjetClient();
+            IMailjetClient client = this.GetMailjetClient();
 
             ContactDataContract contactRequest = new()
             {
@@ -156,7 +156,7 @@ namespace Mailjet.Repositories
 
         public IList<ContactDataContract> List(PagingRequestBaseDataContract search)
         {
-            IMailjetClient client = GetMailjetClient();
+            IMailjetClient client = this.GetMailjetClient();
 
             MailjetRequest request = new()
             {
@@ -190,7 +190,7 @@ namespace Mailjet.Repositories
         public IList<ContactDataContract> ListByContacsList(long contactslistId)
         {
 
-            IMailjetClient client = GetMailjetClient();
+            IMailjetClient client = this.GetMailjetClient();
 
             var contactDataContract = new ContactDataContract
             {

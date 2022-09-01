@@ -1,5 +1,6 @@
 ﻿using Mailjet.Repositories.Interfaces.Bases;
 using Mailjet.Repositories.Models.DataContracts.Campaign;
+using Mailjet.Repositories.Models.DataContracts.Contact;
 using Mailjet.Repositories.Models.MailJet.DataContracts;
 using Mailjet.Repositories.Models.MailJet.DataContracts.Base;
 using System;
@@ -14,9 +15,10 @@ namespace Mailjet.Repositories.Interfaces
         IRepositoryCreate<CampaigndraftDataContract, CampaigndraftCreateDataContract>,
         IRepositoryRead<CampaigndraftDataContract, Int64>,
         IRepositoryList<CampaigndraftDataContract, PagingRequestBaseDataContract>,
-        IRepositoryUpdate<CampaigndraftDataContract>,
+        IRepositoryUpdate<CampaigndraftDataContract, Int64, CampaigndraftUpdateDataContract>,
         IRepositoryDelete<CampaigndraftDataContract, Int64>
     {
-
+        CampaigndraftDataContract ReadLast();
+        object SendTest(Int64 campaigndraftId, RecipientsDataContract recipients);
     }
 }

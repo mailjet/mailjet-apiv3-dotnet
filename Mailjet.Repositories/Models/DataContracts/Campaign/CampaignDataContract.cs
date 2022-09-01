@@ -30,9 +30,9 @@ namespace Mailjet.Repositories.Models.DataContracts.Campaign
         [DataMember]
         public Int64 ID { get; set; }
         [DataMember]
-        public string IsDeleted { get; set; }
+        public Boolean IsDeleted { get; set; }
         [DataMember]
-        public string IsStarred { get; set; }
+        public Boolean IsStarred { get; set; }
         [DataMember]
         public string List { get; set; }
         [DataMember]
@@ -68,7 +68,7 @@ namespace Mailjet.Repositories.Models.DataContracts.Campaign
         [DataMember]
         public string FromType { get; set; }
         [DataMember]
-        public string IsNewsletterTool { get; set; }
+        public Boolean IsNewsletterTool { get; set; }
     }
 }
 

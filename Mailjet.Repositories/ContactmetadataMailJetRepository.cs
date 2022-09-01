@@ -36,7 +36,7 @@ namespace Mailjet.Repositories
 
         public ContactmetadataDataContract Create(ContactmetadataDataContract model)
         {
-            IMailjetClient client = GetMailjetClient();
+            IMailjetClient client = this.GetMailjetClient();
 
             MailjetRequest request = new()
             {
@@ -77,21 +77,26 @@ namespace Mailjet.Repositories
                 return result;
             }).ToList();
 
-            var query = new ContactmetadataDataContract
+            IList<String> metadatas = properties.Select(x=>x.Name).ToList();
+
+            return this.Create(metadatas);
+        }
+
+        public IList<ContactmetadataDataContract> Create(IList<string> metadatas)
+        {
+            IList<ContactmetadataDataContract> existingContactmetadatas = this.List(new ContactmetadataDataContract
             {
                 Limit = 1000
-            };
+            });
 
-            IList<ContactmetadataDataContract> existingContactmetadatas = List(query);
-
-            var missingPropertires = properties.Where(x => !existingContactmetadatas.Any(m => m.Name == x.Name)).ToList();
+            IList<String> missingMetadatas = metadatas.Where(x => !existingContactmetadatas.Any(m => m.Name == x)).ToList();
 
             IList<ContactmetadataDataContract> addedContactmetadatas = new List<ContactmetadataDataContract>();
-            foreach (PropertyInfo property in missingPropertires)
+            foreach (String metadata in missingMetadatas)
             {
                 ContactmetadataDataContract contactmetadataUnsaved = new()
                 {
-                    Name = property.Name
+                    Name = metadata
                 };
 
                 var contactmetadata = Create(contactmetadataUnsaved);
@@ -104,7 +109,7 @@ namespace Mailjet.Repositories
 
         public IList<ContactmetadataDataContract> List(PagingRequestBaseDataContract query)
         {
-            IMailjetClient client = GetMailjetClient();
+            IMailjetClient client = this.GetMailjetClient();
 
             MailjetRequest request = new()
             {

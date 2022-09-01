@@ -1,11 +1,12 @@
 using Mailjet.Client;
+using Mailjet.Repositories.Interfaces.Models;
 using Mailjet.Repositories.Models.MailJet.DataContracts.Base;
 using System.Runtime.Serialization;
 
 namespace Mailjet.Repositories.Models.DataContracts.Contact
 {
     [DataContract]
-    public class ContactDataContract: PagingRequestBaseDataContract
+    public class ContactDataContract: PagingRequestBaseDataContract, IContactEmail
     {
         [DataMember]
         public string CreatedAt { get; set; }
@@ -20,9 +21,9 @@ namespace Mailjet.Repositories.Models.DataContracts.Contact
         [DataMember]
         public string IsExcludedFromCampaigns { get; set; }
         [DataMember]
-        public string IsOptInPending { get; set; }
+        public Boolean IsOptInPending { get; set; }
         [DataMember]
-        public string IsSpamComplaining { get; set; }
+        public Boolean IsSpamComplaining { get; set; }
         [DataMember]
         public string LastActivityAt { get; set; }
         [DataMember]
@@ -38,7 +39,7 @@ namespace Mailjet.Repositories.Models.DataContracts.Contact
         [DataMember]
         public String ContactsList { get; set; }
         [DataMember]
-        public string IsUnsubscribed { get; set; }
+        public Boolean IsUnsubscribed { get; set; }
         [DataMember]
         public string Status { get; set; }
     }

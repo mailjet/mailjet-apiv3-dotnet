@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Mailjet.Repositories.Models.MailJet.DataContracts.Base
 {
-    public class NameValueDataContract
+    public class JObjectNameValueDataContract
     {
         public String Name { get; set; }
-        public String Value { get; set; }
+        public JObject Value { get; set; }
     }
 }

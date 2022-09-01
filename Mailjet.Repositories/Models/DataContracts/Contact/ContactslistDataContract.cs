@@ -14,7 +14,7 @@ namespace Mailjet.Repositories.Models.DataContracts.Contact
         [DataMember]
         public Int64 ID { get; set; }
         [DataMember]
-        public string IsDeleted { get; set; }
+        public Boolean IsDeleted { get; set; }
         [DataMember]
         public string Name { get; set; }
         [DataMember]

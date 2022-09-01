@@ -7,7 +7,7 @@ namespace Mailjet.Repositories.Models.DataContracts.Campaign
     public class CampaigndraftScheduleDataContract
     {
         [DataMember]
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
     }
 }
 
