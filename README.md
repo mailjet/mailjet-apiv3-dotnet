@@ -155,7 +155,7 @@ namespace Mailjet.ConsoleApplication
                 .Build();
 
          // invoke API to send email
-         var response = await _client.SendTransactionalEmailAsync(email);
+         var response = await client.SendTransactionalEmailAsync(email);
 
          // check response
          Assert.AreEqual(1, response.Messages.Length);
