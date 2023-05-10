@@ -426,7 +426,7 @@ namespace Mailjet.Client.TransactionalEmails
                 TemplateID = _templateId,
                 TemplateLanguage = _templateLanguage,
                 TemplateErrorReporting = _templateErrorReporting,
-                TemplateErrorDelivery = _templateErrorDelivery,
+                TemplateErrorDeliver = _templateErrorDelivery,
                 Attachments = _attachments,
                 InlinedAttachments = _inlinedAttachments,
                 Priority = _priority,
