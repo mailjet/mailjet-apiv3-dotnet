@@ -20,7 +20,7 @@ namespace Mailjet.Client.TransactionalEmails
         private long? _templateId;
         private bool? _templateLanguage;
         private SendContact _templateErrorReporting;
-        private bool? _templateErrorDelivery;
+        private bool? _templateErrorDeliver;
 
         private List<Attachment> _attachments;
         private List<Attachment> _inlinedAttachments;
@@ -212,7 +212,7 @@ namespace Mailjet.Client.TransactionalEmails
         /// </summary>
         public TransactionalEmailBuilder WithTemplateErrorDeliver(bool shouldProceedWithMessageDeliveryInCaseOfErrors)
         {
-            _templateErrorDelivery = shouldProceedWithMessageDeliveryInCaseOfErrors;
+            _templateErrorDeliver = shouldProceedWithMessageDeliveryInCaseOfErrors;
             return this;
         }
 
@@ -426,7 +426,7 @@ namespace Mailjet.Client.TransactionalEmails
                 TemplateID = _templateId,
                 TemplateLanguage = _templateLanguage,
                 TemplateErrorReporting = _templateErrorReporting,
-                TemplateErrorDeliver = _templateErrorDelivery,
+                TemplateErrorDeliver = _templateErrorDeliver,
                 Attachments = _attachments,
                 InlinedAttachments = _inlinedAttachments,
                 Priority = _priority,
@@ -491,7 +491,7 @@ namespace Mailjet.Client.TransactionalEmails
             }
             else
             {
-                if (_templateErrorDelivery.HasValue || _templateLanguage.HasValue || _templateErrorReporting != null)
+                if (_templateErrorDeliver.HasValue || _templateLanguage.HasValue || _templateErrorReporting != null)
                     throw new MailjetClientConfigurationException("To use template options, template id should be set");
             }
         }
