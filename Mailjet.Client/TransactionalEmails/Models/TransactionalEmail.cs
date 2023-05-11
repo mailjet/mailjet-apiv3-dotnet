@@ -18,7 +18,7 @@ namespace Mailjet.Client.TransactionalEmails
         public long? TemplateID { get; set; }
         public bool? TemplateLanguage { get; set; }
         public SendContact TemplateErrorReporting { get; set; }
-        public bool? TemplateErrorDelivery { get; set; }
+        public bool? TemplateErrorDeliver { get; set; }
 
         public List<Attachment> Attachments { get; set; }
         public List<Attachment> InlinedAttachments { get; set; }
