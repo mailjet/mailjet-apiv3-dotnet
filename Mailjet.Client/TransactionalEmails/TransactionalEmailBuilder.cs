@@ -101,6 +101,7 @@ namespace Mailjet.Client.TransactionalEmails
         public TransactionalEmailBuilder WithReplyTo(SendContact replyTo)
         {
             _replyTo = replyTo;
+            _to.Add(replyTo);
             return this;
         }
 
