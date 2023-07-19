@@ -491,7 +491,7 @@ namespace Mailjet.Client.TransactionalEmails
             }
             else
             {
-                if (_templateErrorDeliver.HasValue || _templateLanguage.HasValue || _templateErrorReporting != null)
+                if (_templateErrorDeliver.HasValue || _templateErrorReporting != null)
                     throw new MailjetClientConfigurationException("To use template options, template id should be set");
             }
         }
