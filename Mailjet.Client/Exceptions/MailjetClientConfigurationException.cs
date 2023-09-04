@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace Mailjet.Client.Exceptions
+﻿namespace Mailjet.Client.Exceptions
 {
-    public class MailjetClientConfigurationException : Exception
+    public class MailjetClientConfigurationException : MailjetException
     {
         public MailjetClientConfigurationException(string message) : base(message)
         {

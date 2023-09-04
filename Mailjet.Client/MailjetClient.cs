@@ -1,16 +1,16 @@
-﻿using Newtonsoft.Json;
+﻿using Mailjet.Client.Exceptions;
+using Mailjet.Client.Helpers;
+using Mailjet.Client.Resources;
+using Mailjet.Client.TransactionalEmails;
+using Mailjet.Client.TransactionalEmails.Response;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Mailjet.Client.Exceptions;
-using Mailjet.Client.Resources;
-using Mailjet.Client.TransactionalEmails;
-using Mailjet.Client.TransactionalEmails.Response;
 
 namespace Mailjet.Client
 {
@@ -73,7 +73,7 @@ namespace Mailjet.Client
 
             var responseMessage = await _httpClient.GetAsync(url).ConfigureAwait(false);
 
-            JObject content = await GetContent(responseMessage).ConfigureAwait(false);
+            JObject content = await HttpContentHelper.GetContentAsync(responseMessage).ConfigureAwait(false);
             return new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
         }
 
@@ -85,7 +85,7 @@ namespace Mailjet.Client
             HttpContent contentPost = new StringContent(output, Encoding.UTF8, MailjetConstants.JsonMediaType);
             var responseMessage = await _httpClient.PostAsync(url, contentPost).ConfigureAwait(false);
 
-            JObject content = await GetContent(responseMessage).ConfigureAwait(false);
+            JObject content = await HttpContentHelper.GetContentAsync(responseMessage).ConfigureAwait(false);
             return new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
         }
 
@@ -97,7 +97,7 @@ namespace Mailjet.Client
             HttpContent contentPut = new StringContent(output, Encoding.UTF8, MailjetConstants.JsonMediaType);
             var responseMessage = await _httpClient.PutAsync(url, contentPut).ConfigureAwait(false);
 
-            JObject content = await GetContent(responseMessage).ConfigureAwait(false);
+            JObject content = await HttpContentHelper.GetContentAsync(responseMessage).ConfigureAwait(false);
             MailjetResponse mailjetResponse = new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
             return mailjetResponse;
         }
@@ -108,47 +108,8 @@ namespace Mailjet.Client
 
             var responseMessage = await _httpClient.DeleteAsync(url).ConfigureAwait(false);
 
-            JObject content = await GetContent(responseMessage).ConfigureAwait(false);
+            JObject content = await HttpContentHelper.GetContentAsync(responseMessage).ConfigureAwait(false);
             return new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
-        }
-
-        private async Task<JObject> GetContent(HttpResponseMessage responseMessage)
-        {
-            string cnt = null;
-
-            if (responseMessage.Content != null)
-            {
-                cnt = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-            }
-
-            JObject content;
-            if (!string.IsNullOrEmpty(cnt) && responseMessage.Content.Headers.ContentType.MediaType == MailjetConstants.JsonMediaType)
-            {
-                content = JObject.Parse(cnt);
-            }
-            else
-            {
-                content = new JObject();
-                content.Add("StatusCode", new JValue((int) responseMessage.StatusCode));
-            }
-
-            if (!responseMessage.IsSuccessStatusCode && !content.ContainsKey(MailjetConstants.ErrorInfo))
-            {
-                if (responseMessage.StatusCode == ((HttpStatusCode) 429))
-                {
-                    content.Add(MailjetConstants.ErrorInfo, new JValue(MailjetConstants.TooManyRequestsMessage));
-                }
-                else if (responseMessage.StatusCode == HttpStatusCode.InternalServerError)
-                {
-                    content.Add(MailjetConstants.ErrorInfo, new JValue(MailjetConstants.InternalServerErrorGeneralMessage));
-                }
-                else
-                {
-                    content.Add(MailjetConstants.ErrorInfo, new JValue(responseMessage.ReasonPhrase));
-                }
-            }
-
-            return content;
         }
 
         private void InitHttpClient(HttpMessageHandler httpMessageHandler)
@@ -162,6 +123,8 @@ namespace Mailjet.Client
         /// <summary>
         /// Sends a single transactional email using send API v3.1
         /// </summary>
+        /// <exception cref="MailjetClientConfigurationException">Thrown when email count exceeds the max allowed number</exception>
+        /// <exception cref="MailjetServerException">Thrown when generic error returned from the server</exception>
         public Task<TransactionalEmailResponse> SendTransactionalEmailAsync(TransactionalEmail transactionalEmail, bool isSandboxMode = false, bool advanceErrorHandling = true)
         {
             return SendTransactionalEmailsAsync(new[] { transactionalEmail }, isSandboxMode, advanceErrorHandling);
@@ -170,6 +133,8 @@ namespace Mailjet.Client
         /// <summary>
         /// Sends transactional emails using send API v3.1
         /// </summary>
+        /// <exception cref="MailjetClientConfigurationException">Thrown when email count exceeds the max allowed number</exception>
+        /// <exception cref="MailjetServerException">Thrown when generic error returned from the server</exception>
         public async Task<TransactionalEmailResponse> SendTransactionalEmailsAsync(IEnumerable<TransactionalEmail> transactionalEmails, bool isSandboxMode = false, bool advanceErrorHandling = true)
         {
             if (transactionalEmails.Count() > SendV31.MaxEmailsPerBatch || !transactionalEmails.Any())
@@ -188,10 +153,15 @@ namespace Mailjet.Client
                 Body = JObject.FromObject(request, Serializer)
             };
 
-            var clientResponse = await PostAsync(clientRequest)
+            MailjetResponse clientResponse = await PostAsync(clientRequest)
                 .ConfigureAwait(false);
 
-            var result = clientResponse.Content.ToObject<TransactionalEmailResponse>();
+            TransactionalEmailResponse result = clientResponse.Content.ToObject<TransactionalEmailResponse>();
+
+            if (result.Messages == null && !clientResponse.IsSuccessStatusCode)
+            {
+                throw new MailjetServerException(clientResponse);
+            }
 
             return result;
         }
