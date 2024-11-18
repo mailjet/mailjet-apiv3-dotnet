@@ -6,7 +6,6 @@ using Mailjet.Client;
 using Mailjet.Client.Resources;
 using Mailjet.Client.TransactionalEmails;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
 
 namespace Mailjet.Tests.Integration
 {
@@ -169,11 +168,11 @@ namespace Mailjet.Tests.Integration
 
             foreach (var emailObject in response.GetData())
             {
-                if (emailObject.Type != JTokenType.Object)
+                if (emailObject.GetValueKind() != System.Text.Json.JsonValueKind.Object)
                     continue;
 
-                if (emailObject.Value<string>("Status") == "Active")
-                    return emailObject.Value<string>("Email");
+                if (emailObject["Status"].GetValue<string>() == "Active")
+                    return emailObject["Email"].GetValue<string>();
             }
 
             Assert.Fail("Cannot find Active sender address under given account");
