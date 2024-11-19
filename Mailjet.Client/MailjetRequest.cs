@@ -1,6 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace Mailjet.Client
 {
@@ -19,7 +20,7 @@ namespace Mailjet.Client
         public IDictionary<string, string> Filters { get; set; } = new Dictionary<string, string>();
 
         // The request body is a JObject that will be cast into a String before the call
-        public JObject Body { get; set; } = new JObject();
+        public JsonObject Body { get; set; } = new JsonObject();
 
         public MailjetRequest Filter(string key, string value)
         {
@@ -34,11 +35,11 @@ namespace Mailjet.Client
 
         public MailjetRequest Property(string key, Object value)
         {
-            Body.Add(key, new JValue(value));
+            Body.Add(key, JsonValue.Create(value));
             return this;
         }
 
-        public MailjetRequest Property(string key, JToken value)
+        public MailjetRequest Property(string key, JsonNode value)
         {
             Body.Add(key, value);
             return this;
@@ -54,11 +55,11 @@ namespace Mailjet.Client
 
         public override string ToString()
         {
-            dynamic jObject = new JObject();
-            jObject.Resource = JObject.FromObject(Resource);
+            dynamic jObject = new JsonObject();
+            jObject.Resource = JsonSerializer.SerializeToNode(Resource);
             jObject.ResourceId = ResourceId != null ? ResourceId.Id : null;
             jObject.ActionID = ActionId.HasValue ? ActionId.Value.ToString() : null;
-            jObject.Filters = JObject.FromObject(Filters);
+            jObject.Filters = JsonSerializer.SerializeToNode(Filters);
             jObject.Body = Body;
 
             return jObject.ToString();

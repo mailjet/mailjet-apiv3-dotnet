@@ -1,10 +1,10 @@
 using Mailjet.Client;
 using Mailjet.Client.Resources;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
 using RichardSzalay.MockHttp;
 using System;
 using System.Net;
+using System.Text.Json.Nodes;
 using sms = Mailjet.Client.Resources.SMS;
 
 namespace Mailjet.Tests
@@ -38,9 +38,9 @@ namespace Mailjet.Tests
             int expectedTotal = 1;
             int expectedCount = 1;
 
-            var expectedData = new JArray
+            var expectedData = new JsonArray
             {
-                new JObject
+                new JsonObject
                 {
                     { Apikey.APIKey, "ApiKeyTest" },
                 },
@@ -63,11 +63,11 @@ namespace Mailjet.Tests
             };
 
             MailjetResponse response = client.GetAsync(request).Result;
-
+            
             Assert.IsTrue(response.IsSuccessStatusCode);
             Assert.AreEqual(expectedTotal, response.GetTotal());
             Assert.AreEqual(expectedCount, response.GetCount());
-            Assert.IsTrue(JToken.DeepEquals(expectedData, response.GetData()));
+            Assert.IsTrue(JsonValue.DeepEquals(expectedData, response.GetData()));
         }
 
         [TestMethod]
@@ -119,7 +119,7 @@ namespace Mailjet.Tests
         {
             int expectedTotal = 1;
             int expectedCount = 1;
-            var expectedData = new JArray();
+            var expectedData = new JsonArray();
 
             var mockHttp = new MockHttpMessageHandler();
 
@@ -144,7 +144,7 @@ namespace Mailjet.Tests
             Assert.IsTrue(response.IsSuccessStatusCode);
             Assert.AreEqual(expectedTotal, response.GetTotal());
             Assert.AreEqual(expectedCount, response.GetCount());
-            Assert.IsTrue(JToken.DeepEquals(expectedData, response.GetData()));
+            Assert.IsTrue(JsonArray.DeepEquals(expectedData, response.GetData()));
         }
 
         [TestMethod]
@@ -154,14 +154,14 @@ namespace Mailjet.Tests
             string expectedName = "PENDING";
             string expectedDescription = "The request is accepted.";
 
-            var status = new JObject
+            var status = new JsonObject
             {
                 { Code, expectedCode},
                 { Name, expectedName},
                 { Description, expectedDescription}
             };
 
-            var smsExportResponse = new JObject
+            var smsExportResponse = new JsonObject
             {
                 { Status, status }
             };
@@ -187,15 +187,15 @@ namespace Mailjet.Tests
             MailjetResponse response = client.PostAsync(request).Result;
 
             Assert.IsTrue(response.IsSuccessStatusCode);
-            Assert.AreEqual(expectedCode, response.GetData()[0][Status].Value<int>(Code));
-            Assert.AreEqual(expectedName, response.GetData()[0][Status].Value<string>(Name));
-            Assert.AreEqual(expectedDescription, response.GetData()[0][Status].Value<string>(Description));
+            Assert.AreEqual(expectedCode, response.GetData()[0][Status][Code].GetValue<int>());
+            Assert.AreEqual(expectedName, response.GetData()[0][Status][Name].GetValue<string>());
+            Assert.AreEqual(expectedDescription, response.GetData()[0][Status][Description].GetValue<string>());
         }
 
         [TestMethod]
         public void TestSmsStatisticsAsync()
         {
-            var expectedData = new JArray();
+            var expectedData = new JsonArray();
             var mockHttp = new MockHttpMessageHandler();
             var jsonResponse = GenerateJsonResponse(1, 1, expectedData);
 
@@ -215,12 +215,12 @@ namespace Mailjet.Tests
             MailjetResponse response = client.GetAsync(request).Result;
 
             Assert.IsTrue(response.IsSuccessStatusCode);
-            Assert.IsTrue(JToken.DeepEquals(expectedData, response.GetData()));
+            Assert.IsTrue(JsonArray.DeepEquals(expectedData, response.GetData()));
         }
 
-        private string GenerateJsonResponse(int total, int count, JArray data)
+        private string GenerateJsonResponse(int total, int count, JsonArray data)
         {
-            var jObject = new JObject()
+            var jObject = new JsonObject()
             {
                 { TotalKey, total },
                 { CountKey, count },
@@ -230,9 +230,9 @@ namespace Mailjet.Tests
             return GenerateJsonResponse(jObject);
         }
 
-        private string GenerateJsonResponse(JObject jObject)
+        private string GenerateJsonResponse(JsonObject jObject)
         {
-            return jObject.ToString(Newtonsoft.Json.Formatting.None);
+            return jObject.ToString();
         }
     }
 }

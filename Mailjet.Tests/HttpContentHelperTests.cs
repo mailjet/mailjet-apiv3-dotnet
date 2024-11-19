@@ -2,7 +2,6 @@
 using Mailjet.Client.Helpers;
 using Mailjet.Client.TransactionalEmails.Response;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Net;
@@ -22,7 +21,7 @@ namespace Mailjet.Tests
 
             // act
             var result = await HttpContentHelper.GetContentAsync(new HttpResponseMessage { StatusCode = expectedStatusCode });
-            HttpStatusCode statusCode = (HttpStatusCode) Enum.Parse(typeof(HttpStatusCode), result.Value<string>("StatusCode"));
+            HttpStatusCode statusCode = (HttpStatusCode) Enum.Parse(typeof(HttpStatusCode), result["StatusCode"].GetValue<int>().ToString());
 
             // assert
             Assert.AreEqual(expectedStatusCode, statusCode);
@@ -39,7 +38,7 @@ namespace Mailjet.Tests
             var result = await HttpContentHelper.GetContentAsync(response);
 
             // assert
-            Assert.IsTrue(result.Value<JArray>(nameof(TransactionalEmailResponse.Messages)).Any());
+            Assert.IsTrue(result[nameof(TransactionalEmailResponse.Messages)].AsArray().Any());
         }
 
         [TestMethod]
@@ -51,7 +50,7 @@ namespace Mailjet.Tests
 
             // act
             var result = await HttpContentHelper.GetContentAsync(response);
-            string erroInfo = result.Value<string>(MailjetConstants.ErrorInfo);
+            string erroInfo = result[MailjetConstants.ErrorInfo].GetValue<string>();
 
             // assert
             Assert.IsNotNull(erroInfo);
@@ -65,7 +64,7 @@ namespace Mailjet.Tests
 
             // act
             var result = await HttpContentHelper.GetContentAsync(response);
-            string erroInfo = result.Value<string>(MailjetConstants.ErrorInfo);
+            string erroInfo = result[MailjetConstants.ErrorInfo].GetValue<string>();
 
             // assert
             Assert.AreEqual(MailjetConstants.TooManyRequestsMessage, erroInfo);
@@ -79,7 +78,7 @@ namespace Mailjet.Tests
 
             // act
             var result = await HttpContentHelper.GetContentAsync(response);
-            string erroInfo = result.Value<string>(MailjetConstants.ErrorInfo);
+            string erroInfo = result[MailjetConstants.ErrorInfo].GetValue<string>();
 
             // assert
             Assert.AreEqual(MailjetConstants.InternalServerErrorGeneralMessage, erroInfo);

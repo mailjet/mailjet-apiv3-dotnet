@@ -54,11 +54,11 @@ namespace Mailjet.Tests.Integration
 
             var firstObject = response.GetData()[0];
 
-            Assert.AreEqual(true, firstObject.Value<bool>("IsExcludedFromCampaigns"));
-            Assert.AreEqual(_contactName, firstObject.Value<string>("Name"));
-            Assert.AreEqual(_contactEmail, firstObject.Value<string>("Email"));
+            Assert.AreEqual(true, firstObject["IsExcludedFromCampaigns"].GetValue<bool>());
+            Assert.AreEqual(_contactName, firstObject["Name"].GetValue<string>());
+            Assert.AreEqual(_contactEmail, firstObject["Email"].GetValue<string>());
 
-            var id = firstObject.Value<long>("ID");
+            var id = firstObject["ID"].GetValue<long>();
 
             return id;
         }
@@ -82,10 +82,10 @@ namespace Mailjet.Tests.Integration
 
             var firstObject = response.GetData()[0];
 
-            Assert.AreEqual(true, firstObject.Value<bool>("IsExcludedFromCampaigns"));
-            Assert.AreEqual(_contactName, firstObject.Value<string>("Name"));
-            Assert.AreEqual(_contactEmail, firstObject.Value<string>("Email"));
-            Assert.AreEqual(contactId, firstObject.Value<long>("ID"));
+            Assert.AreEqual(true, firstObject["IsExcludedFromCampaigns"].GetValue<bool>());
+            Assert.AreEqual(_contactName, firstObject["Name"].GetValue<string>());
+            Assert.AreEqual(_contactEmail, firstObject["Email"].GetValue<string>());
+            Assert.AreEqual(contactId, firstObject["ID"].GetValue<long>());
         }
 
         private async Task AssertDeleteContact(long contactId)

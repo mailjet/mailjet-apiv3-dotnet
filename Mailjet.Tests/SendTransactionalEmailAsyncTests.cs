@@ -1,11 +1,11 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 using Mailjet.Client;
 using Mailjet.Client.TransactionalEmails;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
 using RichardSzalay.MockHttp;
 
 namespace Mailjet.Tests
@@ -67,7 +67,7 @@ namespace Mailjet.Tests
         {
             // arrange
             string expectedRequest = File.ReadAllText(@"MockResponses/SendEmailV31Request.json");
-            var expectedJObject = JObject.Parse(expectedRequest);
+            var expectedJObject = JsonObject.Parse(expectedRequest);
 
             _handler
                 .Expect(HttpMethod.Post, "https://api.mailjet.com/v3.1/send")
@@ -77,8 +77,8 @@ namespace Mailjet.Tests
                 {
                     var content = message.Content.ReadAsStringAsync().Result;
 
-                    var actualJObject = JObject.Parse(content);
-                    return JToken.DeepEquals(actualJObject, expectedJObject);
+                    var actualJObject = JsonObject.Parse(content);
+                    return JsonNode.DeepEquals(actualJObject, expectedJObject);
                 })
                 .Respond("application/json", "{}");
 
