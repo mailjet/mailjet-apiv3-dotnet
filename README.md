@@ -14,7 +14,7 @@
 # Mailjet .NET Wrapper
 
 [![Build Status](https://travis-ci.org/mailjet/mailjet-apiv3-dotnet.svg?branch=master)](https://travis-ci.org/mailjet/mailjet-apiv3-dotnet)
-![Current Version](https://img.shields.io/badge/version-2.0.0-green.svg)
+![Current Version](https://img.shields.io/badge/version-3.1.0-green.svg)
 
 ## Overview
 
@@ -29,7 +29,7 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
   - [Table of contents](#table-of-contents)
   - [Release notes](#release-notes)
   - [Compatibility](#compatibility)
-    - [Dependencies .NETStandard 1.1](#dependencies-netstandard-11)
+    - [Dependencies .NET 8.0](#dependencies-net-80)
   - [Installation](#installation)
   - [Authentication](#authentication)
   - [Make your first call](#make-your-first-call)
@@ -57,6 +57,8 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
   - [Contribute](#contribute)
 
 ## Release notes
+### v 3.1.0
+- upgraded target framework to .NET 8.0
 ### v 3.0.0
 - bums version to indicate breaking change (removing extension methods like SendTransactionalEmailAsync)
 ### v 2.1.0
@@ -77,19 +79,13 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
 
 This .NET library is supported by:
 
- - .NET Core 3.1+
- - .NET Framework 4.6.2
- - Mono 4.6
- - Xamarin.iOS 10.0
- - Xamarin.Android 7.0
- - Universal Windows Platform 10
- - Windows 8.0
- - Windows Phone 8.1
+ - .NET 8.0+
+ - Windows 10
+ - Windows 11
 
-### Dependencies .NETStandard 1.1
+### Dependencies .NET 8.0
 
- - NETStandard.Library (>= 1.6.1)
- - Newtonsoft.Json (>= 13.0.1)
+ - .NET (>= 8.0.0)
 
 ## Installation
 
