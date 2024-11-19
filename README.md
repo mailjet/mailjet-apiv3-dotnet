@@ -82,6 +82,8 @@ This .NET library is supported by:
  - .NET 8.0+
  - Windows 10
  - Windows 11
+ - Linux
+ - macOS
 
 ### Dependencies .NET 8.0
 
