@@ -57,6 +57,10 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
   - [Contribute](#contribute)
 
 ## Release notes
+### v 3.0.1
+- Renames TemplateErrorDelivery property into TemplateErrorDeliver
+- Fixes TransactionalEmailBuilder validation
+- Adds transaction email error handling when Messages property is null
 ### v 3.0.0
 - bums version to indicate breaking change (removing extension methods like SendTransactionalEmailAsync)
 ### v 2.1.0
