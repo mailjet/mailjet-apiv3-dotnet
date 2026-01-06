@@ -1,25 +1,19 @@
-﻿using System;
+﻿using System.Text.Json.Serialization;
 using Mailjet.Client.Exceptions;
 
-namespace Mailjet.Client.TransactionalEmails
+namespace Mailjet.Client.TransactionalEmails;
+
+public class SendContact
 {
-    public class SendContact
+    [JsonConstructor]
+    public SendContact(string email, string? name = null)
     {
-        public SendContact(string email, string name)
-            : this(email)
-        {
-            Name = name;
-        }
-
-        public SendContact(string email)
-        {
-            if (email == null || email.IndexOf("@", StringComparison.Ordinal) == -1)
-                throw new MailjetClientConfigurationException("Valid email address is required");
-
-            Email = email;
-        }
-
-        public string Name { get; }
-        public string Email { get; }
+        if (email == null || !email.Contains('@'))
+            throw new MailjetClientConfigurationException("Valid email address is required");
+        Email = email;
+        Name = name;
     }
+
+    public string? Name { get; }
+    public string Email { get; }
 }

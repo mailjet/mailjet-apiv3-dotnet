@@ -2,100 +2,59 @@
 using Mailjet.Client.Helpers;
 using Mailjet.Client.TransactionalEmails.Response;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
+using System.Text.Json.Nodes;
 
-namespace Mailjet.Tests
+namespace Mailjet.Tests;
+
+[TestClass]
+public class HttpContentHelperTests
 {
-    [TestClass]
-    public class HttpContentHelperTests
+    [TestMethod]
+    public async Task GetContentAsync_WhenContentIsNull_ReturnsStatusCode()
     {
-        [TestMethod]
-        public async Task GetContentAsync_WhenContentIsNull_ReturnsStatusCode()
-        {
-            // arrange
-            HttpStatusCode expectedStatusCode = HttpStatusCode.OK;
+        var result = await HttpContentHelper.GetContentAsync(new HttpResponseMessage { StatusCode = HttpStatusCode.OK });
+        Assert.AreEqual((int)HttpStatusCode.OK, result["StatusCode"]?.GetValue<int>());
+    }
 
-            // act
-            var result = await HttpContentHelper.GetContentAsync(new HttpResponseMessage { StatusCode = expectedStatusCode });
-            HttpStatusCode statusCode = (HttpStatusCode) Enum.Parse(typeof(HttpStatusCode), result.Value<string>("StatusCode"));
+    [TestMethod]
+    public async Task GetContentAsync_WhenContentNotNull_ParsesMessagesCorrectly()
+    {
+        var response = GetHttpResponse(HttpStatusCode.BadRequest, "{\"Messages\":[{\"Status\":\"error\"}]}");
+        var result = await HttpContentHelper.GetContentAsync(response);
+        var messages = result[nameof(TransactionalEmailResponse.Messages)]?.AsArray();
+        Assert.IsNotNull(messages);
+        Assert.IsTrue(messages.Count > 0);
+    }
 
-            // assert
-            Assert.AreEqual(expectedStatusCode, statusCode);
-        }
+    [TestMethod]
+    public async Task GetContentAsync_WhenContentIsGenericError_ReturnsErrorInfo()
+    {
+        var response = GetHttpResponse(HttpStatusCode.Unauthorized, "{\"ErrorIdentifier\":\"test\",\"StatusCode\":401}");
+        var result = await HttpContentHelper.GetContentAsync(response);
+        Assert.IsNotNull(result[MailjetConstants.ErrorInfo]?.GetValue<string>());
+    }
 
-        [TestMethod]
-        public async Task GetContentAsync_WhenContentNotNull_ParsesMessagesCorrectly()
-        {
-            // arrange
-            HttpResponseMessage response = 
-                GetHttpResponse(HttpStatusCode.BadRequest, "{\"Messages\":[{\"Status\":\"error\",\"Errors\":[{\"ErrorIdentifier\":\"6c1d35cb-3de8-495c-9d0e-0d563d2671da\",\"ErrorCode\":\"mj-0007\",\"StatusCode\":400,\"ErrorMessage\":\"You must provide at least one item in the collection.\",\"ErrorRelatedTo\":[\"To\"]}]}]}");
+    [TestMethod]
+    public async Task GetContentAsync_WhenContentIsTooManyRequests_ReturnsCorrectErrorInfo()
+    {
+        var response = GetHttpResponse((HttpStatusCode)429, "{\"StatusCode\":429}");
+        var result = await HttpContentHelper.GetContentAsync(response);
+        Assert.AreEqual(MailjetConstants.TooManyRequestsMessage, result[MailjetConstants.ErrorInfo]?.GetValue<string>());
+    }
 
-            // act
-            var result = await HttpContentHelper.GetContentAsync(response);
+    [TestMethod]
+    public async Task GetContentAsync_WhenContentIsInternalServerError_ReturnsCorrectErrorInfo()
+    {
+        var response = GetHttpResponse(HttpStatusCode.InternalServerError, "{\"StatusCode\":500}");
+        var result = await HttpContentHelper.GetContentAsync(response);
+        Assert.AreEqual(MailjetConstants.InternalServerErrorGeneralMessage, result[MailjetConstants.ErrorInfo]?.GetValue<string>());
+    }
 
-            // assert
-            Assert.IsTrue(result.Value<JArray>(nameof(TransactionalEmailResponse.Messages)).Any());
-        }
-
-        [TestMethod]
-        public async Task GetContentAsync_WhenContentIsGenericError_ReturnsErrorInfo()
-        {
-            // arrange
-            HttpResponseMessage response = 
-                GetHttpResponse(HttpStatusCode.Unauthorized, "{\"ErrorIdentifier\":\"e3f64f47-c99a-4a5a-b054-3ce1c5c7e4ce\",\"StatusCode\":401,\"ErrorMessage\":\"API key authentication/authorization failure. You may be unauthorized to access the API or your API key may be expired. Visit API keys management section to check your keys.\"}");
-
-            // act
-            var result = await HttpContentHelper.GetContentAsync(response);
-            string erroInfo = result.Value<string>(MailjetConstants.ErrorInfo);
-
-            // assert
-            Assert.IsNotNull(erroInfo);
-        }
-
-        [TestMethod]
-        public async Task GetContentAsync_WhenContentIsTooManyRequests_ReturnsCorrectErrorInfo()
-        {
-            // arrange
-            HttpResponseMessage response = GetHttpResponse((HttpStatusCode)429, "{\"ErrorIdentifier\":\"e3f64f47-c99a-4a5a-b054-3ce1c5c7e4ce\",\"StatusCode\":429,\"ErrorMessage\":\"Error!\"}");
-
-            // act
-            var result = await HttpContentHelper.GetContentAsync(response);
-            string erroInfo = result.Value<string>(MailjetConstants.ErrorInfo);
-
-            // assert
-            Assert.AreEqual(MailjetConstants.TooManyRequestsMessage, erroInfo);
-        }
-
-        [TestMethod]
-        public async Task GetContentAsync_WhenContentIsInternalServerError_ReturnsCorrectErrorInfo()
-        {
-            // arrange
-            HttpResponseMessage response = GetHttpResponse(HttpStatusCode.InternalServerError, "{\"ErrorIdentifier\":\"e3f64f47-c99a-4a5a-b054-3ce1c5c7e4ce\",\"StatusCode\":500,\"ErrorMessage\":\"Error!\"}");
-
-            // act
-            var result = await HttpContentHelper.GetContentAsync(response);
-            string erroInfo = result.Value<string>(MailjetConstants.ErrorInfo);
-
-            // assert
-            Assert.AreEqual(MailjetConstants.InternalServerErrorGeneralMessage, erroInfo);
-        }
-
-        private static HttpResponseMessage GetHttpResponse(HttpStatusCode expectedStatusCode, string contentString)
-        {
-            HttpResponseMessage response = new HttpResponseMessage
-            {
-                StatusCode = expectedStatusCode,
-                Content = new StringContent(contentString)
-            };
-
-            response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-
-            return response;
-        }
+    private static HttpResponseMessage GetHttpResponse(HttpStatusCode statusCode, string content)
+    {
+        var response = new HttpResponseMessage { StatusCode = statusCode, Content = new StringContent(content) };
+        response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+        return response;
     }
 }

@@ -1,5 +1,4 @@
-
-[doc]: http://dev.mailjet.com/
+﻿[doc]: http://dev.mailjet.com/
 [api_ref]: https://dev.mailjet.com/reference/email
 [api_credential]: https://app.mailjet.com/account/api_keys
 [issues]: https://github.com/mailjet/mailjet-apiv3-dotnet/issues
@@ -29,7 +28,6 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
   - [Table of contents](#table-of-contents)
   - [Release notes](#release-notes)
   - [Compatibility](#compatibility)
-    - [Dependencies .NETStandard 1.1](#dependencies-netstandard-11)
   - [Installation](#installation)
   - [Authentication](#authentication)
   - [Make your first call](#make-your-first-call)
@@ -57,6 +55,14 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
   - [Contribute](#contribute)
 
 ## Release notes
+### v 3.1.0
+- **BREAKING**: Migrated from Newtonsoft.Json to System.Text.Json
+- **BREAKING**: Updated to .NET 10
+- Added centralized package management (Directory.Packages.props)
+- Added centralized build properties (Directory.Build.props)
+- Enabled nullable reference types
+- Uses modern C# language features
+
 ### v 3.0.1
 - Renames TemplateErrorDelivery property into TemplateErrorDeliver
 - Fixes TransactionalEmailBuilder validation
@@ -79,21 +85,11 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
 
 ## Compatibility
 
-This .NET library is supported by:
+This .NET library requires:
 
- - .NET Core 3.1+
- - .NET Framework 4.6.2
- - Mono 4.6
- - Xamarin.iOS 10.0
- - Xamarin.Android 7.0
- - Universal Windows Platform 10
- - Windows 8.0
- - Windows Phone 8.1
+ - .NET 10+
 
-### Dependencies .NETStandard 1.1
-
- - NETStandard.Library (>= 1.6.1)
- - Newtonsoft.Json (>= 13.0.1)
+Note: For older .NET versions, use v3.0.x of this library.
 
 ## Installation
 
@@ -119,53 +115,30 @@ setx -m $MJ_APIKEY_PRIVATE "Enter your API Secret here"
 
 ## Make your first call
 
-Here's an example on how to send an email:
+Here is an example on how to send an email:
 
 ```csharp
 using Mailjet.Client;
 using Mailjet.Client.Resources;
-using System;
-using Newtonsoft.Json.Linq;
-namespace Mailjet.ConsoleApplication
-{
-   class Program
-   {
-      /// <summary>
-      /// Run:
-      /// </summary>
-      static void Main(string[] args)
-      {
-         // TODO: blocking call, try to use async Main and async eventhandlers in WinForms/WPF
-         RunAsync().Wait();
-      }
+using Mailjet.Client.TransactionalEmails;
 
-      static async Task RunAsync()
-      {
-         MailjetClient client = new MailjetClient(
-            Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), 
-            Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"));
+MailjetClient client = new MailjetClient(
+   Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC") ?? throw new InvalidOperationException(), 
+   Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE") ?? throw new InvalidOperationException());
 
-         MailjetRequest request = new MailjetRequest
-         {
-            Resource = Send.Resource
-         };
+// construct your email with builder
+var email = new TransactionalEmailBuilder()
+       .WithFrom(new SendContact("from@test.com"))
+       .WithSubject("Test subject")
+       .WithHtmlPart("<h1>Header</h1>")
+       .WithTo(new SendContact("to@test.com"))
+       .Build();
 
-         // construct your email with builder
-         var email = new TransactionalEmailBuilder()
-                .WithFrom(new SendContact("from@test.com"))
-                .WithSubject("Test subject")
-                .WithHtmlPart("<h1>Header</h1>")
-                .WithTo(new SendContact("to@test.com"))
-                .Build();
+// invoke API to send email
+var response = await client.SendTransactionalEmailAsync(email);
 
-         // invoke API to send email
-         var response = await client.SendTransactionalEmailAsync(email);
-
-         // check response
-         Assert.AreEqual(1, response.Messages.Length);
-      }
-   }
-}
+// check response
+Console.WriteLine($"Sent {response.Messages?.Length} message(s)");
 ```
 
 ## Client / Call configuration specifics
@@ -215,44 +188,47 @@ For additional information refer to our [API Reference](https://dev.preprod.mail
 The default base domain name for the Mailjet API is `https://api.mailjet.com`. You can modify this base URL by setting a value for `BaseAdress` in your call:
 
 ```csharp
-MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"))
-         {
-            BaseAdress = "https://api.us.mailjet.com",
-         };
+MailjetClient client = new MailjetClient(
+   Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC") ?? throw new InvalidOperationException(), 
+   Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE") ?? throw new InvalidOperationException())
+{
+   BaseAdress = "https://api.us.mailjet.com",
+};
 ```
 
-If your account has been moved to Mailjet's US architecture, the URL value you need to set is `https://api.us.mailjet.com`.
+If your account has been moved to Mailjet US architecture, the URL value you need to set is `https://api.us.mailjet.com`.
 
 ### Proxy
 
-You can set proxy for the client by passing it's parameters to the httpClientHandler:
+You can set proxy for the client by passing its parameters to the httpClientHandler:
 
 ```csharp
-            // create instance of proxy with configuration
-            var proxy = new WebProxy
-            {
-                // Credentials = new NetworkCredential("<proxyusername>", "<proxypassword>"),
-                // if your proxy requires credentials, uncomment this line ^^
+// create instance of proxy with configuration
+var proxy = new WebProxy
+{
+    // Credentials = new NetworkCredential("<proxyusername>", "<proxypassword>"),
+    // if your proxy requires credentials, uncomment this line ^^
 
-                // address of the proxy
-                // please, note - even if it's https proxy, the address should start from http
-                // https://github.com/dotnet/core/issues/2043
-                Address = new Uri("http://51.79.xx.xx:8080"),
+    // address of the proxy
+    // please, note - even if its https proxy, the address should start from http
+    // https://github.com/dotnet/core/issues/2043
+    Address = new Uri("http://51.79.xx.xx:8080"),
 
-                UseDefaultCredentials = false
-            };
+    UseDefaultCredentials = false
+};
 
-            // pass the created proxy to HttpClientHandler
-            HttpClientHandler handler = new HttpClientHandler
-            {
-                Proxy = proxy,
-            };
+// pass the created proxy to HttpClientHandler
+HttpClientHandler handler = new HttpClientHandler
+{
+    Proxy = proxy,
+};
 
-            // pass HttpClientHandler to the MailjetClient, so client will be using a proxy
-            var client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"),
-                Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"), handler);
+// pass HttpClientHandler to the MailjetClient, so client will be using a proxy
+var client = new MailjetClient(
+    Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC") ?? throw new InvalidOperationException(),
+    Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE") ?? throw new InvalidOperationException(), handler);
 
-            // use client here...
+// use client here...
 ```
 
 ## List of resources
@@ -271,45 +247,31 @@ Use the `PostAsync` method of the Mailjet CLient (i.e. `MailjetResponse response
 ```csharp
 using Mailjet.Client;
 using Mailjet.Client.Resources;
-using System;
-using Newtonsoft.Json.Linq;
-namespace Mailjet.ConsoleApplication
+
+MailjetClient client = new MailjetClient(
+    Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC") ?? throw new InvalidOperationException(), 
+    Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE") ?? throw new InvalidOperationException());
+
+MailjetRequest request = new MailjetRequest
 {
-   class Program
-   {
-      /// <summary>
-      /// Create a new contact:
-      /// </summary>
-      static void Main(string[] args)
-      {
-         // TODO: blocking call, try to use async Main and async eventhandlers in WinForms/WPF
-         RunAsync().Wait();
-      }
-      static async Task RunAsync()
-      {
-         MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"));
-         MailjetRequest request = new MailjetRequest
-         {
-            Resource = Contact.Resource,
-         }
-            .Property(Contact.Email, "passenger@mailjet.com")
-            .Property(Contact.IsExcludedFromCampaigns, "false")
-            .Property(Contact.Name, "New Contact");
-         MailjetResponse response = await client.PostAsync(request);
-         if (response.IsSuccessStatusCode)
-         {
-            Console.WriteLine(string.Format("Total: {0}, Count: {1}\n", response.GetTotal(), response.GetCount()));
-            Console.WriteLine(response.GetData());
-         }
-         else
-         {
-            Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
-            Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
-            Console.WriteLine(response.GetData());
-            Console.WriteLine(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
-         }
-      }
-   }
+   Resource = Contact.Resource,
+}
+   .Property(Contact.Email, "passenger@mailjet.com")
+   .Property(Contact.IsExcludedFromCampaigns, "false")
+   .Property(Contact.Name, "New Contact");
+
+MailjetResponse response = await client.PostAsync(request);
+
+if (response.IsSuccessStatusCode)
+{
+   Console.WriteLine($"Total: {response.GetTotal()}, Count: {response.GetCount()}");
+   Console.WriteLine(response.GetData());
+}
+else
+{
+   Console.WriteLine($"StatusCode: {response.StatusCode}");
+   Console.WriteLine($"ErrorInfo: {response.GetErrorInfo()}");
+   Console.WriteLine($"ErrorMessage: {response.GetErrorMessage()}");
 }
 ```
 
@@ -318,60 +280,45 @@ namespace Mailjet.ConsoleApplication
 To access endpoints with action, you will be able to find Resources object definition. For example, the `/Contact/$ID/Managecontactslists` endpoint can be used with the object `ContactManagecontactslists` available in `Mailjet.Client.Resources` 
 
 ```csharp
+using System.Text.Json;
 using Mailjet.Client;
 using Mailjet.Client.Resources;
-using System;
-using Newtonsoft.Json.Linq;
-namespace Mailjet.ConsoleApplication
+
+MailjetClient client = new MailjetClient(
+    Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC") ?? throw new InvalidOperationException(), 
+    Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE") ?? throw new InvalidOperationException());
+
+var contactsLists = new[]
 {
-   class Program
-   {
-      /// <summary>
-      /// Manage the subscription status of a contact to multiple lists
-      /// </summary>
-      static void Main(string[] args)
-      {
-         RunAsync().Wait();
-      }
-      static async Task RunAsync()
-      {
-         MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"));
-         MailjetRequest request = new MailjetRequest
-         {
-            Resource = ContactManagecontactslists.Resource,
-            ResourceId = ResourceId.Numeric(ID)
-         }
-            .Property(ContactManagecontactslists.ContactsLists, new JArray {
-                new JObject {
-                 {"ListID", "$ListID_1"},
-                 {"Action", "addnoforce"}
-                 },
-                new JObject {
-                 {"ListID", "$ListID_2"},
-                 {"Action", "addforce"}
-                 }
-                });
-         MailjetResponse response = await client.PostAsync(request);
-         if (response.IsSuccessStatusCode)
-         {
-            Console.WriteLine(string.Format("Total: {0}, Count: {1}\n", response.GetTotal(), response.GetCount()));
-            Console.WriteLine(response.GetData());
-         }
-         else
-         {
-            Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
-            Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
-            Console.WriteLine(response.GetData());
-            Console.WriteLine(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
-         }
-      }
-   }
+    new { ListID = "$ListID_1", Action = "addnoforce" },
+    new { ListID = "$ListID_2", Action = "addforce" }
+};
+
+MailjetRequest request = new MailjetRequest
+{
+   Resource = ContactManagecontactslists.Resource,
+   ResourceId = ResourceId.Numeric(ID)
+}
+   .Property(ContactManagecontactslists.ContactsLists, JsonSerializer.SerializeToNode(contactsLists));
+
+MailjetResponse response = await client.PostAsync(request);
+
+if (response.IsSuccessStatusCode)
+{
+   Console.WriteLine($"Total: {response.GetTotal()}, Count: {response.GetCount()}");
+   Console.WriteLine(response.GetData());
+}
+else
+{
+   Console.WriteLine($"StatusCode: {response.StatusCode}");
+   Console.WriteLine($"ErrorInfo: {response.GetErrorInfo()}");
+   Console.WriteLine($"ErrorMessage: {response.GetErrorMessage()}");
 }
 ```
 
 ### GET request
 
-Use the `PostAsync` method of the Mailjet CLient (i.e. `MailjetResponse response = await client.GetAsync(request);`).
+Use the `GetAsync` method of the Mailjet CLient (i.e. `MailjetResponse response = await client.GetAsync(request);`).
 `request` will be a `MailjetRequest` object.
 
 #### Retrieve all objects
@@ -379,41 +326,28 @@ Use the `PostAsync` method of the Mailjet CLient (i.e. `MailjetResponse response
 ```csharp
 using Mailjet.Client;
 using Mailjet.Client.Resources;
-using System;
-using Newtonsoft.Json.Linq;
-namespace Mailjet.ConsoleApplication
+
+MailjetClient client = new MailjetClient(
+    Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC") ?? throw new InvalidOperationException(), 
+    Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE") ?? throw new InvalidOperationException());
+
+MailjetRequest request = new MailjetRequest
 {
-   class Program
-   {
-      /// <summary>
-      /// Retrieve all contacts
-      /// </summary>
-      static void Main(string[] args)
-      {
-         RunAsync().Wait();
-      }
-      static async Task RunAsync()
-      {
-         MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"));
-         MailjetRequest request = new MailjetRequest
-         {
-            Resource = Contact.Resource,
-         }
-         MailjetResponse response = await client.GetAsync(request);
-         if (response.IsSuccessStatusCode)
-         {
-            Console.WriteLine(string.Format("Total: {0}, Count: {1}\n", response.GetTotal(), response.GetCount()));
-            Console.WriteLine(response.GetData());
-         }
-         else
-         {
-            Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
-            Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
-            Console.WriteLine(response.GetData());
-            Console.WriteLine(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
-         }
-      }
-   }
+   Resource = Contact.Resource,
+};
+
+MailjetResponse response = await client.GetAsync(request);
+
+if (response.IsSuccessStatusCode)
+{
+   Console.WriteLine($"Total: {response.GetTotal()}, Count: {response.GetCount()}");
+   Console.WriteLine(response.GetData());
+}
+else
+{
+   Console.WriteLine($"StatusCode: {response.StatusCode}");
+   Console.WriteLine($"ErrorInfo: {response.GetErrorInfo()}");
+   Console.WriteLine($"ErrorMessage: {response.GetErrorMessage()}");
 }
 ```
 
@@ -425,46 +359,33 @@ Example: `.Filter(Contact.IsExcludedFromCampaigns, "false")`
 ```csharp
 using Mailjet.Client;
 using Mailjet.Client.Resources;
-using System;
-using Newtonsoft.Json.Linq;
-namespace Mailjet.ConsoleApplication
+
+MailjetClient client = new MailjetClient(
+    Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC") ?? throw new InvalidOperationException(), 
+    Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE") ?? throw new InvalidOperationException());
+
+MailjetRequest request = new MailjetRequest
 {
-   class Program
-   {
-      /// <summary>
-      /// Retrieve all contacts
-      /// </summary>
-      static void Main(string[] args)
-      {
-         RunAsync().Wait();
-      }
-      static async Task RunAsync()
-      {
-         MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"));
-         MailjetRequest request = new MailjetRequest
-         {
-            Resource = Contact.Resource,
-         }
-         .Filter(Contact.IsExcludedFromCampaigns, "false")         
-         MailjetResponse response = await client.GetAsync(request);
-         if (response.IsSuccessStatusCode)
-         {
-            Console.WriteLine(string.Format("Total: {0}, Count: {1}\n", response.GetTotal(), response.GetCount()));
-            Console.WriteLine(response.GetData());
-         }
-         else
-         {
-            Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
-            Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
-            Console.WriteLine(response.GetData());
-            Console.WriteLine(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
-         }
-      }
-   }
+   Resource = Contact.Resource,
+}
+.Filter(Contact.IsExcludedFromCampaigns, "false");
+
+MailjetResponse response = await client.GetAsync(request);
+
+if (response.IsSuccessStatusCode)
+{
+   Console.WriteLine($"Total: {response.GetTotal()}, Count: {response.GetCount()}");
+   Console.WriteLine(response.GetData());
+}
+else
+{
+   Console.WriteLine($"StatusCode: {response.StatusCode}");
+   Console.WriteLine($"ErrorInfo: {response.GetErrorInfo()}");
+   Console.WriteLine($"ErrorMessage: {response.GetErrorMessage()}");
 }
 ```
 
-To filter resource by it's identifier, common REST style convention is used, so you can specify resource id in the request itself. For example, you can get single contact by email:
+To filter resource by its identifier, common REST style convention is used, so you can specify resource id in the request itself. For example, you can get single contact by email:
 
 ```csharp
 MailjetRequest request = new MailjetRequest
@@ -483,42 +404,29 @@ When instantiating the `MailjetRequest`, you can specify the Id of the resource 
 ```csharp
 using Mailjet.Client;
 using Mailjet.Client.Resources;
-using System;
-using Newtonsoft.Json.Linq;
-namespace Mailjet.ConsoleApplication
+
+MailjetClient client = new MailjetClient(
+    Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC") ?? throw new InvalidOperationException(), 
+    Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE") ?? throw new InvalidOperationException());
+
+MailjetRequest request = new MailjetRequest
 {
-   class Program
-   {
-      /// <summary>
-      /// View : Retrieve a specific contact. Includes information about contact status and creation / activity timestamps.
-      /// </summary>
-      static void Main(string[] args)
-      {
-         RunAsync().Wait();
-      }
-      static async Task RunAsync()
-      {
-         MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"));
-         MailjetRequest request = new MailjetRequest
-         {
-            Resource = Contact.Resource,
-            ResourceId = ResourceId.Numeric(ID)
-         }
-         MailjetResponse response = await client.GetAsync(request);
-         if (response.IsSuccessStatusCode)
-         {
-            Console.WriteLine(string.Format("Total: {0}, Count: {1}\n", response.GetTotal(), response.GetCount()));
-            Console.WriteLine(response.GetData());
-         }
-         else
-         {
-            Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
-            Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
-            Console.WriteLine(response.GetData());
-            Console.WriteLine(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
-         }
-      }
-   }
+   Resource = Contact.Resource,
+   ResourceId = ResourceId.Numeric(ID)
+};
+
+MailjetResponse response = await client.GetAsync(request);
+
+if (response.IsSuccessStatusCode)
+{
+   Console.WriteLine($"Total: {response.GetTotal()}, Count: {response.GetCount()}");
+   Console.WriteLine(response.GetData());
+}
+else
+{
+   Console.WriteLine($"StatusCode: {response.StatusCode}");
+   Console.WriteLine($"ErrorInfo: {response.GetErrorInfo()}");
+   Console.WriteLine($"ErrorMessage: {response.GetErrorMessage()}");
 }
 ```
 
@@ -530,50 +438,35 @@ Use the `PutAsync` method of the Mailjet CLient (i.e. `MailjetResponse response 
 `request` will be a `MailjetRequest` object.
 
 ```csharp
+using System.Text.Json;
 using Mailjet.Client;
 using Mailjet.Client.Resources;
-using System;
-using Newtonsoft.Json.Linq;
-namespace Mailjet.ConsoleApplication
+
+MailjetClient client = new MailjetClient(
+    Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC") ?? throw new InvalidOperationException(), 
+    Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE") ?? throw new InvalidOperationException());
+
+var data = new[] { new { first_name = "John", last_name = "Smith" } };
+
+MailjetRequest request = new MailjetRequest
 {
-   class Program
-   {
-      /// <summary>
-      /// Modify : Modify the static custom contact data
-      /// </summary>
-      static void Main(string[] args)
-      {
-         RunAsync().Wait();
-      }
-      static async Task RunAsync()
-      {
-         MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"));
-         MailjetRequest request = new MailjetRequest
-         {
-            Resource = Contactdata.Resource,
-            ResourceId = ResourceId.Numeric(ID)
-         }
-            .Property(Contactdata.Data, new JArray {
-                new JObject {
-                 {"first_name", "John"},
-                 {"last_name", "Smith"}
-                 }
-                });
-         MailjetResponse response = await client.PutAsync(request);
-         if (response.IsSuccessStatusCode)
-         {
-            Console.WriteLine(string.Format("Total: {0}, Count: {1}\n", response.GetTotal(), response.GetCount()));
-            Console.WriteLine(response.GetData());
-         }
-         else
-         {
-            Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
-            Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
-            Console.WriteLine(response.GetData());
-            Console.WriteLine(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
-         }
-      }
-   }
+   Resource = Contactdata.Resource,
+   ResourceId = ResourceId.Numeric(ID)
+}
+   .Property(Contactdata.Data, JsonSerializer.SerializeToNode(data));
+
+MailjetResponse response = await client.PutAsync(request);
+
+if (response.IsSuccessStatusCode)
+{
+   Console.WriteLine($"Total: {response.GetTotal()}, Count: {response.GetCount()}");
+   Console.WriteLine(response.GetData());
+}
+else
+{
+   Console.WriteLine($"StatusCode: {response.StatusCode}");
+   Console.WriteLine($"ErrorInfo: {response.GetErrorInfo()}");
+   Console.WriteLine($"ErrorMessage: {response.GetErrorMessage()}");
 }
 ```
 
@@ -587,42 +480,29 @@ Use the `DeleteAsync` method of the Mailjet CLient (i.e. `MailjetResponse respon
 ```csharp
 using Mailjet.Client;
 using Mailjet.Client.Resources;
-using System;
-using Newtonsoft.Json.Linq;
-namespace Mailjet.ConsoleApplication
+
+MailjetClient client = new MailjetClient(
+    Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC") ?? throw new InvalidOperationException(), 
+    Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE") ?? throw new InvalidOperationException());
+
+MailjetRequest request = new MailjetRequest
 {
-   class Program
-   {
-      /// <summary>
-      /// Delete : Delete an email template.
-      /// </summary>
-      static void Main(string[] args)
-      {
-         RunAsync().Wait();
-      }
-      static async Task RunAsync()
-      {
-         MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"), Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"));
-         MailjetRequest request = new MailjetRequest
-         {
-            Resource = Template.Resource,
-            ResourceId = ResourceId.Numeric(ID)
-         }
-         MailjetResponse response = await client.DeleteAsync(request);
-         if (response.IsSuccessStatusCode)
-         {
-            Console.WriteLine(string.Format("Total: {0}, Count: {1}\n", response.GetTotal(), response.GetCount()));
-            Console.WriteLine(response.GetData());
-         }
-         else
-         {
-            Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
-            Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
-            Console.WriteLine(response.GetData());
-            Console.WriteLine(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
-         }
-      }
-   }
+   Resource = Template.Resource,
+   ResourceId = ResourceId.Numeric(ID)
+};
+
+MailjetResponse response = await client.DeleteAsync(request);
+
+if (response.IsSuccessStatusCode)
+{
+   Console.WriteLine($"Total: {response.GetTotal()}, Count: {response.GetCount()}");
+   Console.WriteLine(response.GetData());
+}
+else
+{
+   Console.WriteLine($"StatusCode: {response.StatusCode}");
+   Console.WriteLine($"ErrorInfo: {response.GetErrorInfo()}");
+   Console.WriteLine($"ErrorMessage: {response.GetErrorMessage()}");
 }
 ```
 ## SMS API
@@ -635,7 +515,7 @@ To use a Bearer token you will need to client clientin from:
 
 ```csharp
 ...
-	MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("Your_Bearer_token"));
+MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("Your_Bearer_token") ?? throw new InvalidOperationException());
 ...
 ```
 
@@ -644,46 +524,30 @@ To use a Bearer token you will need to client clientin from:
 ```csharp
 using Mailjet.Client;
 using Mailjet.Client.Resources.SMS;
-using System;
-using Newtonsoft.Json.Linq;
-namespace Mailjet.ConsoleApplication
+
+MailjetClient client = new MailjetClient(
+    Environment.GetEnvironmentVariable("Your_Bearer_token") ?? throw new InvalidOperationException());
+
+MailjetRequest request = new MailjetRequest
 {
-   class Program
-   {
-      /// <summary>
-      /// Send an SMS:
-      /// </summary>
-      static void Main(string[] args)
-      {
-         RunAsync().Wait();
-      }
-      static async Task RunAsync()
-      {
-         MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("Your_Bearer_token"));
+   Resource = Send.Resource,
+}
+.Property(Send.From, "MJ Pilot")
+.Property(Send.To, "+336000000000")
+.Property(Send.Text, "Have a nice SMS flight with Mailjet !");
 
-         MailjetRequest request = new MailjetRequest
-         {
-            Resource = Send.Resource,
-         }
-         .Property(Send.From, "MJ Pilot")
-         .Property(Send.To, "+336000000000")
-         .Property(Send.Text, "Have a nice SMS flight with Mailjet !");
+MailjetResponse response = await client.PostAsync(request);
 
-         MailjetResponse response = await client.PostAsync(request);
-         if (response.IsSuccessStatusCode)
-         {
-            Console.WriteLine(string.Format("Total: {0}, Count: {1}\n", response.GetTotal(), response.GetCount()));
-            Console.WriteLine(response.GetData());
-         }
-         else
-         {
-            Console.WriteLine(string.Format("StatusCode: {0}\n", response.StatusCode));
-            Console.WriteLine(string.Format("ErrorInfo: {0}\n", response.GetErrorInfo()));
-            Console.WriteLine(response.GetData());
-            Console.WriteLine(string.Format("ErrorMessage: {0}\n", response.GetErrorMessage()));
-         }
-      }
-   }
+if (response.IsSuccessStatusCode)
+{
+   Console.WriteLine($"Total: {response.GetTotal()}, Count: {response.GetCount()}");
+   Console.WriteLine(response.GetData());
+}
+else
+{
+   Console.WriteLine($"StatusCode: {response.StatusCode}");
+   Console.WriteLine($"ErrorInfo: {response.GetErrorInfo()}");
+   Console.WriteLine($"ErrorMessage: {response.GetErrorMessage()}");
 }
 ```
 ### Response 
@@ -692,7 +556,7 @@ The `GetAsync`, `PostAsync`, `PutAsync` and `DeleteAsync` method will return a `
 
  - `IsSuccessStatusCode` : indicate if the API call was successful
  - `StatusCode` : http status code (ie: 200,400 ...)
- - `GetData()` : content of the property `data` of the JSON response payload if exist or the full JSON payload returned by the API call. This will be PHP associative array.   
+ - `GetData()` : content of the property `data` of the JSON response payload if exist or the full JSON payload returned by the API call. Returns a `JsonArray`.   
  - `GetCount()` : number of elements returned in the response
  - `GetErrorInfo()` : http response message phrases ("OK", "Bad Request" ...)
  - `GetErrorMessage()` :  error reason message from the API response payload

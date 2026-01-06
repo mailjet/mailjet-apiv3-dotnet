@@ -1,49 +1,48 @@
-﻿using Newtonsoft.Json.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Net;
+using System.Text.Json.Nodes;
 
-namespace Mailjet.Client.Helpers
+namespace Mailjet.Client.Helpers;
+
+public static class HttpContentHelper
 {
-    public static class HttpContentHelper
+    public static async Task<JsonObject> GetContentAsync(HttpResponseMessage responseMessage)
     {
-        public static async Task<JObject> GetContentAsync(HttpResponseMessage responseMessage)
+        string? cnt = null;
+
+        if (responseMessage.Content != null)
         {
-            string cnt = null;
+            cnt = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+        }
 
-            if (responseMessage.Content != null)
+        JsonObject content;
+        if (!string.IsNullOrEmpty(cnt) && responseMessage.Content?.Headers.ContentType?.MediaType == MailjetConstants.JsonMediaType)
+        {
+            content = JsonNode.Parse(cnt)?.AsObject() ?? new JsonObject();
+        }
+        else
+        {
+            content = new JsonObject
             {
-                cnt = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                ["StatusCode"] = (int)responseMessage.StatusCode
+            };
+        }
+
+        if (!responseMessage.IsSuccessStatusCode && !content.ContainsKey(MailjetConstants.ErrorInfo))
+        {
+            if (responseMessage.StatusCode == ((HttpStatusCode)429))
+            {
+                content[MailjetConstants.ErrorInfo] = MailjetConstants.TooManyRequestsMessage;
             }
-
-            JObject content;
-            if (!string.IsNullOrEmpty(cnt) && responseMessage.Content.Headers.ContentType.MediaType == MailjetConstants.JsonMediaType)
+            else if (responseMessage.StatusCode == HttpStatusCode.InternalServerError)
             {
-                content = JObject.Parse(cnt);
+                content[MailjetConstants.ErrorInfo] = MailjetConstants.InternalServerErrorGeneralMessage;
             }
             else
             {
-                content = new JObject();
-                content.Add("StatusCode", new JValue((int)responseMessage.StatusCode));
+                content[MailjetConstants.ErrorInfo] = responseMessage.ReasonPhrase;
             }
-
-            if (!responseMessage.IsSuccessStatusCode && !content.ContainsKey(MailjetConstants.ErrorInfo))
-            {
-                if (responseMessage.StatusCode == ((HttpStatusCode)429))
-                {
-                    content.Add(MailjetConstants.ErrorInfo, new JValue(MailjetConstants.TooManyRequestsMessage));
-                }
-                else if (responseMessage.StatusCode == HttpStatusCode.InternalServerError)
-                {
-                    content.Add(MailjetConstants.ErrorInfo, new JValue(MailjetConstants.InternalServerErrorGeneralMessage));
-                }
-                else
-                {
-                    content.Add(MailjetConstants.ErrorInfo, new JValue(responseMessage.ReasonPhrase));
-                }
-            }
-
-            return content;
         }
+
+        return content;
     }
 }
