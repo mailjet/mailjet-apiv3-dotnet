@@ -1,15 +1,15 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
+using System.Text.Json.Nodes;
 
 namespace Mailjet.Client
 {
     public class MailjetResponse
     {
-        public JObject Content { get; private set; }
+        public JsonObject Content { get; private set; }
         public bool IsSuccessStatusCode { get; private set; }
         public int StatusCode { get; private set; }
 
-        public MailjetResponse(bool isSuccessStatusCode, int statusCode, JObject content)
+        public MailjetResponse(bool isSuccessStatusCode, int statusCode, JsonObject content)
         {
             IsSuccessStatusCode = isSuccessStatusCode;
             StatusCode = statusCode;
@@ -27,9 +27,9 @@ namespace Mailjet.Client
             return total;
         }
 
-        public JArray GetData()
+        public JsonArray GetData()
         {
-            JArray result;
+            JsonArray result;
             if (TryGetValue("Data", out result))
             {
                 return result;
@@ -46,7 +46,7 @@ namespace Mailjet.Client
                 return result;
             }
 
-            result = new JArray(Content);
+            result = new JsonArray(Content.DeepClone());
             return result;
         }
 
@@ -83,14 +83,27 @@ namespace Mailjet.Client
 
         public bool TryGetValue<T>(string key, out T value)
         {
-            JToken token;
-            if (!Content.TryGetValue(key, StringComparison.OrdinalIgnoreCase, out token))
+            JsonNode node;
+            if (!Content.TryGetPropertyValue(key, out node))
             {
                 value = default(T);
                 return false;
             }
 
-            value = token.Value<T>();
+            value = node.GetValue<T>();
+            return true;
+        }
+
+        public bool TryGetValue(string key, out JsonArray value)
+        {
+            JsonNode node;
+            if (!Content.TryGetPropertyValue(key, out node))
+            {
+                value = null;
+                return false;
+            }
+
+            value = node.AsArray();
             return true;
         }
 

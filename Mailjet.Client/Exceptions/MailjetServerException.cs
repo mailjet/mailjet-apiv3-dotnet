@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Mailjet.Client.Exceptions
+﻿namespace Mailjet.Client.Exceptions
 {
     public class MailjetServerException : MailjetException
     {

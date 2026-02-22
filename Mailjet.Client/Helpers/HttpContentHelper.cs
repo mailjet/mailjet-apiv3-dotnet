@@ -1,13 +1,13 @@
-﻿using Newtonsoft.Json.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
+using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
 namespace Mailjet.Client.Helpers
 {
     public static class HttpContentHelper
     {
-        public static async Task<JObject> GetContentAsync(HttpResponseMessage responseMessage)
+        public static async Task<JsonObject> GetContentAsync(HttpResponseMessage responseMessage)
         {
             string cnt = null;
 
@@ -16,30 +16,30 @@ namespace Mailjet.Client.Helpers
                 cnt = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
 
-            JObject content;
+            JsonObject content;
             if (!string.IsNullOrEmpty(cnt) && responseMessage.Content.Headers.ContentType.MediaType == MailjetConstants.JsonMediaType)
             {
-                content = JObject.Parse(cnt);
+                content = JsonObject.Parse(cnt).AsObject();
             }
             else
             {
-                content = new JObject();
-                content.Add("StatusCode", new JValue((int)responseMessage.StatusCode));
+                content = new JsonObject();
+                content.Add("StatusCode", JsonValue.Create((int)responseMessage.StatusCode));
             }
 
             if (!responseMessage.IsSuccessStatusCode && !content.ContainsKey(MailjetConstants.ErrorInfo))
             {
                 if (responseMessage.StatusCode == ((HttpStatusCode)429))
                 {
-                    content.Add(MailjetConstants.ErrorInfo, new JValue(MailjetConstants.TooManyRequestsMessage));
+                    content.Add(MailjetConstants.ErrorInfo, JsonValue.Create(MailjetConstants.TooManyRequestsMessage));
                 }
                 else if (responseMessage.StatusCode == HttpStatusCode.InternalServerError)
                 {
-                    content.Add(MailjetConstants.ErrorInfo, new JValue(MailjetConstants.InternalServerErrorGeneralMessage));
+                    content.Add(MailjetConstants.ErrorInfo, JsonValue.Create(MailjetConstants.InternalServerErrorGeneralMessage));
                 }
                 else
                 {
-                    content.Add(MailjetConstants.ErrorInfo, new JValue(responseMessage.ReasonPhrase));
+                    content.Add(MailjetConstants.ErrorInfo, JsonValue.Create(responseMessage.ReasonPhrase));
                 }
             }
 

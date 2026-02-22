@@ -3,13 +3,14 @@ using Mailjet.Client.Helpers;
 using Mailjet.Client.Resources;
 using Mailjet.Client.TransactionalEmails;
 using Mailjet.Client.TransactionalEmails.Response;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Mailjet.Client
@@ -19,15 +20,6 @@ namespace Mailjet.Client
     /// </summary>
     public class MailjetClient : IMailjetClient
     {
-        private static readonly JsonSerializer Serializer = JsonSerializer.CreateDefault(new JsonSerializerSettings
-        {
-            DefaultValueHandling = DefaultValueHandling.Ignore,
-            Converters = new List<JsonConverter>
-            {
-                new Newtonsoft.Json.Converters.StringEnumConverter()
-            }
-        });
-
         private HttpClient _httpClient;
 
         public MailjetClient(string apiKey, string apiSecret, HttpMessageHandler httpMessageHandler = null)
@@ -73,7 +65,7 @@ namespace Mailjet.Client
 
             var responseMessage = await _httpClient.GetAsync(url).ConfigureAwait(false);
 
-            JObject content = await HttpContentHelper.GetContentAsync(responseMessage).ConfigureAwait(false);
+            JsonObject content = await HttpContentHelper.GetContentAsync(responseMessage).ConfigureAwait(false);
             return new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
         }
 
@@ -81,11 +73,11 @@ namespace Mailjet.Client
         {
             string url = request.BuildUrl();
 
-            var output = request.Body.ToString(Formatting.None);
+            var output = request.Body.ToString();
             HttpContent contentPost = new StringContent(output, Encoding.UTF8, MailjetConstants.JsonMediaType);
             var responseMessage = await _httpClient.PostAsync(url, contentPost).ConfigureAwait(false);
 
-            JObject content = await HttpContentHelper.GetContentAsync(responseMessage).ConfigureAwait(false);
+            JsonObject content = await HttpContentHelper.GetContentAsync(responseMessage).ConfigureAwait(false);
             return new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
         }
 
@@ -93,11 +85,11 @@ namespace Mailjet.Client
         {
             string url = request.BuildUrl();
 
-            var output = request.Body.ToString(Formatting.None);
+            var output = request.Body.ToString();
             HttpContent contentPut = new StringContent(output, Encoding.UTF8, MailjetConstants.JsonMediaType);
             var responseMessage = await _httpClient.PutAsync(url, contentPut).ConfigureAwait(false);
 
-            JObject content = await HttpContentHelper.GetContentAsync(responseMessage).ConfigureAwait(false);
+            JsonObject content = await HttpContentHelper.GetContentAsync(responseMessage).ConfigureAwait(false);
             MailjetResponse mailjetResponse = new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
             return mailjetResponse;
         }
@@ -108,7 +100,7 @@ namespace Mailjet.Client
 
             var responseMessage = await _httpClient.DeleteAsync(url).ConfigureAwait(false);
 
-            JObject content = await HttpContentHelper.GetContentAsync(responseMessage).ConfigureAwait(false);
+            JsonObject content = await HttpContentHelper.GetContentAsync(responseMessage).ConfigureAwait(false);
             return new MailjetResponse(responseMessage.IsSuccessStatusCode, (int)responseMessage.StatusCode, content);
         }
 
@@ -147,16 +139,22 @@ namespace Mailjet.Client
                 AdvanceErrorHandling = advanceErrorHandling
             };
 
+            var serializerOptions = new JsonSerializerOptions()
+            {
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
+            };
+            serializerOptions.Converters.Add(new JsonStringEnumConverter());
+
             var clientRequest = new MailjetRequest
             {
                 Resource = SendV31.Resource,
-                Body = JObject.FromObject(request, Serializer)
+                Body = JsonSerializer.SerializeToNode(request, serializerOptions).AsObject()
             };
 
             MailjetResponse clientResponse = await PostAsync(clientRequest)
                 .ConfigureAwait(false);
 
-            TransactionalEmailResponse result = clientResponse.Content.ToObject<TransactionalEmailResponse>();
+            TransactionalEmailResponse result = clientResponse.Content.Deserialize<TransactionalEmailResponse>();
 
             if (result.Messages == null && !clientResponse.IsSuccessStatusCode)
             {

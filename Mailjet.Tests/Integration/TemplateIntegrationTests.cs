@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Mailjet.Client;
 using Mailjet.Client.Resources;
 using Mailjet.Client.TransactionalEmails;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
 
 namespace Mailjet.Tests.Integration
 {
@@ -67,7 +67,7 @@ namespace Mailjet.Tests.Integration
                 ResourceId = ResourceId.Numeric(templateId)
             }
             .Property(TemplateDetailcontent.MJMLContent, content)
-            .Property(TemplateDetailcontent.Headers, JObject.FromObject(new Dictionary<string, string>()
+            .Property(TemplateDetailcontent.Headers, JsonSerializer.Serialize(new Dictionary<string, string>()
             {
                 {"Subject", "Test transactional template subject " + DateTime.UtcNow},
                 {"SenderName", "Test transactional template"},
@@ -81,7 +81,7 @@ namespace Mailjet.Tests.Integration
             // assert
             Assert.IsTrue(response.IsSuccessStatusCode);
             Assert.AreEqual(1, response.GetTotal());
-            Assert.AreEqual(content, response.GetData().Single().Value<string>("MJMLContent"));
+            Assert.AreEqual(content, response.GetData().Single()["MJMLContent"].GetValue<string>());
         }
 
         private async Task<long> CreateTemplate()
@@ -101,7 +101,7 @@ namespace Mailjet.Tests.Integration
             .Property(Template.Locale, "en_US")
             .Property(Template.Name, templateName)
             .Property(Template.OwnerType, Template.OwnerTypeValue_Apikey)
-            .Property(Template.Purposes, JArray.FromObject(new[]{ "transactional" }));
+            .Property(Template.Purposes, JsonSerializer.Serialize(new[]{ "transactional" }));
 
             // act
             MailjetResponse response = await _client.PostAsync(request);
@@ -110,9 +110,9 @@ namespace Mailjet.Tests.Integration
             Assert.IsTrue(response.IsSuccessStatusCode);
 
             Assert.AreEqual(1, response.GetTotal());
-            Assert.AreEqual(templateName, response.GetData().Single().Value<string>("Name"));
+            Assert.AreEqual(templateName, response.GetData().Single()["Name"].GetValue<string>());
 
-            long templateId = response.GetData().Single().Value<long>("ID");
+            long templateId = response.GetData().Single()["ID"].GetValue<long>();
             return templateId;
         }
 
@@ -166,11 +166,11 @@ namespace Mailjet.Tests.Integration
 
             foreach (var emailObject in response.GetData())
             {
-                if (emailObject.Type != JTokenType.Object)
+                if (emailObject.GetValueKind() != JsonValueKind.Object)
                     continue;
 
-                if (emailObject.Value<string>("Status") == "Active")
-                    return emailObject.Value<string>("Email");
+                if (emailObject["Status"].GetValue<string>() == "Active")
+                    return emailObject["Email"].GetValue<string>();
             }
 
             Assert.Fail("Cannot find Active sender address under given account");
