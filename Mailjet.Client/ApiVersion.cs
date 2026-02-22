@@ -1,9 +1,8 @@
-﻿namespace Mailjet.Client
+﻿namespace Mailjet.Client;
+
+public enum ApiVersion
 {
-    public enum ApiVersion
-    {
-        V3,
-        V3_1,
-        V4,
-    }
+    V3,
+    V3_1,
+    V4,
 }

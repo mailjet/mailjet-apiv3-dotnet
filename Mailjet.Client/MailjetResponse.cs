@@ -1,108 +1,113 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
 
-namespace Mailjet.Client
+namespace Mailjet.Client;
+
+public class MailjetResponse(bool isSuccessStatusCode, int statusCode, JsonObject content)
 {
-    public class MailjetResponse
+    public JsonObject Content { get; private set; } = content;
+    public bool IsSuccessStatusCode { get; private set; } = isSuccessStatusCode;
+    public int StatusCode { get; private set; } = statusCode;
+
+    public int GetTotal()
     {
-        public JObject Content { get; private set; }
-        public bool IsSuccessStatusCode { get; private set; }
-        public int StatusCode { get; private set; }
-
-        public MailjetResponse(bool isSuccessStatusCode, int statusCode, JObject content)
+        if (!TryGetValue("Total", out int total))
         {
-            IsSuccessStatusCode = isSuccessStatusCode;
-            StatusCode = statusCode;
-            Content = content;
+            total = 0;
         }
+        return total;
+    }
 
-        public int GetTotal()
-        {
-            int total;
-            if (!TryGetValue("Total", out total))
-            {
-                total = 0;
-            }
-
-            return total;
-        }
-
-        public JArray GetData()
-        {
-            JArray result;
-            if (TryGetValue("Data", out result))
-            {
-                return result;
-            }
-
-            if (TryGetValue("Sent", out result))
-            {
-                return result;
-            }
-
-            //for Send API v3.1
-            if (TryGetValue("Messages", out result))
-            {
-                return result;
-            }
-
-            result = new JArray(Content);
+    public JsonArray GetData()
+    {
+        if (TryGetValue("Data", out JsonArray? result) && result != null)
             return result;
+        if (TryGetValue("Sent", out result) && result != null)
+            return result;
+        if (TryGetValue("Messages", out result) && result != null)
+            return result;
+        return [Content.DeepClone()];
+    }
+
+    public int GetCount()
+    {
+        if (!TryGetValue("Count", out int count))
+        {
+            count = 0;
+        }
+        return count;
+    }
+
+    public string GetErrorInfo()
+    {
+        if (!TryGetValue(MailjetConstants.ErrorInfo, out string? errorInfo) || errorInfo == null)
+        {
+            errorInfo = string.Empty;
+        }
+        return errorInfo;
+    }
+
+    public string GetErrorMessage()
+    {
+        if (!TryGetValue("ErrorMessage", out string? errorMessage) || errorMessage == null)
+        {
+            errorMessage = string.Empty;
+        }
+        return errorMessage;
+    }
+
+    public bool TryGetValue<T>(string key, out T? value)
+    {
+        JsonNode? node = null;
+        
+        if (Content.TryGetPropertyValue(key, out node))
+        {
+            // Found with exact key
+        }
+        else
+        {
+            foreach (var property in Content)
+            {
+                if (string.Equals(property.Key, key, StringComparison.OrdinalIgnoreCase))
+                {
+                    node = property.Value;
+                    break;
+                }
+            }
         }
 
-        public int GetCount()
+        if (node == null)
         {
-            int count;
-            if (!TryGetValue("Count", out count))
-            {
-                count = 0;
-            }
-
-            return count;
+            value = default;
+            return false;
         }
 
-        public string GetErrorInfo()
+        try
         {
-            if (!TryGetValue(MailjetConstants.ErrorInfo, out string errorInfo))
-            {
-                errorInfo = string.Empty;
-            }
-
-            return errorInfo;
-        }
-
-        public string GetErrorMessage()
-        {
-            if (!TryGetValue("ErrorMessage", out string errorMessage))
-            {
-                errorMessage = string.Empty;
-            }
-
-            return errorMessage;
-        }
-
-        public bool TryGetValue<T>(string key, out T value)
-        {
-            JToken token;
-            if (!Content.TryGetValue(key, StringComparison.OrdinalIgnoreCase, out token))
-            {
-                value = default(T);
-                return false;
-            }
-
-            value = token.Value<T>();
+            value = node.GetValue<T>();
             return true;
         }
-
-        public T GetValue<T>(string key)
+        catch
         {
-            T result;
-            if (!TryGetValue(key, out result))
+            try
             {
-                throw new Exception(string.Format("No entry found for key: {0}", key));
+                value = JsonSerializer.Deserialize<T>(node);
+                return value != null;
             }
-
-            return result;
+            catch
+            {
+                value = default;
+                return false;
+            }
         }
+    }
+
+    public T GetValue<T>(string key)
+    {
+        if (!TryGetValue<T>(key, out T? result))
+        {
+            throw new Exception($"No entry found for key: {key}");
+        }
+        return result!;
     }
 }

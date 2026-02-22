@@ -1,88 +1,61 @@
-﻿using System;
+﻿namespace Mailjet.Client;
 
-namespace Mailjet.Client
+public enum ResourceType
 {
-    public enum ResourceType
+    NotSpecified,
+    Rest,
+    Data,
+    Send,
+    V4,
+}
+
+public class ResourceInfo(
+    string resource,
+    string? action = null,
+    ApiVersion apiVersion = ApiVersion.V3,
+    ResourceType type = ResourceType.Rest)
+{
+    public ResourceType Type { get; private set; } = type;
+    public string Resource { get; private set; } = resource;
+    public string? Action { get; private set; } = action;
+    public ApiVersion ApiVersion { get; private set; } = apiVersion;
+
+    public virtual string BuildUrl(string? resourceId, string? actionId)
     {
-        NotSpecified,
-        Rest,
-        Data,
-        Send,
-        V4,
+        string url = UrlHelper.CombineUrl(GetPath(), Resource);
+
+        if (!string.IsNullOrEmpty(resourceId))
+            url = UrlHelper.CombineUrl(url, resourceId);
+
+        if (!string.IsNullOrEmpty(Action))
+            url = UrlHelper.CombineUrl(url, Action);
+
+        if (!string.IsNullOrEmpty(actionId))
+            url = UrlHelper.CombineUrl(url, actionId);
+
+        return url;
     }
 
-    public class ResourceInfo
+    private string GetPath()
     {
-        public ResourceType Type { get; private set; }
-
-        public string Resource { get; private set; }
-
-        // Mailjet resource action, if any
-        public string Action { get; private set; }
-
-        public ApiVersion ApiVersion { get; private set; }
-
-        public ResourceInfo(string resource, string action = null, ApiVersion apiVersion = ApiVersion.V3, ResourceType type = ResourceType.Rest)
+        var path = GetApiVersionPath();
+        return Type switch
         {
-            Resource = resource;
-            Action = action;
-            Type = type;
-            ApiVersion = apiVersion;
-        }
+            ResourceType.Rest => path + "/REST",
+            ResourceType.Data => path + "/DATA",
+            ResourceType.Send or ResourceType.V4 => path,
+            _ => Resource != "send" ? path + "/REST" : path,
+        };
+    }
 
-        public virtual string BuildUrl(string resourceId, string actionId)
+    private string GetApiVersionPath()
+    {
+        return ApiVersion switch
         {
-            string url = UrlHelper.CombineUrl(GetPath(), Resource);
-
-            if (!string.IsNullOrEmpty(resourceId))
-            {
-                url = UrlHelper.CombineUrl(url, resourceId);
-            }
-
-            if (!string.IsNullOrEmpty(Action))
-            {
-                url = UrlHelper.CombineUrl(url, Action);
-            }
-
-            if (!string.IsNullOrEmpty(actionId))
-            {
-                url = UrlHelper.CombineUrl(url, actionId);
-            }
-
-            return url;
-        }
-
-        private string GetPath()
-        {
-            var path = GetApiVersionPath();
-
-            switch (Type)
-            {
-                case ResourceType.Rest:
-                    return path + "/REST";
-                case ResourceType.Data:
-                    return path + "/DATA";
-                case ResourceType.Send:
-                case ResourceType.V4:
-                    return path;
-                default:
-                    return Resource != "send" ? path + "/REST" : path;
-            }
-        }
-
-        private string GetApiVersionPath()
-        {
-            switch (ApiVersion)
-            {
-                case ApiVersion.V3_1:
-                    return MailjetConstants.ApiVersionPathV3_1;
-                case ApiVersion.V4:
-                    return MailjetConstants.ApiVersionPathV4;
-                case ApiVersion.V3:
-                    return MailjetConstants.ApiVersionPathV3;
-                default:
-                    throw new NotImplementedException("Wrong API version");
-            }
-        }
+            ApiVersion.V3_1 => MailjetConstants.ApiVersionPathV3_1,
+            ApiVersion.V4 => MailjetConstants.ApiVersionPathV4,
+            ApiVersion.V3 => MailjetConstants.ApiVersionPathV3,
+            _ => throw new NotImplementedException("Wrong API version"),
+        };
     }
 }
