@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard1.1</TargetFrameworks>
+		<TargetFrameworks>net48;net6.0</TargetFrameworks>
 		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
 		
-		<Version>3.0.1</Version>
-		<PackageVersion>3.0.1</PackageVersion>
+		<Version>4.0.0</Version>
+		<PackageVersion>4.0.0</PackageVersion>
 
 		<Authors>Mailjet, Dimitar Kostov</Authors>
 		<PackageLicenseUrl>https://github.com/mailjet/mailjet-apiv3-dotnet/blob/master/LICENSE</PackageLicenseUrl>
@@ -36,7 +36,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="System.Net.Http" />
 	</ItemGroup>
 
 </Project>
