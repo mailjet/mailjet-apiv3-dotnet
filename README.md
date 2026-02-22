@@ -1,3 +1,6 @@
+This branch targets future runtime support (.NET 8).
+It is experimental and not used for releases yet.
+
 
 [doc]: http://dev.mailjet.com/
 [api_ref]: https://dev.mailjet.com/reference/email
