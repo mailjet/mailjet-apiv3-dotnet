@@ -1,4 +1,7 @@
-﻿[doc]: http://dev.mailjet.com/
+﻿This branch targets future runtime support (.NET 10).
+It is experimental and not used for releases yet.
+
+[doc]: http://dev.mailjet.com/
 [api_ref]: https://dev.mailjet.com/reference/email
 [api_credential]: https://app.mailjet.com/account/api_keys
 [issues]: https://github.com/mailjet/mailjet-apiv3-dotnet/issues
