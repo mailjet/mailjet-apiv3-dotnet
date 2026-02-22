@@ -46,7 +46,7 @@ namespace Mailjet.Client
 
         public string BuildUrl()
         {
-            string resourceId = ResourceId != null ? ResourceId.Id : null;
+            string resourceId = ResourceId?.Id;
             string actionId = ActionId.HasValue ? ActionId.Value.ToString() : null;
             string url = Resource.BuildUrl(resourceId, actionId);
             return UrlHelper.AddQuerryString(url, Filters);
@@ -56,7 +56,7 @@ namespace Mailjet.Client
         {
             dynamic jObject = new JObject();
             jObject.Resource = JObject.FromObject(Resource);
-            jObject.ResourceId = ResourceId != null ? ResourceId.Id : null;
+            jObject.ResourceId = ResourceId?.Id;
             jObject.ActionID = ActionId.HasValue ? ActionId.Value.ToString() : null;
             jObject.Filters = JObject.FromObject(Filters);
             jObject.Body = Body;
