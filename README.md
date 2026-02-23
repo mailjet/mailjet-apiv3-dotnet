@@ -14,7 +14,7 @@
 # Mailjet .NET Wrapper
 
 [![Build Status](https://travis-ci.org/mailjet/mailjet-apiv3-dotnet.svg?branch=master)](https://travis-ci.org/mailjet/mailjet-apiv3-dotnet)
-![Current Version](https://img.shields.io/badge/version-2.0.0-green.svg)
+![Current Version](https://img.shields.io/badge/version-4.0.0-green.svg)
 
 ## Overview
 
@@ -29,7 +29,7 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
   - [Table of contents](#table-of-contents)
   - [Release notes](#release-notes)
   - [Compatibility](#compatibility)
-    - [Dependencies .NETStandard 1.1](#dependencies-netstandard-11)
+    - [Dependencies .NETStandard 2.0](#dependencies-netstandard-20)
   - [Installation](#installation)
   - [Authentication](#authentication)
   - [Make your first call](#make-your-first-call)
@@ -57,6 +57,8 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
   - [Contribute](#contribute)
 
 ## Release notes
+### v 4.0.0
+- Breaking: target framework updated to .NET Standard 2.0. This fixes security vulnerabilities, reduces dependency complexity and improves runtime compatibility.
 ### v 3.0.1
 - Renames TemplateErrorDelivery property into TemplateErrorDeliver
 - Fixes TransactionalEmailBuilder validation
@@ -81,19 +83,18 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
 
 This .NET library is supported by:
 
- - .NET Core 3.1+
- - .NET Framework 4.6.2
- - Mono 4.6
- - Xamarin.iOS 10.0
- - Xamarin.Android 7.0
- - Universal Windows Platform 10
- - Windows 8.0
- - Windows Phone 8.1
+ - .NET 5.0+
+ - .NET Core 2.0+
+ - .NET Framework 4.6.2+
+ - Mono 5.4+
+ - Xamarin.iOS 10.14+
+ - Xamarin.Android 8.0+
+ - Universal Windows Platform 10 (10.0.16299+)
 
-### Dependencies .NETStandard 1.1
-
- - NETStandard.Library (>= 1.6.1)
- - Newtonsoft.Json (>= 13.0.1)
+### Dependencies .NETStandard 2.0
+ 
+ - NETStandard.Library (>= 2.0.3)
+ - Newtonsoft.Json (>= 13.0.4)
 
 ## Installation
 
