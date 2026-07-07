@@ -81,7 +81,7 @@ namespace Mailjet.Client
         {
             string url = request.BuildUrl();
 
-            var output = request.Body.ToString(Formatting.None);
+            var output = request.Body.ToString(Formatting.None, Array.Empty<JsonConverter>());
             HttpContent contentPost = new StringContent(output, Encoding.UTF8, MailjetConstants.JsonMediaType);
             var responseMessage = await _httpClient.PostAsync(url, contentPost).ConfigureAwait(false);
 
@@ -93,7 +93,7 @@ namespace Mailjet.Client
         {
             string url = request.BuildUrl();
 
-            var output = request.Body.ToString(Formatting.None);
+            var output = request.Body.ToString(Formatting.None, Array.Empty<JsonConverter>());
             HttpContent contentPut = new StringContent(output, Encoding.UTF8, MailjetConstants.JsonMediaType);
             var responseMessage = await _httpClient.PutAsync(url, contentPut).ConfigureAwait(false);
 
