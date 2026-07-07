@@ -14,7 +14,7 @@
 # Mailjet .NET Wrapper
 
 [![Build Status](https://travis-ci.org/mailjet/mailjet-apiv3-dotnet.svg?branch=master)](https://travis-ci.org/mailjet/mailjet-apiv3-dotnet)
-![Current Version](https://img.shields.io/badge/version-4.0.0-green.svg)
+![Current Version](https://img.shields.io/badge/version-4.0.1-green.svg)
 
 ## Overview
 
@@ -57,6 +57,8 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
   - [Contribute](#contribute)
 
 ## Release notes
+### v 4.0.1
+- Fixes `MissingMethodException` on `PostAsync`/`PutAsync` when an older Newtonsoft.Json 13.0.x (13.0.0–13.0.3) is loaded at runtime instead of 13.0.4 (regression of [#162](https://github.com/mailjet/mailjet-apiv3-dotnet/issues/162))
 ### v 4.0.0
 - Breaking: target framework updated to .NET Standard 2.0. This fixes security vulnerabilities, reduces dependency complexity and improves runtime compatibility.
 ### v 3.0.1
