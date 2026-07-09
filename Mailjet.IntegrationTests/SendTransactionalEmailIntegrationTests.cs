@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -6,9 +6,8 @@ using Mailjet.Client;
 using Mailjet.Client.Resources;
 using Mailjet.Client.TransactionalEmails;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
 
-namespace Mailjet.Tests.Integration
+namespace Mailjet.IntegrationTests
 {
     [TestClass]
     public class SendTransactionalEmailIntegrationTests
@@ -22,7 +21,7 @@ namespace Mailjet.Tests.Integration
             _client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_APIKEY_PUBLIC"),
                 Environment.GetEnvironmentVariable("MJ_APIKEY_PRIVATE"));
 
-            _senderEmail = await GetValidSenderEmail(_client);
+            _senderEmail = await IntegrationTestHelper.GetValidSenderEmail(_client);
         }
 
         [TestMethod]
@@ -154,30 +153,6 @@ namespace Mailjet.Tests.Integration
 
             Assert.AreEqual("success", message.Status);
             Assert.IsNull(message.Errors);
-        }
-
-        public static async Task<string> GetValidSenderEmail(IMailjetClient client)
-        {
-            MailjetRequest request = new MailjetRequest
-            {
-                Resource = Sender.Resource
-            };
-
-            MailjetResponse response = await client.GetAsync(request);
-
-            Assert.AreEqual(200, response.StatusCode);
-
-            foreach (var emailObject in response.GetData())
-            {
-                if (emailObject.Type != JTokenType.Object)
-                    continue;
-
-                if (emailObject.Value<string>("Status") == "Active")
-                    return emailObject.Value<string>("Email");
-            }
-
-            Assert.Fail("Cannot find Active sender address under given account");
-            throw new AssertFailedException();
         }
     }
 }
