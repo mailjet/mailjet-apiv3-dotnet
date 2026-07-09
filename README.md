@@ -13,7 +13,7 @@
 
 # Mailjet .NET Wrapper
 
-[![Build Status](https://travis-ci.org/mailjet/mailjet-apiv3-dotnet.svg?branch=master)](https://travis-ci.org/mailjet/mailjet-apiv3-dotnet)
+[![Build Status](https://github.com/mailjet/mailjet-apiv3-dotnet/actions/workflows/dotnet.yml/badge.svg?branch=master)](https://github.com/mailjet/mailjet-apiv3-dotnet/actions/workflows/dotnet.yml)
 ![Current Version](https://img.shields.io/badge/version-4.0.1-green.svg)
 
 ## Overview

@@ -1,0 +1,83 @@
+[config]
+
+# Keep reviews focused
+publish_output = "comment"
+
+# Avoid excessive comments
+verbosity_level = 1
+
+
+[pr_reviewer]
+
+# Review only important findings
+require_score_review = true
+
+# Don't comment on every small style issue
+num_max_findings = 5
+
+
+[pr_code_suggestions]
+
+# Do not generate huge refactors
+num_code_suggestions = 3
+
+
+[github_action_config]
+
+# Only analyze PR changes
+auto_review = true
+auto_describe = false
+auto_improve = false
+
+# Include synchronize so reviews run after new commits are pushed
+pr_actions = ["opened", "reopened", "synchronize", "ready_for_review"]
+
+
+[ignore]
+
+# Ignore generated/build files
+files = [
+    "**/bin/**",
+    "**/obj/**",
+    "**/*.Designer.cs",
+    "**/*.generated.cs",
+    "**/Migrations/**"
+]
+
+
+[custom_review_instructions]
+
+extra_instructions = """
+Review this pull request as an experienced .NET library maintainer.
+
+Focus only on changed code.
+
+Prioritize:
+
+1. Bugs and incorrect behavior
+2. Breaking API changes
+3. Security problems
+4. Performance issues
+5. Thread safety problems
+6. Incorrect async usage
+7. Missing or insufficient tests
+
+For C# code check:
+
+- Nullable reference type correctness
+- Proper async/await usage
+- CancellationToken propagation where appropriate
+- IDisposable/IAsyncDisposable usage
+- LINQ performance problems
+- Exception handling
+- Public API design
+- Backward compatibility
+
+Do not comment on:
+- Formatting
+- Minor naming preferences
+- Personal style preferences
+- Issues unrelated to the PR changes
+
+Only report issues that have a meaningful impact.
+"""
