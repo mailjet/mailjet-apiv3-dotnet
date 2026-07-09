@@ -77,7 +77,6 @@ namespace Mailjet.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MailjetClientConfigurationException))]
         public void BuildTransactionEmail_WhenNoFromAddress_ThrowsException()
         {
             // arrange
@@ -86,82 +85,83 @@ namespace Mailjet.Tests
                 { "day", "Friday" }
             };
 
-            // act
-            new TransactionalEmailBuilder()
-                .WithSubject("Test subject")
-                .WithHtmlPart("<h1>Happy {{var:day}}</h1>")
-                .WithTo(new SendContact("test@mailjet.com"))
-                .WithTemplateLanguage(true)
-                .WithVariables(variables)
-                .Build();
+            // act & assert
+            Assert.ThrowsExactly<MailjetClientConfigurationException>(() =>
+                new TransactionalEmailBuilder()
+                    .WithSubject("Test subject")
+                    .WithHtmlPart("<h1>Happy {{var:day}}</h1>")
+                    .WithTo(new SendContact("test@mailjet.com"))
+                    .WithTemplateLanguage(true)
+                    .WithVariables(variables)
+                    .Build());
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MailjetClientConfigurationException))]
         public void BuildTransactionEmail_WhenNoTemplateIdAndNoHtmlPartAndNoTextPart_ThrowsException()
         {
-            // act
-            new TransactionalEmailBuilder()
-                .WithFrom(new SendContact("test@mailjet.com"))
-                .WithSubject("Test subject")
-                .WithTo(new SendContact("test@mailjet.com"))
-                .Build();
+            // act & assert
+            Assert.ThrowsExactly<MailjetClientConfigurationException>(() =>
+                new TransactionalEmailBuilder()
+                    .WithFrom(new SendContact("test@mailjet.com"))
+                    .WithSubject("Test subject")
+                    .WithTo(new SendContact("test@mailjet.com"))
+                    .Build());
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MailjetClientConfigurationException))]
         public void BuildTransactionEmail_WhenTemplateIdAndHtmlPartProvided_ThrowsException()
         {
-            // act
-            new TransactionalEmailBuilder()
-                .WithTemplateId(1)
-                .WithFrom(new SendContact("test@mailjet.com"))
-                .WithSubject("Test subject")
-                .WithHtmlPart("<h1>Happy {{var:day}}</h1>")
-                .WithTo(new SendContact("test@mailjet.com"))
-                .Build();
+            // act & assert
+            Assert.ThrowsExactly<MailjetClientConfigurationException>(() =>
+                new TransactionalEmailBuilder()
+                    .WithTemplateId(1)
+                    .WithFrom(new SendContact("test@mailjet.com"))
+                    .WithSubject("Test subject")
+                    .WithHtmlPart("<h1>Happy {{var:day}}</h1>")
+                    .WithTo(new SendContact("test@mailjet.com"))
+                    .Build());
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MailjetClientConfigurationException))]
         public void BuildTransactionEmail_WhenTemplateIdAndTextPartProvided_ThrowsException()
         {
-            // act
-            new TransactionalEmailBuilder()
-                .WithTemplateId(1)
-                .WithFrom(new SendContact("test@mailjet.com"))
-                .WithSubject("Test subject")
-                .WithTextPart("<h1>Happy Friday</h1>")
-                .WithTo(new SendContact("test@mailjet.com"))
-                .Build();
+            // act & assert
+            Assert.ThrowsExactly<MailjetClientConfigurationException>(() =>
+                new TransactionalEmailBuilder()
+                    .WithTemplateId(1)
+                    .WithFrom(new SendContact("test@mailjet.com"))
+                    .WithSubject("Test subject")
+                    .WithTextPart("<h1>Happy Friday</h1>")
+                    .WithTo(new SendContact("test@mailjet.com"))
+                    .Build());
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MailjetClientConfigurationException))]
         public void BuildTransactionEmail_WhenNoTemplateIdAndTemplateErrorDeliverProvided_ThrowsException()
         {
-            // act
-            new TransactionalEmailBuilder()
-                .WithTemplateErrorDeliver(true)
-                .WithFrom(new SendContact("test@mailjet.com"))
-                .WithSubject("Test subject")
-                .WithTextPart("<h1>Happy Friday</h1>")
-                .WithTo(new SendContact("test@mailjet.com"))
-                .Build();
+            // act & assert
+            Assert.ThrowsExactly<MailjetClientConfigurationException>(() =>
+                new TransactionalEmailBuilder()
+                    .WithTemplateErrorDeliver(true)
+                    .WithFrom(new SendContact("test@mailjet.com"))
+                    .WithSubject("Test subject")
+                    .WithTextPart("<h1>Happy Friday</h1>")
+                    .WithTo(new SendContact("test@mailjet.com"))
+                    .Build());
         }
 
         [TestMethod]
-        [ExpectedException(typeof(MailjetClientConfigurationException))]
         public void BuildTransactionEmail_WhenNoTemplateIdAndTemplateErrorReportingProvided_ThrowsException()
         {
-            // act
-            new TransactionalEmailBuilder()
-                .WithTemplateErrorReporting(new SendContact("test@mailjet.com"))
-                .WithFrom(new SendContact("test@mailjet.com"))
-                .WithSubject("Test subject")
-                .WithTextPart("<h1>Happy Friday</h1>")
-                .WithTo(new SendContact("test@mailjet.com"))
-                .Build();
+            // act & assert
+            Assert.ThrowsExactly<MailjetClientConfigurationException>(() =>
+                new TransactionalEmailBuilder()
+                    .WithTemplateErrorReporting(new SendContact("test@mailjet.com"))
+                    .WithFrom(new SendContact("test@mailjet.com"))
+                    .WithSubject("Test subject")
+                    .WithTextPart("<h1>Happy Friday</h1>")
+                    .WithTo(new SendContact("test@mailjet.com"))
+                    .Build());
         }
     }
 }
