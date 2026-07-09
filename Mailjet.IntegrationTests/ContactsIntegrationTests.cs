@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Mailjet.Client;
 using Mailjet.Client.Resources;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Mailjet.Tests.Integration
+namespace Mailjet.IntegrationTests
 {
     [TestClass]
     public class ContactsIntegrationTests

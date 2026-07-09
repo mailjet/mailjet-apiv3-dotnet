@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mailjet.ConsoleApplication"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mailjet.Tests", "Mailjet.Tests\Mailjet.Tests.csproj", "{3787F07F-F441-4C0D-BA7B-E5662F4201BF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mailjet.IntegrationTests", "Mailjet.IntegrationTests\Mailjet.IntegrationTests.csproj", "{B8E4F1A2-3C5D-4E6F-9A0B-1C2D3E4F5A6B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{3787F07F-F441-4C0D-BA7B-E5662F4201BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3787F07F-F441-4C0D-BA7B-E5662F4201BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3787F07F-F441-4C0D-BA7B-E5662F4201BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8E4F1A2-3C5D-4E6F-9A0B-1C2D3E4F5A6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8E4F1A2-3C5D-4E6F-9A0B-1C2D3E4F5A6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8E4F1A2-3C5D-4E6F-9A0B-1C2D3E4F5A6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8E4F1A2-3C5D-4E6F-9A0B-1C2D3E4F5A6B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
