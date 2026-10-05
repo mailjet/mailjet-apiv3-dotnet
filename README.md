@@ -14,7 +14,7 @@
 # Mailjet .NET Wrapper
 
 [![Build Status](https://github.com/mailjet/mailjet-apiv3-dotnet/actions/workflows/dotnet.yml/badge.svg?branch=master)](https://github.com/mailjet/mailjet-apiv3-dotnet/actions/workflows/dotnet.yml)
-![Current Version](https://img.shields.io/badge/version-4.0.1-green.svg)
+![Current Version](https://img.shields.io/badge/version-4.1.0-green.svg)
 
 ## Overview
 
@@ -39,6 +39,7 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
     - [Base URL](#base-url)
     - [Proxy](#proxy)
   - [List of resources](#list-of-resources)
+    - [Deprecated resources](#deprecated-resources)
   - [Request Examples](#request-examples)
     - [POST Request](#post-request)
       - [Simple POST request](#simple-post-request)
@@ -57,6 +58,9 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
   - [Contribute](#contribute)
 
 ## Release notes
+### v 4.1.0
+- Marks the deprecated newsletter and statistics resources as obsolete. Newsletter drafts move to `Campaigndraft` and its action resources. Aggregated statistics move to `Statcounters`. Recipient-domain statistics move to `StatisticsRecipientEsp`.
+- Adds `Statcounters.Source`, `Statcounters.Timing`, and `Statcounters.Resolution` for the `statcounters` filter values.
 ### v 4.0.1
 - Fixes `MissingMethodException` on `PostAsync`/`PutAsync` when an older Newtonsoft.Json 13.0.x (13.0.0–13.0.3) is loaded at runtime instead of 13.0.4 (regression of [#162](https://github.com/mailjet/mailjet-apiv3-dotnet/issues/162))
 ### v 4.0.0
@@ -261,6 +265,30 @@ You can set proxy for the client by passing it's parameters to the httpClientHan
 ## List of resources
 
 You can find the list of all available resources for this library in, as well as their configuration, in [/Mailjet.Client/Resources](https://github.com/mailjet/mailjet-apiv3-dotnet/tree/master/Mailjet.Client/Resources). Check the [API reference][api_ref] for complete details on the functionality of these resources.
+
+### Deprecated resources
+
+Mailjet no longer supports the legacy newsletter resources or the legacy statistics resources listed below. The types remain in this package and are marked obsolete so existing calls keep compiling. New calls should use the replacement resource.
+
+| Deprecated resource | Use instead |
+| --- | --- |
+| `Newsletter` | `Campaigndraft` |
+| `NewsletterDetailcontent` | `CampaigndraftDetailcontent` |
+| `NewsletterSchedule` | `CampaigndraftSchedule` |
+| `NewsletterSend` | `CampaigndraftSend` |
+| `NewsletterStatus` | `CampaigndraftStatus` |
+| `NewsletterTest` | `CampaigndraftTest` |
+| `Apikeytotals` | `Statcounters` with `CounterSource` = `Statcounters.Source.APIKey` |
+| `Campaignstatistics` | `Statcounters` with `CounterSource` = `Statcounters.Source.Campaign` and `SourceID` for one campaign |
+| `Campaigngraphstatistics` | `Statcounters` with `CounterTiming` = `Statcounters.Timing.Event` |
+| `Graphstatistics` | `Statcounters` with `CounterResolution`, `FromTS`, and `ToTS` |
+| `Liststatistics` | `Statcounters` with `CounterSource` = `Statcounters.Source.List` and `SourceID` for one list |
+| `Messagestatistics` | `Statcounters` with `CounterTiming` = `Statcounters.Timing.Message` |
+| `Openstatistics` | `Statcounters` |
+| `Senderstatistics` | `Statcounters` with `CounterSource` = `Statcounters.Source.Sender` and `SourceID` for one sender |
+| `Domainstatistics` | `StatisticsRecipientEsp` |
+
+`Statcounters.Source` is `APIKey`, `Campaign`, `List`, or `Sender`. `Statcounters.Timing` is `Message` or `Event`. `Statcounters.Resolution` is `Highest`, `Lifetime`, `Day`, or `Hour`. `Liststatistics` subscriber counts stay on `Contactslist`, and campaign subject or list name stays on `Campaign`. `StatisticsRecipientEsp` groups by mailbox provider rather than recipient domain.
 
 ## Request Examples
 

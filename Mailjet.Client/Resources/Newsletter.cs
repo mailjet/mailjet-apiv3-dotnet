@@ -1,5 +1,8 @@
+using System;
+
 namespace Mailjet.Client.Resources
 {
+    [Obsolete("The newsletter resource is deprecated by the Mailjet API. Use Campaigndraft.")]
     public static class Newsletter
     {
         public static readonly ResourceInfo Resource = new ResourceInfo("newsletter");
