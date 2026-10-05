@@ -1,5 +1,8 @@
+using System;
+
 namespace Mailjet.Client.Resources
 {
+    [Obsolete("The graphstatistics resource is deprecated by the Mailjet API. Use Statcounters with CounterResolution, FromTS, and ToTS.")]
     public static class Graphstatistics
     {
         public static readonly ResourceInfo Resource = new ResourceInfo("graphstatistics");
