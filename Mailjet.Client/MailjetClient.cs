@@ -46,6 +46,7 @@ namespace Mailjet.Client
         /// Create MailJet client with predefined HttpClient instance
         /// </summary>
         /// <param name="httpClient"></param>
+        /// <exception cref="MailjetClientConfigurationException">Thrown when the client's BaseAddress does not use the https scheme</exception>
         public MailjetClient(HttpClient httpClient)
         {
             if (httpClient == null)
@@ -57,14 +58,27 @@ namespace Mailjet.Client
             {
                 httpClient.SetDefaultSettings();
             }
+            else
+            {
+                EnsureHttps(httpClient.BaseAddress);
+            }
 
             _httpClient = httpClient;
         }
 
+        /// <exception cref="MailjetClientConfigurationException">Thrown when the address does not use the https scheme</exception>
         public string BaseAdress
         {
             get { return _httpClient.BaseAddress != null ? _httpClient.BaseAddress.ToString() : null; }
-            set { _httpClient.BaseAddress = !string.IsNullOrEmpty(value) ? new Uri(value) : null; }
+            set { _httpClient.BaseAddress = !string.IsNullOrEmpty(value) ? EnsureHttps(new Uri(value)) : null; }
+        }
+
+        private static Uri EnsureHttps(Uri baseAddress)
+        {
+            if (!baseAddress.IsAbsoluteUri || baseAddress.Scheme != Uri.UriSchemeHttps)
+                throw new MailjetClientConfigurationException($"Mailjet API base address must use https, but was '{baseAddress}'");
+
+            return baseAddress;
         }
 
         public async Task<MailjetResponse> GetAsync(MailjetRequest request)

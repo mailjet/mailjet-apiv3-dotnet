@@ -1,10 +1,12 @@
 using Mailjet.Client;
+using Mailjet.Client.Exceptions;
 using Mailjet.Client.Resources;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 using RichardSzalay.MockHttp;
 using System;
 using System.Net;
+using System.Net.Http;
 using sms = Mailjet.Client.Resources.SMS;
 
 namespace Mailjet.Tests
@@ -216,6 +218,55 @@ namespace Mailjet.Tests
 
             Assert.IsTrue(response.IsSuccessStatusCode);
             Assert.IsTrue(JToken.DeepEquals(expectedData, response.GetData()));
+        }
+
+        [TestMethod]
+        [DataRow("https://api.mailjet.com")]
+        [DataRow("https://api.us.mailjet.com/")]
+        [DataRow("HTTPS://API.MAILJET.COM")]
+        public void TestBaseAdressAcceptsHttps(string baseAdress)
+        {
+            var client = new MailjetClient(ApiKeyTest, ApiSecretTest) { BaseAdress = baseAdress };
+
+            Assert.AreEqual(new Uri(baseAdress), new Uri(client.BaseAdress));
+        }
+
+        [TestMethod]
+        [DataRow("http://api.mailjet.com")]
+        [DataRow("HTTP://api.mailjet.com")]
+        [DataRow("ftp://api.mailjet.com")]
+        public void TestBaseAdressRejectsNonHttps(string baseAdress)
+        {
+            var client = new MailjetClient(ApiKeyTest, ApiSecretTest);
+
+            Assert.ThrowsExactly<MailjetClientConfigurationException>(() => client.BaseAdress = baseAdress);
+            Assert.AreEqual(MailjetConstants.DefaultBaseAdress + "/", client.BaseAdress);
+        }
+
+        [TestMethod]
+        public void TestHttpClientWithHttpsBaseAddressIsAccepted()
+        {
+            var httpClient = new HttpClient { BaseAddress = new Uri("https://api.us.mailjet.com") };
+
+            var client = new MailjetClient(httpClient);
+
+            Assert.AreEqual("https://api.us.mailjet.com/", client.BaseAdress);
+        }
+
+        [TestMethod]
+        public void TestHttpClientWithoutBaseAddressUsesHttpsDefault()
+        {
+            var client = new MailjetClient(new HttpClient());
+
+            Assert.AreEqual(MailjetConstants.DefaultBaseAdress + "/", client.BaseAdress);
+        }
+
+        [TestMethod]
+        public void TestHttpClientWithHttpBaseAddressIsRejected()
+        {
+            var httpClient = new HttpClient { BaseAddress = new Uri("http://api.mailjet.com") };
+
+            Assert.ThrowsExactly<MailjetClientConfigurationException>(() => new MailjetClient(httpClient));
         }
 
         private string GenerateJsonResponse(int total, int count, JArray data)

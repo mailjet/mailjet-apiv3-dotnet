@@ -57,6 +57,11 @@ Check out all the resources and .NET code examples in the official [Mailjet Docu
   - [Contribute](#contribute)
 
 ## Release notes
+### Unreleased
+- Breaking: the client only accepts `https://` base addresses. Setting `BaseAdress` to a non-HTTPS URL, or passing an `HttpClient` whose `BaseAddress` is not HTTPS to the `MailjetClient(HttpClient)` constructor (including Dependency Injection setups), now throws `MailjetClientConfigurationException`. Plain HTTP access to the Mailjet API is being deprecated, so update any `http://` base address to `https://`.
+### v 4.1.0
+- Marks the deprecated newsletter and statistics resources as obsolete. Newsletter drafts move to `Campaigndraft` and its action resources. Aggregated statistics move to `Statcounters`. Recipient-domain statistics move to `StatisticsRecipientEsp`.
+- Adds `Statcounters.Source`, `Statcounters.Timing`, and `Statcounters.Resolution` for the `statcounters` filter values.
 ### v 4.0.1
 - Fixes `MissingMethodException` on `PostAsync`/`PutAsync` when an older Newtonsoft.Json 13.0.x (13.0.0–13.0.3) is loaded at runtime instead of 13.0.4 (regression of [#162](https://github.com/mailjet/mailjet-apiv3-dotnet/issues/162))
 ### v 4.0.0
@@ -181,6 +186,7 @@ To configure IMailjetClient to be Typed HttpClient, see an example.
 services.AddHttpClient<IMailjetClient, MailjetClient>(client =>
 {
     //set BaseAddress, MediaType, UserAgent
+    //a custom BaseAddress must use https, see Base URL below
     client.SetDefaultSettings();
 
     client.UseBearerAuthentication("access_token");
@@ -225,6 +231,8 @@ MailjetClient client = new MailjetClient(Environment.GetEnvironmentVariable("MJ_
 ```
 
 If your account has been moved to Mailjet's US architecture, the URL value you need to set is `https://api.us.mailjet.com`.
+
+The Mailjet API is only available over HTTPS. The base URL must start with `https://`; any other scheme, such as `http://`, throws a `MailjetClientConfigurationException`. The same check applies to the `BaseAddress` of an `HttpClient` you pass to the `MailjetClient` constructor, including the Dependency Injection setup above.
 
 ### Proxy
 
