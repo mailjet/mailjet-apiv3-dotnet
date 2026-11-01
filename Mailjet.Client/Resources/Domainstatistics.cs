@@ -2,6 +2,7 @@ using System;
 
 namespace Mailjet.Client.Resources
 {
+    [Obsolete("The domainstatistics resource is deprecated by the Mailjet API. Use StatisticsRecipientEsp.")]
     public static class Domainstatistics
     {
         public static readonly ResourceInfo Resource = new ResourceInfo("domainstatistics");

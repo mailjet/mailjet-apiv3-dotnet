@@ -32,5 +32,27 @@
         public const string CounterTiming = "CounterTiming";
         public const string FromTS = "FromTS";
         public const string ToTS = "ToTS";
+
+        public static class Source
+        {
+            public const string APIKey = "APIKey";
+            public const string Campaign = "Campaign";
+            public const string List = "List";
+            public const string Sender = "Sender";
+        }
+
+        public static class Timing
+        {
+            public const string Message = "Message";
+            public const string Event = "Event";
+        }
+
+        public static class Resolution
+        {
+            public const string Highest = "Highest";
+            public const string Lifetime = "Lifetime";
+            public const string Day = "Day";
+            public const string Hour = "Hour";
+        }
     }
 }

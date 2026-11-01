@@ -1,5 +1,8 @@
+using System;
+
 namespace Mailjet.Client.Resources
 {
+    [Obsolete("The campaignstatistics resource is deprecated by the Mailjet API. Use Statcounters with CounterSource set to Campaign.")]
     public static class Campaignstatistics
     {
         public static readonly ResourceInfo Resource = new ResourceInfo("campaignstatistics");

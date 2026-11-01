@@ -2,6 +2,7 @@ using System;
 namespace Mailjet.Client.Resources
 {
     
+    [Obsolete("The liststatistics resource is deprecated by the Mailjet API. Use Statcounters with CounterSource set to List.")]
     public static class Liststatistics
     {
         public static readonly ResourceInfo Resource = new ResourceInfo("liststatistics");

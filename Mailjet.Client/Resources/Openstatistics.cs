@@ -1,5 +1,8 @@
+using System;
+
 namespace Mailjet.Client.Resources
 {
+    [Obsolete("The openstatistics resource is deprecated by the Mailjet API. Use Statcounters.")]
     public static class Openstatistics
     {
         public static readonly ResourceInfo Resource = new ResourceInfo("openstatistics");
